@@ -1,8 +1,3 @@
-cd "/   "
-git add .
-git commit -m "commit"
-git push
-
 # add all untracked files to stage
 git add .
 # add specific file in dir
