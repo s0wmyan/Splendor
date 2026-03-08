@@ -1,5 +1,5 @@
 package game.action;
 
-public class ReserveCardAction {
+public class ReserveCardAction implements Action {
     
 }

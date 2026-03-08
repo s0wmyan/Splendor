@@ -1,5 +1,5 @@
 package game.action;
 
-public class TakeGemAction {
+public class TakeGemAction implements Action {
     
 }
