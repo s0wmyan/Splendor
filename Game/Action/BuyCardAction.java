@@ -1,4 +1,4 @@
-package Game.Action;
+package game.action;
 
 public class BuyCardAction {
     
