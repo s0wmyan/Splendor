@@ -1,4 +1,4 @@
-package Game.Model;
+package Game.model;
 
 public class Deck {
     
