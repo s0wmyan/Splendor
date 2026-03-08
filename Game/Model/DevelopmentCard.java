@@ -14,7 +14,14 @@ public class DevelopmentCard {
         this.level = level;
         this.bonus = bonus;
         this.cost = cost;
+
+
+
     
+    }
+
+    public void test() {
+        
     }
 
     // gettor methods 
