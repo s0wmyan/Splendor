@@ -32,6 +32,11 @@ public class WinConditionChecker {
         }
 
         // do the last part of the tiebreaker ltr
-        
+        if (winningPlayerList.size() > 1) {
+
+
+        } else if (winningPlayerList.size() > 1 && ) {
+            
+        }
     }
 }
