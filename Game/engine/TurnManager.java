@@ -7,6 +7,7 @@ public class TurnManager{
     private ConsoleManager view;
     private GameState gameState;
 
+    // incomplete
     public void executeTurn(GameState gameState) {
 
         this.gameState = gameState;
@@ -34,7 +35,7 @@ public class TurnManager{
         Board board = gameState.getBoard();
 
         // call the checkNobleVisitCondition method to see if got lucky noble visit
-        gameState.checkNobleVisitCondition();
+        gameState.checkNobleVisitCondition(player, board);
         
         // Now that the player has taken action, you need to fill up the board (provided the player has a taken a card from the board)
         gameState.refillBoard();
@@ -43,7 +44,6 @@ public class TurnManager{
         gameState.nextTurn();
     }
 
-    // Incomplete
     public Action promptAction(Player player) {
 
         // prompts the user for an action input
@@ -64,67 +64,49 @@ public class TurnManager{
                 return new TakeGemAction(GemsType);
             // BuyCardAction takes in a card and from reserved
             case 2: 
-                Card card = inputValidater.selectCard(gameState.getBoard().canBuyCards(player));
-                return new BuyCardAction(card);
+                Card buyingCard = inputValidater.selectCard(gameState.getBoard().canBuyCards(player));
+                return new BuyCardAction(buyingCard);
             // ReserveCardAction
             case 3:
+                Card reservingCard = inputValidater.selectCard(gameState.getBoard().getAllFaceUpCards());
+                return new ReserveCardAction(reservingCard);
+            // user keys in the wrong input
             default:
                 System.out.println("Invalid number/input! Please try again.");
                 return promptAction(Player);
         }
     }
 
-    public Action promptAction(Player player) {
-        // 1. Show the player their options
-        System.out.println("\nYour turn, " + player.getName());
-        System.out.println("1) Take Tokens");
-        System.out.println("2) Purchase Card");
-        System.out.println("3) Reserve Card");
-        System.out.print("Choose an action: ");
+    // this method will be placed in board
+    // private ArrayList<Card> allFaceUpCards(Player player) {
 
-        // 2. Get their choice
-        int choice = inputHandler.getChoice();
+    //     ArrayList<Card> tier1FaceUpCards = gameState.getBoard().getLevel1FaceUp();
+    //     ArrayList<Card> tier2FaceUpCards = gameState.getBoard().getLevel2FaceUp();
+    //     ArrayList<Card> tier3FaceUpCards = gameState.getBoard().getLevel3FaceUp();
 
-        // 3. Based on choice, gather more info and build the Action
-        switch (choice) {
-            case 1:
-                Map<Token, Integer> tokens = inputHandler.selectTokens(state.getBoard().getBank());
-                return new TakeTokensAction(tokens);
+    //     ArrayList<Card> allFaceUpCards = new ArrayList<>();
 
-            case 2:
-                Card cardToBuy = inputHandler.selectCard(getAffordableCards(player));
-                return new PurchaseCardAction(cardToBuy);
+    //     allFaceUpCards.addAll(tier1FaceUpCards);
+    //     allFaceUpCards.addAll(tier2FaceUpCards);
+    //     allFaceUpCards.addAll(tier3FaceUpCards);
 
-            case 3:
-                Card cardToReserve = inputHandler.selectCard(state.getBoard().getAllFaceUpCards());
-                return new ReserveCardAction(cardToReserve);
-
-            default:
-                System.out.println("Invalid choice, try again");
-                return promptAction(player); // recurse and ask again
-        }
-    }
+    //     return allFaceUpCards;
+    // }
 
     private ArrayList<Card> canBuyCards(Player player) {
         List <Card> canBuyList = new ArrayList<>();
 
-        ArrayList<Card> tier1FaceUpCards = gameState.getBoard().getLevel1FaceUp();
-        ArrayList<Card> tier2FaceUpCards = gameState.getBoard().getLevel2FaceUp();
-        ArrayList<Card> tier3FaceUpCards = gameState.getBoard().getLevel3FaceUp();
+        ArrayList<Card> allFaceUpCards = gameState.getBoard().getAllFaceUpCards();
 
-        ArrayList<Card> allFaceUpCards = new ArrayList<>();
-
-        allFaceUpCards.addall(tier1FaceUpCards);
-        allFaceUpCards.addall(tier2FaceUpCards);
-        allFaceUpCards.addall(tier3FaceUpCards);
-
+        // Loop through all the cards that are faceup right now on the board
         for (Card card: allFaceUpCards) {
             if (canBuy(player, card)) {
                 canBuyList.add(card);
             }
         }
 
-        for (Card card: player.getReserved()) {
+        // Loop through the reservedCards that the player currently has 
+        for (Card card: player.getReservedCards()) {
             if (canBuy(player, card)) {
                 canBuyList.add(card);
             }
@@ -177,7 +159,72 @@ public class TurnManager{
 
     // Incomplete
     public void checkNobleVisitCondition(Player player, Board board) {
+        List<Noble> nobleList = getEligibleNobles(player, board.getNobles());
 
+    }
+
+    private void checkNobleVisit(Player player, Board board) {
+        List<Noble> eligibleNobles = getEligibleNobles(player, board.getNobles());
+
+        if (eligibleNobles.size() == 1) {
+            // only one noble qualifies — award automatically
+            Noble noble = eligibleNobles.get(0);
+            player.addNoble(noble);
+            board.removeNoble(noble);
+
+        } else if (eligibleNobles.size() > 1) {
+            // player chooses which noble to take
+            Noble chosen = inputHandler.selectNoble(eligibleNobles);
+            player.addNoble(chosen);
+            board.removeNoble(chosen);
+        }
+        // if 0 eligible — nothing happens
+    }
+
+    // incomplete
+    private ArrayList<Noble> getEligibleNobles(Player player, List<Noble> nobles) {
+        List<Noble> eligible = new ArrayList<>();
+
+        Map<GemType, Integer> bonuses = player.getBonuses();
+
+        for (Noble noble : nobles) {
+
+            boolean canVisit = true;
+
+            Map<GemType, Integer> requirements = noble.getRequirements();
+            
+            for (Map<GemType, Integer> entry : requirements.entrySet()) {
+
+                Gemtype gemType = entry.getKey();
+                int requiredValue = 
+            }
+        }
+    }
+
+    private List<Noble> getEligibleNobles(Player player, List<Noble> nobles) {
+        List<Noble> eligible = new ArrayList<>();
+        Map<Token, Integer> bonuses = player.getBonuses(); // ← bonuses not tokens
+
+        for (Noble noble : nobles) {
+            boolean satisfied = true;
+
+            for (Map.Entry<Token, Integer> entry : noble.getRequirements().entrySet()) {
+                Token token = entry.getKey();
+                int required = entry.getValue();
+                int playerBonus = bonuses.getOrDefault(token, 0);
+
+                if (playerBonus < required) {
+                    satisfied = false;
+                    break; // no point checking rest of this noble's requirements
+                }
+            }
+
+            if (satisfied) {
+                eligible.add(noble);
+            }
+        }
+
+        return eligible;
     }
 
     // Incomplete
