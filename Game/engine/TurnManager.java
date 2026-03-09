@@ -7,7 +7,6 @@ public class TurnManager{
     private ConsoleManager view;
     private GameState gameState;
 
-    // incomplete
     public void executeTurn(GameState gameState) {
 
         this.gameState = gameState;
@@ -38,7 +37,7 @@ public class TurnManager{
         gameState.checkNobleVisitCondition(player, board);
         
         // Now that the player has taken action, you need to fill up the board (provided the player has a taken a card from the board)
-        gameState.refillBoard();
+        gameState.refillBoard(board);
 
         // get the next player 
         gameState.nextTurn();
@@ -159,29 +158,24 @@ public class TurnManager{
 
     // Incomplete
     public void checkNobleVisitCondition(Player player, Board board) {
-        List<Noble> nobleList = getEligibleNobles(player, board.getNobles());
+        List<Noble> eligibleList = getEligibleNobles(player, board.getNobles());
 
-    }
+        if (eligible.size() == 1) {
 
-    private void checkNobleVisit(Player player, Board board) {
-        List<Noble> eligibleNobles = getEligibleNobles(player, board.getNobles());
+            Noble noble = eligibleList.get(0);
+            player.addNoble(noble); // Need to add this into the UML diagram
+            board.removeNoble(noble);
+        } else if (eligible.size() > 1) {
 
-        if (eligibleNobles.size() == 1) {
-            // only one noble qualifies — award automatically
-            Noble noble = eligibleNobles.get(0);
+            // since the player has satisfied the conditions of multiple nobles,
+            // he needs to select one of the nobles that he satisfied to add to his own
+            Noble noble = inputValidater.selectNoble(eligibleList);
             player.addNoble(noble);
             board.removeNoble(noble);
-
-        } else if (eligibleNobles.size() > 1) {
-            // player chooses which noble to take
-            Noble chosen = inputHandler.selectNoble(eligibleNobles);
-            player.addNoble(chosen);
-            board.removeNoble(chosen);
         }
-        // if 0 eligible — nothing happens
+
     }
 
-    // incomplete
     private ArrayList<Noble> getEligibleNobles(Player player, List<Noble> nobles) {
         List<Noble> eligible = new ArrayList<>();
 
@@ -193,33 +187,19 @@ public class TurnManager{
 
             Map<GemType, Integer> requirements = noble.getRequirements();
             
-            for (Map<GemType, Integer> entry : requirements.entrySet()) {
+            for (Map.Entry<GemType, Integer> entry : requirements.entrySet()) {
 
                 Gemtype gemType = entry.getKey();
-                int requiredValue = 
-            }
-        }
-    }
+                int requiredValue = entry.getValue();
+                int currentValue = bonuses.getOrDefault(gemType, 0);
 
-    private List<Noble> getEligibleNobles(Player player, List<Noble> nobles) {
-        List<Noble> eligible = new ArrayList<>();
-        Map<Token, Integer> bonuses = player.getBonuses(); // ← bonuses not tokens
-
-        for (Noble noble : nobles) {
-            boolean satisfied = true;
-
-            for (Map.Entry<Token, Integer> entry : noble.getRequirements().entrySet()) {
-                Token token = entry.getKey();
-                int required = entry.getValue();
-                int playerBonus = bonuses.getOrDefault(token, 0);
-
-                if (playerBonus < required) {
-                    satisfied = false;
-                    break; // no point checking rest of this noble's requirements
+                if (currentValue < requiredValue) {
+                    canVisit = false;
+                    break;
                 }
             }
 
-            if (satisfied) {
+            if (canVisit) {
                 eligible.add(noble);
             }
         }
@@ -227,8 +207,21 @@ public class TurnManager{
         return eligible;
     }
 
-    // Incomplete
     public void refillBoard(Board board) {
+        List<Card> level1FaceUp = board.getLevel1FaceUp();
+        List<Card> level2FaceUp = board.getLevel2FaceUp();
+        List<Card> level3FaceUp = board.getLevel3FaceUp();
+        
+        while (level1FaceUp.size() < 4 && !board.getDeck(1).isEmpty()) {
+            board.refillLevel(1);
+        }
 
+        while (level2FaceUp.size() < 4 && !board.getDeck(2).isEmpty()) {
+            board.refillLevel(2);
+        }
+
+        while (level3FaceUp.size() < 4 && !board.getDeck(3).isEmpty()) {
+            board.refillLevel(3);
+        }
     }
 }
