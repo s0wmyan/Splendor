@@ -143,7 +143,7 @@ public class TurnManager{
         for (Map.Entry<GemType, Integer> entry : card.getCost().entrySet()) { 
             GemType gemType = entry.getKey();
             int cost = entry.getValue();
-            int bonus = bonues.getOrDefault(Gemtype, 0);
+            int bonus = bonuses.getOrDefault(Gemtype, 0);
 
             // The trueCost cannot go below 0
             int remaining = cost - bonus > 0 ? cost - bonus : 0;
