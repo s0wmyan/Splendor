@@ -8,7 +8,7 @@ public class WinConditionChecker {
     public boolean winnerList(ArrayList<Player> players) {
         for (Player player : players) {
             
-            if (player.getPrestigePoints >= winningPrestigeRequirement) {
+            if (player.getPrestigePoints() >= winningPrestigeRequirement) {
                 return true;
             }
         }
@@ -22,7 +22,7 @@ public class WinConditionChecker {
 
             int points = player.getPrestigePoints();
             if (points >= winningPrestigeRequirement) {
-                winningPlayerList.add(points);
+                winningPlayerList.add(player);
             }    
         }
         
@@ -32,11 +32,20 @@ public class WinConditionChecker {
         }
 
         // do the last part of the tiebreaker ltr
-        if (winningPlayerList.size() > 1) {
+        Player bestWinner = winningPlayerList.get(0);
+        for (Player player : winningPlayerList) {
 
+            List<Card> playerCardsOwned = player.getPurchasedCards();
+            List<Card> winnerCardsOwned = bestWinner.getPurchasedCards();
+            if (player.getPrestigePoints() > bestWinner.getPrestigePoints()) {
+                bestWinner = player;
 
-        } else if (winningPlayerList.size() > 1 && ) {
-            
+            } else if (playerCardsOwned.size() < winnerCardsOwned.size() && 
+                        player.getPrestigePoints() == bestWinner.getPrestigePoints())  {
+                bestWinner = player;
+            }
         }
+
+        return bestWinner;
     }
 }
