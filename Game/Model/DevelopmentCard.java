@@ -5,7 +5,7 @@ import java.util.Map;
 public class DevelopmentCard {
     private int points; // change from prestigepoints -> points
     private int level; // refers to the tier 
-    private int id; // purpose of ID? 
+    // private int id; // purpose of ID? 
     private GemType bonus;
     private Map<GemType, Integer> cost;
 
@@ -14,14 +14,7 @@ public class DevelopmentCard {
         this.level = level;
         this.bonus = bonus;
         this.cost = cost;
-
-
-
     
-    }
-
-    public void test() {
-        
     }
 
     // gettor methods 
@@ -37,7 +30,7 @@ public class DevelopmentCard {
         return this.level; 
     }
 
-    public int getID() {
-        return this.id;
-    }
+    // public int getID() {
+    //     return this.id;
+    // }
 }
