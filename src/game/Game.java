@@ -15,9 +15,9 @@ public class Game {
 
     private GameState state;
     private TurnManager turnManager;
-    private ActionValidator validator;
-    private ActionExecutor executor;
-    private EndGameManager endGameManager;
+    // private ActionValidator validator;
+    // private ActionExecutor executor;
+    // private EndGameManager endGameManager;
 
     public Game(GameState state) {
         this.state = state;
