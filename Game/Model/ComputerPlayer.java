@@ -3,7 +3,7 @@ package model;
 import action.*;
 import game.*;
 import ui.*;
-import util.*;
+import java.util.*;
 
 // Uses a basic rules-based algorithm to choose its actions.
 public class ComputerPlayer extends Player {

@@ -3,7 +3,7 @@ package model;
 import action.*;
 import game.*;
 import ui.*;
-import util.*;
+import java.util.*;
 
 public class HumanPlayer extends Player {
 
