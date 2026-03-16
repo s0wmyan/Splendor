@@ -31,14 +31,6 @@ public class Game {
         return state;
     }
 
-    public Player getCurrentPlayer() {
-        return state.getPlayers().get(turnManager.getCurrentPlayerIndex());
-    }
-
-    public int getCurrentPlayerIndex() {
-        return turnManager.getCurrentPlayerIndex();
-    }
-
     // public boolean isGameOver() {
     //     return endGameManager.isGameOver();
     // }

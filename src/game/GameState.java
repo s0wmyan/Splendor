@@ -1,16 +1,19 @@
 package game;
 
-import model.Board;
-import model.Player;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import game.engine.TurnManager;
+import model.Bank;
+import model.Board;
+import model.Player;
 
 public class GameState {
 
     private final Board board;
     private final List<Player> players;
+    private TurnManager turnManager;
 
     public GameState(Board board, List<Player> players) {
         this.board = board;
@@ -23,6 +26,18 @@ public class GameState {
 
     public List<Player> getPlayers() {
         return Collections.unmodifiableList(players);
+    }
+
+    public Player getCurrentPlayer() {
+        return this.getPlayers().get(turnManager.getCurrentPlayerIndex());
+    }
+
+    public int getCurrentPlayerIndex() {
+        return turnManager.getCurrentPlayerIndex();
+    }
+
+    public Bank getBank(){  
+        return board.getBank();
     }
 }
 
