@@ -92,6 +92,7 @@ public class TurnManager{
     //     return allFaceUpCards;
     // }
 
+    // Produces an ArrayList<Card> to show what cards you can afford
     private ArrayList<Card> canBuyCards(Player player) {
         List <Card> canBuyList = new ArrayList<>();
 
@@ -113,6 +114,7 @@ public class TurnManager{
         return canBuyList;
     }
 
+    // Checks whether you are eligible to buy the card
     private boolean canBuy(Player player, Card card) {
         Map<GemType, Integer> trueCost = getTrueCost(player, card);
         Map<GemType, Integer> gems = player.getTokens();
@@ -136,6 +138,7 @@ public class TurnManager{
         return true;
     }
 
+    // Produces a map to that maps the gems to the real cost, of a single card
     public Map<GemType, Integer> getTrueCost(Player player, Card card) { // change name to something else
         Map<GemType, Integer> trueCost = new HashMap<>();
         Map<GemType, Integer> bonuses = player.getBonuses();
@@ -156,7 +159,8 @@ public class TurnManager{
         return trueCost;
     }
 
-    // Incomplete
+    // Has a list of eligibleNobles that the player can get
+    // Adds nobles to their stash and removes from the board
     public void checkNobleVisitCondition(Player player, Board board) {
         List<Noble> eligibleList = getEligibleNobles(player, board.getNobles());
 
@@ -176,6 +180,7 @@ public class TurnManager{
 
     }
 
+    // Get the ArrayList<Noble> from the board that the player is able to attract from the board
     private ArrayList<Noble> getEligibleNobles(Player player, List<Noble> nobles) {
         List<Noble> eligible = new ArrayList<>();
 
@@ -207,6 +212,7 @@ public class TurnManager{
         return eligible;
     }
 
+    // Refill the board once a card(s) has been taken off the board
     public void refillBoard(Board board) {
         List<Card> level1FaceUp = board.getLevel1FaceUp();
         List<Card> level2FaceUp = board.getLevel2FaceUp();
