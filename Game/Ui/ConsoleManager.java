@@ -1,9 +1,9 @@
-package splendor.ui;
+package ui;
 
-import splendor.action.*;
-import splendor.game.*;
-import splendor.model.*;
-import java.util.*;
+import action.*;
+import game.*;
+import model.*;
+import util.*;
 
 public class ConsoleManager {
     private InputValidator inputValidator;
