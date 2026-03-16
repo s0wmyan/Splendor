@@ -1,8 +1,8 @@
-package splendor.ui;
+package ui;
 
-import splendor.action.*;
-import splendor.game.*;
-import splendor.model.*;
+import game.action.*;
+import game.game.*;
+import game.model.*;
 import java.util.*;
 
 public class ConsoleManager {

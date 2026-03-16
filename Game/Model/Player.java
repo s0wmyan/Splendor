@@ -1,8 +1,7 @@
-package splendor.model;
+package model;
 
-import splendor.action.*;
-import splendor.game.*;
-
+import game.action.*;
+import game.game.*;
 import java.util.*;
 
 public abstract class Player {
