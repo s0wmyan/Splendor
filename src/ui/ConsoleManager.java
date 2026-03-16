@@ -54,31 +54,4 @@ public class ConsoleManager {
         System.out.println("Permanent Bonuses: " + formatTokenMap(player.getBonuses()));
         System.out.println("-----------------------------------");
     }
-
-    // Prompts the player for their move and returns the corresponding Action object
-    public Action promptForAction(Player player) {
-        System.out.println("\nAvailable Actions:");
-        System.out.println("1. Take Gems");
-        System.out.println("2. Buy a Card");
-        System.out.println("3. Reserve a Card");
-
-        int choice = inputValidator.getValidInt("What would you like to do? (1-3): ", 1, 3);
-
-        switch (choice) {
-            case 1:
-                return promptTakeGems();
-            case 2:
-                return promptBuyCard();
-            case 3:
-                return promptReserveCard();
-            default:
-                return promptForAction(player); 
-        }
-    }
-
-    // --- Private Helper Methods ---
-    // promptTakeGems
-    // promptBuyCard
-    // prompt reserveCard
-    // prompt formatTokenMap
 }
