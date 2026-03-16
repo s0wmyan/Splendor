@@ -5,6 +5,7 @@ public class WinConditionChecker {
 
     private int winningPrestigeRequirement = 15;
 
+    // Get the list of current winners
     public boolean winnerList(ArrayList<Player> players) {
         for (Player player : players) {
             
@@ -15,6 +16,7 @@ public class WinConditionChecker {
         return false;
     }
 
+    // From the list of winners, sort the players based on the winning conditions satisfied
     public Player getWinner(ArrayList<Player> players) {
         ArrayList<Player> winningPlayerList = new ArrayList<>();
 
