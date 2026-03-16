@@ -1,9 +1,9 @@
 package model;
 
-import game.action.*;
-import game.game.*;
-import game.ui.*;
-import java.util.*;
+import action.*;
+import game.*;
+import ui.*;
+import util.*;
 
 public class HumanPlayer extends Player {
 

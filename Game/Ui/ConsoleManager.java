@@ -1,9 +1,9 @@
 package ui;
 
-import game.action.*;
-import game.game.*;
-import game.model.*;
-import java.util.*;
+import action.*;
+import game.*;
+import model.*;
+import util.*;
 
 public class ConsoleManager {
     private InputValidator inputValidator;

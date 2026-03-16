@@ -1,8 +1,8 @@
 package model;
 
-import game.action.*;
-import game.game.*;
-import java.util.*;
+import action.*;
+import game.*;
+import util.*;
 
 public abstract class Player {
 
