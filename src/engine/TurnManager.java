@@ -1,11 +1,27 @@
 package game.engine;
 
 import java.util.*;
+
+import javax.smartcardio.Card;
+
+import action.BuyCardAction;
+import action.ReserveCardAction;
+import action.TakeGemAction;
+import game.GameState;
+import model.Board;
+import model.GemType;
+import model.Noble;
+import model.Player;
+import ui.ConsoleManager;
 public class TurnManager{
 
     private InputValidater inputValidater;
     private ConsoleManager view;
     private GameState gameState;
+
+    private final int playerCount;
+    private final int firstPlayerIndex;
+    private int currentPlayerIndex;
 
     public void executeTurn(GameState gameState) {
 
@@ -229,5 +245,35 @@ public class TurnManager{
         while (level3FaceUp.size() < 4 && !board.getDeck(3).isEmpty()) {
             board.refillLevel(3);
         }
+    }
+
+    public TurnManager(int playerCount) {
+        this(playerCount, 0);
+    }
+
+    public TurnManager(int playerCount, int firstPlayerIndex) {
+        if (playerCount < 2) {
+            throw new IllegalArgumentException("At least 2 players required");
+        }
+        this.playerCount = playerCount;
+        this.firstPlayerIndex = firstPlayerIndex;
+        this.currentPlayerIndex = firstPlayerIndex;
+    }
+
+    public int getPlayerCount() {
+        return playerCount;
+    }
+
+    public int getFirstPlayerIndex() {
+        return firstPlayerIndex;
+    }
+
+    public int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
+    }
+
+    public int advanceToNextPlayer() {
+        currentPlayerIndex = (currentPlayerIndex + 1) % playerCount;
+        return currentPlayerIndex;
     }
 }
