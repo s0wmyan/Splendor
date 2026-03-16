@@ -55,6 +55,42 @@ public class ConsoleManager {
         System.out.println("-----------------------------------");
     }
 
+    // player count
+    public int promptForPlayerCount() {
+        // between 2 and 4
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the number of players : ");
+        int playerCount = sc.nextInt();
+
+        return playerCount;
+    }
+
+    // player names
+    /*
+    Map<String, String> playerDetail = promptForPlayerDetails(playerCount)
+    k -> name, v -> birthday as a string 
+    */
+    public Map<String, String> promptForPlayerDetails(int playerCount) {
+        // birthday and name
+        // name needs to be unique 
+        // birthday as a string -> need to be specific? 
+
+        Scanner sc = new Scanner(System.in);
+        Map<String, String> playerDetails = new HashMap<>();
+
+        for (int i = 1; i <= playerCount; i++) {
+            System.out.println("Enter Player " + i + "'s name : ");
+            String name = sc.nextLine();
+
+            System.out.println("Enter Player " + i + "'s birthday (DD/MM/YY) : ");
+            String birthday = sc.nextLine(); // no validating 
+
+            playerDetails.put(name, birthday);
+        }
+        
+        return playerDetails;
+    }
+
     // Prompts the player for their move and returns the corresponding Action object
     public Action promptForAction(Player player) {
         System.out.println("\nAvailable Actions:");
