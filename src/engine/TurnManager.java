@@ -2,7 +2,7 @@ package engine;
 
 import java.util.*;
 import game.GameState;
-import model.Player;
+import model.*;
 import action.*;
 
 
@@ -68,11 +68,11 @@ public class TurnManager{
                 return new TakeGemAction(GemTypes);
             // BuyCardAction takes in a card and from reserved
             case 2: 
-                Card buyingCard = inputValidater.selectCard(gameState.getBoard().canBuyCards(player));
+                DevelopmentCard buyingCard = inputValidater.selectCard(gameState.getBoard().canBuyCards(player));
                 return new BuyCardAction(buyingCard);
             // ReserveCardAction
             case 3:
-                Card reservingCard = inputValidater.selectCard(gameState.getBoard().getAllFaceUpCards());
+                DevelopmentCard reservingCard = inputValidater.selectCard(gameState.getBoard().getAllFaceUpCards());
                 return new ReserveCardAction(reservingCard);
             // user keys in the wrong input
             default:
@@ -99,19 +99,19 @@ public class TurnManager{
 
     // Produces an ArrayList<Card> to show what cards you can afford
     private ArrayList<Card> canBuyCards(Player player) {
-        List <Card> canBuyList = new ArrayList<>();
+        List <DevelopmentCard> canBuyList = new ArrayList<>();
 
-        ArrayList<Card> allFaceUpCards = gameState.getBoard().getAllFaceUpCards();
+        ArrayList<DevelopmentCard> allFaceUpCards = gameState.getBoard().getAllFaceUpCards();
 
         // Loop through all the cards that are faceup right now on the board
-        for (Card card: allFaceUpCards) {
+        for (DevelopmentCard card: allFaceUpCards) {
             if (canBuy(player, card)) {
                 canBuyList.add(card);
             }
         }
 
         // Loop through the reservedCards that the player currently has 
-        for (Card card: player.getReservedCards()) {
+        for (DevelopmentCard card: player.getReservedCards()) {
             if (canBuy(player, card)) {
                 canBuyList.add(card);
             }
@@ -120,7 +120,7 @@ public class TurnManager{
     }
 
     // Checks whether you are eligible to buy the card
-    private boolean canBuy(Player player, Card card) {
+    private boolean canBuy(Player player, DevelopmentCard card) {
         Map<GemType, Integer> trueCost = getTrueCost(player, card);
         Map<GemType, Integer> gems = player.getTokens();
 
@@ -144,7 +144,7 @@ public class TurnManager{
     }
 
     // Produces a map to that maps the gems to the real cost, of a single card
-    public Map<GemType, Integer> getTrueCost(Player player, Card card) { // change name to something else
+    public Map<GemType, Integer> getTrueCost(Player player, DevelopmentCard card) { // change name to something else
         Map<GemType, Integer> trueCost = new HashMap<>();
         Map<GemType, Integer> bonuses = player.getBonuses();
 
@@ -186,7 +186,7 @@ public class TurnManager{
     }
 
     // Get the ArrayList<Noble> from the board that the player is able to attract from the board
-    private ArrayList<Noble> getEligibleNobles(Player player, List<Noble> nobles) {
+    private List<Noble> getEligibleNobles(Player player, List<Noble> nobles) {
         List<Noble> eligible = new ArrayList<>();
 
         Map<GemType, Integer> bonuses = player.getBonuses();
@@ -195,7 +195,7 @@ public class TurnManager{
 
             boolean canVisit = true;
 
-            Map<GemType, Integer> requirements = noble.getRequirements();
+            Map<GemType, Integer> requirements = noble.getCost();
             
             for (Map.Entry<GemType, Integer> entry : requirements.entrySet()) {
 
@@ -219,9 +219,9 @@ public class TurnManager{
 
     // Refill the board once a card(s) has been taken off the board
     public void refillBoard(Board board) {
-        List<Card> level1FaceUp = board.getLevel1FaceUp();
-        List<Card> level2FaceUp = board.getLevel2FaceUp();
-        List<Card> level3FaceUp = board.getLevel3FaceUp();
+        List<DevelopmentCard> level1FaceUp = board.getLevel1FaceUp();
+        List<DevelopmentCard> level2FaceUp = board.getLevel2FaceUp();
+        List<DevelopmentCard> level3FaceUp = board.getLevel3FaceUp();
         
         while (level1FaceUp.size() < 4 && !board.getDeck(1).isEmpty()) {
             board.refillLevel(1);
