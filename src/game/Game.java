@@ -6,14 +6,12 @@ import engine.ActionValidator;
 import engine.ActionExecutor;
 import engine.EndGameManager;
 
-import actions.GameAction;
+import action.GameAction;
 
 import model.Noble;
 import model.Player;
 
 import java.util.List;
-
-import javax.xml.validation.Validator;
 
 public class Game {
 
