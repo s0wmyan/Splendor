@@ -54,5 +54,10 @@ public class Game {
     // public Player determineWinner() {
     //     return endGameManager.determineWinner(state.getPlayers());
     // }
+
+    // main entry method
+    public void run() {
+        
+    }
 }
 

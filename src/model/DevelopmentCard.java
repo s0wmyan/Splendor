@@ -30,6 +30,10 @@ public class DevelopmentCard {
         return this.level; 
     }
 
+    public Map<GemType, Integer> getCost() {
+        return this.cost;
+    }
+
     // public int getID() {
     //     return this.id;
     // }
