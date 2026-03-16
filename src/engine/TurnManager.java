@@ -3,6 +3,7 @@ package engine;
 import java.util.*;
 import game.GameState;
 import model.Player;
+import action.*;
 
 
 public class TurnManager{
@@ -63,8 +64,8 @@ public class TurnManager{
         switch (choice) {
             // TakeGemAction
             case 1: 
-                Map<GemType, Integer> = inputValidater.selectGems(gameState.getBoard().getBank());
-                return new TakeGemAction(GemsType);
+                Map<GemType, Integer> GemTypes = inputValidater.selectGems(gameState.getBoard().getBank());
+                return new TakeGemAction(GemTypes);
             // BuyCardAction takes in a card and from reserved
             case 2: 
                 Card buyingCard = inputValidater.selectCard(gameState.getBoard().canBuyCards(player));
@@ -76,7 +77,7 @@ public class TurnManager{
             // user keys in the wrong input
             default:
                 System.out.println("Invalid number/input! Please try again.");
-                return promptAction(Player);
+                return promptAction(player);
         }
     }
 
