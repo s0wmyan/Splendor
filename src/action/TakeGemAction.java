@@ -1,4 +1,4 @@
-package game.action;
+package action;
 
 public class TakeGemAction implements Action {
     

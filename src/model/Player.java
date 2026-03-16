@@ -1,4 +1,4 @@
-package splendor.model;
+package model;
 
 import splendor.action.*;
 import splendor.game.*;

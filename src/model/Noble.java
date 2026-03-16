@@ -1,7 +1,7 @@
-package game.model;
+package model;
 
 import java.util.*;
-import game.model.GemType;
+import model.GemType;
 
 
 public class Noble {

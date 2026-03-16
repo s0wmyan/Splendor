@@ -1,8 +1,8 @@
-package splendor.model;
+package model;
 
-import splendor.action.*;
-import splendor.game.*;
-import splendor.ui.*;
+import action.*;
+import game.*;
+import ui.*;
 
 public class HumanPlayer extends Player {
 

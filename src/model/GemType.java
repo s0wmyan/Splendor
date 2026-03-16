@@ -1,4 +1,4 @@
-package game.model;
+package model;
 
 public enum GemType {
     RED, 

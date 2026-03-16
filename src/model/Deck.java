@@ -1,8 +1,8 @@
-package game.model;
+package model;
 
 // noble should not be in deck -> it is fixed
 import java.util.*;
-import game.model.DevelopmentCard;
+import model.DevelopmentCard;
 
 public class Deck {
     private int level; // tier

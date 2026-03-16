@@ -1,4 +1,4 @@
-package game.model;
+package model;
 
 // need to check for valid input? 
 // enter birthday -> 

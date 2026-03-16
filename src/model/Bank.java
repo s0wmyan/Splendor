@@ -1,6 +1,6 @@
-package game.model;
+package model;
 
-import game.model.GemType;;
+import model.GemType;
 import java.util.*;
 
 // no OOB, invalid input logic 

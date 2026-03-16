@@ -1,7 +1,7 @@
-package splendor.model;
+package model;
 
-import splendor.action.*;
-import splendor.game.*;
+import action.*;
+import game.*;
 import java.util.*;
 
 // Uses a basic rules-based algorithm to choose its actions.

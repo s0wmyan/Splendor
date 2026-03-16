@@ -1,4 +1,4 @@
-package game.engine;
+package engine;
 
 import java.util.*;
 public class WinConditionChecker {
