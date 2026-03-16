@@ -16,16 +16,16 @@ public class TurnManager{
 
         this.gameState = gameState;
         // get player
-        Player player = gameState.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer(); // getCurrentPlayer() needs to be added to gameState
 
         // display current board layout
         view.displayBoard(gameState);
 
         // display hand
-        view.displayHand(Player);
+        view.displayHand(player);
 
         // get action from player
-        Action action = promptAction(Player);
+        Action action = promptAction(player);
 
         // Check if the action is legal
         if (!action.validate()) {
@@ -39,10 +39,10 @@ public class TurnManager{
         Board board = gameState.getBoard();
 
         // call the checkNobleVisitCondition method to see if got lucky noble visit
-        gameState.checkNobleVisitCondition(player, board);
+        checkNobleVisitCondition(player, board);
         
         // Now that the player has taken action, you need to fill up the board (provided the player has a taken a card from the board)
-        gameState.refillBoard(board);
+        refillBoard(board);
 
         // get the next player 
         gameState.nextTurn();
@@ -131,7 +131,7 @@ public class TurnManager{
             // If the player doesn't have any gems, then it will be defaulted to 0
             int currentlyOwned = gems.getOrDefault(entry.getKey(), 0); 
 
-            int moreRequired = currentlyOwned - required;
+            int moreRequired = required - currentlyOwned;
             if (moreRequired < 0) {
 
                 if (gems.getOrDefault(GemType.GOLD, 0) < moreRequired) {
