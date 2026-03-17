@@ -16,7 +16,7 @@ public class TurnManager{
 
         this.gameState = gameState;
         // get player
-        Player player = gameState.getCurrentPlayer(); // getCurrentPlayer() needs to be added to gameState
+        Player player = gameState.getCurrentPlayer();
 
         // display current board layout
         view.displayBoard(gameState);
