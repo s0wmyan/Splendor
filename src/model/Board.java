@@ -8,7 +8,7 @@ public class Board {
 
     public static final int FACE_UP_PER_LEVEL = 4;
 
-    private final TokenPool supplyTokens = new TokenPool();
+    public Bank bank = new Bank();
     private final Deck level1Deck;
     private final Deck level2Deck;
     private final Deck level3Deck;
@@ -26,8 +26,8 @@ public class Board {
         this.nobles.addAll(nobles);
     }
 
-    public TokenPool getSupplyTokens() {
-        return supplyTokens;
+    public Bank getBank() {
+        return bank;
     }
 
     public List<Card> getLevel1FaceUp() {
