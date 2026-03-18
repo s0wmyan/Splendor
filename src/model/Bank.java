@@ -1,14 +1,21 @@
 package model;
 
-import model.GemType;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Map;
 
 // no OOB, invalid input logic 
 public class Bank {
-    private Map<GemType, Integer> tokens;
+    private Map<GemType, Integer> tokens = new EnumMap<>(GemType.class);
+
+    public Bank() {
+        for (GemType type : GemType.values()) {
+            tokens.put(type, 0);
+        }
+    }
     
     public Bank(Map<GemType, Integer> tokens) {
-        this.tokens = tokens;
+        this();
+        if (tokens != null) this.tokens = tokens;
     }
 
     public int getTokenCount(GemType type) {

@@ -2,7 +2,7 @@ package model;
 
 import action.*;
 import game.*;
-import util.*;
+import java.util.*;
 
 public abstract class Player {
 
@@ -21,6 +21,7 @@ public abstract class Player {
     private Map<GemType, Integer> bonuses;
 
     // Constructor
+    // initialize the player in here, or with int days, int months, int years 
     public Player(String name, Birthday birthday) {
         this.name = name;
         this.birthday = birthday;
