@@ -6,9 +6,9 @@ public enum GemType {
     WHITE, 
     GREEN, 
     BLACK, 
-    YELLOW; // yellow == gold, rest are normal
+    GOLD; // gold
 
     public boolean isStandard() {
-        return this != YELLOW;
+        return this != GOLD;
     }
 }

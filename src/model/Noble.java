@@ -7,12 +7,12 @@ import model.GemType;
 public class Noble {
     private String name;
     private Map<GemType, Integer> cost;
-    private int points;
+    private int prestigePoints;
 
-    public Noble(String name, Map<GemType, Integer> cost, int points) {
+    public Noble(String name, Map<GemType, Integer> cost, int prestigePoints) {
         this.name = name;
         this.cost = cost;
-        this.points = points;
+        this.prestigePoints = prestigePoints;
     }
 
     public String getName() {
@@ -23,8 +23,8 @@ public class Noble {
         return cost;
     }
 
-    public int getPoints() {
-        return points;
+    public int getPrestigePoints() {
+        return prestigePoints;
     }
 
 

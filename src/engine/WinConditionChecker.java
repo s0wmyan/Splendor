@@ -1,6 +1,8 @@
-package game.engine;
+package engine;
 
 import java.util.*;
+import model.*;
+
 public class WinConditionChecker {
 
     private int winningPrestigeRequirement = 15;
@@ -37,8 +39,8 @@ public class WinConditionChecker {
         Player bestWinner = winningPlayerList.get(0);
         for (Player player : winningPlayerList) {
 
-            List<Card> playerCardsOwned = player.getPurchasedCards();
-            List<Card> winnerCardsOwned = bestWinner.getPurchasedCards();
+            List<DevelopmentCard> playerCardsOwned = player.getPurchasedCards();
+            List<DevelopmentCard> winnerCardsOwned = bestWinner.getPurchasedCards();
             if (player.getPrestigePoints() > bestWinner.getPrestigePoints()) {
                 bestWinner = player;
 

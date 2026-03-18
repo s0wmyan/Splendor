@@ -1,18 +1,18 @@
-package game.engine;
+package engine;
 
 import java.util.*;
 
 import javax.smartcardio.Card;
-
-import action.BuyCardAction;
-import action.ReserveCardAction;
-import action.TakeGemAction;
+import action.*;
 import game.GameState;
 import model.Board;
 import model.GemType;
 import model.Noble;
 import model.Player;
 import ui.ConsoleManager;
+
+
+
 public class TurnManager{
 
     private InputValidater inputValidater;
@@ -22,6 +22,8 @@ public class TurnManager{
     private final int playerCount;
     private final int firstPlayerIndex;
     private int currentPlayerIndex;
+
+    // missing a constructor 
 
     public void executeTurn(GameState gameState) {
 
@@ -33,10 +35,10 @@ public class TurnManager{
         view.displayBoard(gameState);
 
         // display hand
-        view.displayHand(Player);
+        view.displayHand(player);
 
         // get action from player
-        Action action = promptAction(Player); 
+        Action action = promptAction(player); 
 
         // Check if the action is legal
         if (!action.validate()) {
