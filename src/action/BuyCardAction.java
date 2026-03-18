@@ -1,4 +1,9 @@
-package game.action;
+package action;
+
+import model.*;
+import game.*;
+import java.util.*;
+
 
 public class BuyCardAction implements Action {
     private DevelopmentCard card;
@@ -115,7 +120,7 @@ public class BuyCardAction implements Action {
      * Attempts to execute the "Buy 1 Card" action.
      * Returns true if successful, false if illegal.
      */
-    private boolean attemptBuyCard(Player player, Card targetCard, boolean isReserved) {
+    private boolean attemptBuyCard(Player player, DevelopmentCard targetCard, boolean isReserved) {
         // 0. The Location Gatekeeper: Does this card actually exist where they claim it does?
         if (isReserved) {
             if (!player.getReservedCards().contains(targetCard)) {

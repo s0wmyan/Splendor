@@ -1,9 +1,9 @@
 package action;
 
-public class ReserveCardAction implements Action {
-    
-}
-package game.action;
+import model.*;
+import game.*;
+import java.util.*;
+
 
 public class ReserveCardAction implements Action {
     private DevelopmentCard card;
@@ -29,7 +29,7 @@ public class ReserveCardAction implements Action {
         }
 
         if (!fromDeck) {
-            List<Card> faceUpCards = null;
+            List<DevelopmentCard> faceUpCards = null;
 
             switch (cardLevel) {
                 case 1:
