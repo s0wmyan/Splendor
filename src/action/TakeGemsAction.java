@@ -1,4 +1,8 @@
-package game.action;
+package action;
+
+import java.util.*;
+import game.*;
+import model.*;
 
 public class TakeGemsAction implements Action {
     private Map<GemType,Integer> selections;
@@ -10,7 +14,7 @@ public class TakeGemsAction implements Action {
     public boolean validate(GameState state, Board board) {
         Bank bank = state.getBank();
 
-        if (selections.containsKey(GemType.YELLOW)) {
+        if (selections.containsKey(GemType.GOLD)) {
             return false;
         }
 
@@ -21,18 +25,19 @@ public class TakeGemsAction implements Action {
                     return false;
                 }
             }
-            return true
+            return true;
         }
 
-        if (selection.size() == 3) {
+        if (selections.size() == 3) {
             for (GemType type : selections.keySet()) {
                 int count = selections.get(type);
                 if (count != 1) {
                     return false;
-
+                }
                 int bankStock = bank.getTokenCount(type);
                 if (bankStock < 1) {
                     return false;
+                }
             }
             return true;
         }
@@ -41,7 +46,7 @@ public class TakeGemsAction implements Action {
     }
 
     public void apply(GameState state, Board board) {
-        Bank bank = state.getbank();
+        Bank bank = state.getBank();
 
         Player player = state.getCurrentPlayer();
         Map<GemType, Integer> wallet = player.getTokens();
