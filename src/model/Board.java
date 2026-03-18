@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.smartcardio.Card;
+
 public class Board {
 
     public static final int FACE_UP_PER_LEVEL = 4;
@@ -13,9 +15,9 @@ public class Board {
     private final Deck level2Deck;
     private final Deck level3Deck;
 
-    private final List<Card> level1FaceUp = new ArrayList<>();
-    private final List<Card> level2FaceUp = new ArrayList<>();
-    private final List<Card> level3FaceUp = new ArrayList<>();
+    private final List<DevelopmentCard> level1FaceUp = new ArrayList<>();
+    private final List<DevelopmentCard> level2FaceUp = new ArrayList<>();
+    private final List<DevelopmentCard> level3FaceUp = new ArrayList<>();
 
     private final List<Noble> nobles = new ArrayList<>();
 
@@ -30,15 +32,15 @@ public class Board {
         return bank;
     }
 
-    public List<Card> getLevel1FaceUp() {
+    public List<DevelopmentCard> getLevel1FaceUp() {
         return Collections.unmodifiableList(level1FaceUp);
     }
 
-    public List<Card> getLevel2FaceUp() {
+    public List<DevelopmentCard> getLevel2FaceUp() {
         return Collections.unmodifiableList(level2FaceUp);
     }
 
-    public List<Card> getLevel3FaceUp() {
+    public List<DevelopmentCard> getLevel3FaceUp() {
         return Collections.unmodifiableList(level3FaceUp);
     }
 

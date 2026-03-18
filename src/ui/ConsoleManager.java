@@ -55,7 +55,7 @@ public class ConsoleManager {
         System.out.println("-----------------------------------");
     }
 
-    // player count
+        // player count
     public int promptForPlayerCount() {
         // between 2 and 4
         Scanner sc = new Scanner(System.in);
@@ -100,16 +100,17 @@ public class ConsoleManager {
 
         int choice = inputValidator.getValidInt("What would you like to do? (1-3): ", 1, 3);
 
-        switch (choice) {
-            case 1:
-                return promptTakeGems();
-            case 2:
-                return promptBuyCard();
-            case 3:
-                return promptReserveCard();
-            default:
-                return promptForAction(player); 
-        }
+        // switch (choice) {
+        //     case 1:
+        //         return promptTakeGems();
+        //     case 2:
+        //         return promptBuyCard();
+        //     case 3:
+        //         return promptReserveCard();
+        //     default:
+        //         return promptForAction(player); 
+        // }
+        return null;
     }
 
     // --- Private Helper Methods ---
@@ -117,4 +118,101 @@ public class ConsoleManager {
     // promptBuyCard
     // prompt reserveCard
     // prompt formatTokenMap
+
+    // utility method to format token maps for clean console printing.
+    private String formatTokenMap(Map<GemType, Integer> map) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<GemType, Integer> entry : map.entrySet()) {
+            if (entry.getValue() > 0) {
+                sb.append(entry.getKey().name()).append(": ").append(entry.getValue()).append(", ");
+            }
+        }
+        if (sb.length() > 0) sb.setLength(sb.length() - 2);
+        return sb.toString();
+    }
+
+    // Displays a list of cards and forces the user to pick a valid one.
+    public DevelopmentCard selectCard(List<DevelopmentCard> cards) {
+        if (cards.isEmpty()) {
+            displayMessage("No cards available to select.");
+            return null;
+        }
+
+        System.out.println("\n--- Select a Card ---");
+        // Print the cards with numbers next to them (1, 2, 3...)
+        for (int i = 0; i < cards.size(); i++) {
+            DevelopmentCard card = cards.get(i);
+            System.out.println((i + 1) + ". Card ID: " + card.getId() + 
+                               " | Cost: " + formatTokenMap(card.getCost()) + 
+                               " | Gives: " + card.getBonus().name());
+        }
+
+        // Use the InputValidator to get choice
+        int choice = inputValidator.getValidInt("Enter the number of your choice: ", 1, cards.size());
+        
+        // 0-index array, subtract 1 from choice
+        return cards.get(choice - 1);
+    }
+
+    // Displays available nobles and forces the user to pick one. 
+    public Noble selectNoble(List<Noble> nobleList) {
+        if (nobleList.isEmpty()) {
+            return null;
+        }
+
+        System.out.println("\n--- Select a Noble to Visit You ---");
+        for (int i = 0; i < nobleList.size(); i++) {
+            Noble noble = nobleList.get(i);
+            System.out.println((i + 1) + ". Points: " + noble.getPrestigePoints() + 
+                               " | Requires: " + formatTokenMap(noble.getCost()));
+        }
+
+        int choice = inputValidator.getValidInt("Enter the number of the Noble: ", 1, nobleList.size());
+        return nobleList.get(choice - 1);
+    }
+
+    // Prompts the user to select gems from the bank
+    public Map<GemType, Integer> selectGems(Map<GemType, Integer> bankSupply) {
+        // We use a Map to store what the user decides to take
+        Map<GemType, Integer> chosenGems = new java.util.HashMap<>();
+        for (GemType type : GemType.values()) {
+            chosenGems.put(type, 0);
+        }
+
+        System.out.println("\n--- Select Gems ---");
+        System.out.println("Available in Bank: " + formatTokenMap(bankSupply));
+        System.out.println("Note: You can take 3 different tokens, or 2 of the same (if the bank has at least 4).");
+
+        // ask for 3 gems
+        int gemsTaken = 0;
+        while (gemsTaken < 3) {
+            System.out.println("\nSelect gem #" + (gemsTaken + 1) + " (or type 0 to stop taking gems):");
+            
+            // numbered menu for the standard gems
+            List<GemType> standardGems = GemType.getStandardGems();
+            for (int i = 0; i < standardGems.size(); i++) {
+                System.out.println((i + 1) + ". " + standardGems.get(i).name());
+            }
+            System.out.println("0. Finish taking gems early");
+
+            int choice = inputValidator.getValidInt("Your choice: ", 0, standardGems.size());
+            
+            if (choice == 0) {
+                break; // if user wants to stop picking gems
+            }
+            
+            GemType selectedType = standardGems.get(choice - 1);
+            
+            // check if bank actually has it
+            if (bankSupply.getOrDefault(selectedType, 0) - chosenGems.get(selectedType) > 0) {
+                chosenGems.put(selectedType, chosenGems.get(selectedType) + 1);
+                gemsTaken++;
+                System.out.println("Added 1 " + selectedType.name() + " to your hand.");
+            } else {
+                displayError("The bank does not have enough of that gem left!");
+            }
+        }
+        
+        return chosenGems;
+    }
 }

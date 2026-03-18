@@ -15,7 +15,7 @@ public class InputValidator {
         int input = -1;
         boolean isValid = false;
 
-        while(!isValid) {
+        while (!isValid) {
             System.out.print(prompt);
             String rawInput = scanner.nextLine().trim();
 
