@@ -21,7 +21,6 @@ public abstract class Player {
     private Map<GemType, Integer> bonuses;
 
     // Constructor
-    // initialize the player in here, or with int days, int months, int years 
     public Player(String name, Birthday birthday) {
         this.name = name;
         this.birthday = birthday;
@@ -40,11 +39,7 @@ public abstract class Player {
             this.bonuses.put(gem, 0);
         }
     }
-    
-    /**
-     * Called by GameEngine when its player's turn.
-     * Implemented by HumanPlayer and ComputerPlayer.
-     */
+
     public abstract Action takeTurn(GameState gameState);
 
     public String getName() {
@@ -115,18 +110,20 @@ public abstract class Player {
         return goldTokensAvailable >= missingTokens;
     }
 
-    // Adds a purchased card to the inventory and applies its points and bonuses.
+    // Adds a purchased card to the inventory and applies its points and bonuses
     public void addPurchasedCard(DevelopmentCard card) {
         this.purchasedCards.add(card);
         this.addPrestigePoints(card.getPrestigePoints());
         this.addBonus(card.getBonus(), 1);
     }
 
+    // Add noble
     public void addNoble(Noble noble) {
         this.nobles.add(noble);
         this.addPrestigePoints(noble.getPrestigePoints());
     }
 
+    // Add tokens
     public void addTokens(Map<GemType, Integer> newTokens) {
         for (Map.Entry<GemType, Integer> entry : newTokens.entrySet()) {
             GemType gem = entry.getKey();
@@ -135,6 +132,7 @@ public abstract class Player {
         }
     }
 
+    // Remove tokens
     public void removeTokens(Map<GemType, Integer> tokensToSpend) {
         for (Map.Entry<GemType, Integer> entry : tokensToSpend.entrySet()) {
             GemType gem = entry.getKey();
