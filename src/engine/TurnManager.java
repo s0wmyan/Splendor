@@ -81,7 +81,7 @@ public class TurnManager{
 
         // If the player is a bot, prompt the bot for their input
         if (player instanceof ComputerPlayer) {
-            return promptComputerPlayerAction((ComputerPlayer) player);
+            return player.takeTurn(gameState);
         }
 
         // else, prompt the actual player for an input
@@ -99,7 +99,7 @@ public class TurnManager{
         System.out.print("Key in an action: ");
 
         // inputValidater calls on getValidInt
-        int choice = inputValidator.getValidInt("Key in an action: ", 1, 3);
+        int choice = inputValidator.getValidInt();
 
         switch (choice) {
             // TakeGemAction
