@@ -18,7 +18,7 @@ public class ConsoleManager {
     }
 
     public void displayError(String errorMessage) {
-        System.out.println(">>> ERROR: " + errorMessage);
+        System.out.println("ERROR: " + errorMessage);
     }
 
     public int displayWelcomeMenu() {
