@@ -2,7 +2,6 @@ package model;
 
 import action.*;
 import game.*;
-import ui.*;
 import java.util.*;
 
 // Uses a basic rules-based algorithm to choose its actions.

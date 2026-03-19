@@ -4,7 +4,7 @@ import engine.TurnManager;
 // import engine.ActionValidator;
 // import engine.EndGameManager;
 
-import action.GameAction;
+import action.*;
 
 import model.Noble;
 import model.Player;
@@ -31,14 +31,6 @@ public class Game {
         return state;
     }
 
-    public Player getCurrentPlayer() {
-        return state.getPlayers().get(turnManager.getCurrentPlayerIndex());
-    }
-
-    public int getCurrentPlayerIndex() {
-        return turnManager.getCurrentPlayerIndex();
-    }
-
     // public boolean isGameOver() {
     //     return endGameManager.isGameOver();
     // }
@@ -54,5 +46,10 @@ public class Game {
     // public Player determineWinner() {
     //     return endGameManager.determineWinner(state.getPlayers());
     // }
+
+    // main entry method
+    public void run() {
+        
+    }
 }
 

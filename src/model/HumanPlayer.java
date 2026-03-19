@@ -3,7 +3,6 @@ package model;
 import action.*;
 import game.*;
 import ui.*;
-import java.util.*;
 
 public class HumanPlayer extends Player {
 
@@ -23,6 +22,6 @@ public class HumanPlayer extends Player {
         // Ask the human sitting at the keyboard what they want to do, 
         // and give me back an Action object representing their choice
         
-        return consoleManager.promptForAction(this, gameState);
+        return consoleManager.promptForAction(this, gameState); // bug 
     }
 }
