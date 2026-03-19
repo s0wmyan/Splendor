@@ -18,7 +18,7 @@ public class ConsoleManager {
     }
 
     public void displayError(String errorMessage) {
-        System.out.println(">>> ERROR: " + errorMessage);
+        System.out.println("ERROR: " + errorMessage);
     }
 
     public int displayWelcomeMenu() {
@@ -54,70 +54,6 @@ public class ConsoleManager {
         System.out.println("Permanent Bonuses: " + formatTokenMap(player.getBonuses()));
         System.out.println("-----------------------------------");
     }
-
-        // player count
-    public int promptForPlayerCount() {
-        // between 2 and 4
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter the number of players : ");
-        int playerCount = sc.nextInt();
-
-        return playerCount;
-    }
-
-    // player names
-    /*
-    Map<String, String> playerDetail = promptForPlayerDetails(playerCount)
-    k -> name, v -> birthday as a string 
-    */
-    public Map<String, String> promptForPlayerDetails(int playerCount) {
-        // birthday and name
-        // name needs to be unique 
-        // birthday as a string -> need to be specific? 
-
-        Scanner sc = new Scanner(System.in);
-        Map<String, String> playerDetails = new HashMap<>();
-
-        for (int i = 1; i <= playerCount; i++) {
-            System.out.println("Enter Player " + i + "'s name : ");
-            String name = sc.nextLine();
-
-            System.out.println("Enter Player " + i + "'s birthday (DD/MM/YY) : ");
-            String birthday = sc.nextLine(); // no validating 
-
-            playerDetails.put(name, birthday);
-        }
-        
-        return playerDetails;
-    }
-
-    // Prompts the player for their move and returns the corresponding Action object
-    public Action promptForAction(Player player) {
-        System.out.println("\nAvailable Actions:");
-        System.out.println("1. Take Gems");
-        System.out.println("2. Buy a Card");
-        System.out.println("3. Reserve a Card");
-
-        int choice = inputValidator.getValidInt("What would you like to do? (1-3): ", 1, 3);
-
-        // switch (choice) {
-        //     case 1:
-        //         return promptTakeGems();
-        //     case 2:
-        //         return promptBuyCard();
-        //     case 3:
-        //         return promptReserveCard();
-        //     default:
-        //         return promptForAction(player); 
-        // }
-        return null;
-    }
-
-    // --- Private Helper Methods ---
-    // promptTakeGems
-    // promptBuyCard
-    // prompt reserveCard
-    // prompt formatTokenMap
 
     // utility method to format token maps for clean console printing.
     private String formatTokenMap(Map<GemType, Integer> map) {
@@ -163,7 +99,7 @@ public class ConsoleManager {
         System.out.println("\n--- Select a Noble to Visit You ---");
         for (int i = 0; i < nobleList.size(); i++) {
             Noble noble = nobleList.get(i);
-            System.out.println((i + 1) + ". Points: " + noble.getPrestigePoints() + 
+            System.out.println((i + 1) + ". Points: " + noble.getPoints() + 
                                " | Requires: " + formatTokenMap(noble.getCost()));
         }
 
