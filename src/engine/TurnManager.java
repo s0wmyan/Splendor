@@ -4,20 +4,26 @@ import java.util.*;
 
 import javax.smartcardio.Card;
 import action.*;
+// import action.TakeGemsAction;
+// import action.BuyCardAction;    
+// import action.ReserveCardAction;
 import game.GameState;
 import model.Board;
 import model.GemType;
 import model.Noble;
 import model.Player;
-import ui.ConsoleManager;
+import model.DevelopmentCard;
+import model.ComputerPlayer; // code has not been written for ComputerPlayer
+import ui.*;
 
 
 
 public class TurnManager{
 
-    private InputValidater inputValidater;
+    private InputValidator inputValidator;
     private ConsoleManager view;
     private GameState gameState;
+    private WinConditionChecker winConditionChecker;
 
     private final int playerCount;
     private final int firstPlayerIndex;
@@ -28,8 +34,17 @@ public class TurnManager{
     public void executeTurn(GameState gameState) {
 
         this.gameState = gameState;
+
+        // runs a loop that continues
+        // this needs to be under game
+        // and needs to have 
+        // private GameState gameState;
+        // while (!winConditionChecker.hasWinner(gameState.getPlayers())) {
+        //     executeTurn(gameState);
+        // }
+
         // get player
-        Player player = gameState.getCurrentPlayer();
+        Player player = gameState.getPlayers().get(currentPlayerIndex);
 
         // display current board layout
         view.displayBoard(gameState);
@@ -40,16 +55,16 @@ public class TurnManager{
         // get action from player
         Action action = promptAction(player); 
 
+        // get board
+        Board board = gameState.getBoard();
+
         // Check if the action is legal
-        if (!action.validate()) {
+        if (!action.validate(gameState, board)) {
             System.out.println("Invalid action!");
         }    
 
         // if the action is valid, apply the action to the gameState
-        action.apply();
-
-        // get board
-        Board board = gameState.getBoard();
+        action.apply(gameState, board);
 
         // call the checkNobleVisitCondition method to see if got lucky noble visit
         checkNobleVisitCondition(player, board);
@@ -58,10 +73,22 @@ public class TurnManager{
         refillBoard(board);
 
         // get the next player 
-        gameState.nextTurn();
+        advanceToNextPlayer();
     }
 
+    // settled
     public Action promptAction(Player player) {
+
+        // If the player is a bot, prompt the bot for their input
+        if (player instanceof ComputerPlayer) {
+            return promptComputerPlayerAction((ComputerPlayer) player);
+        }
+
+        // else, prompt the actual player for an input
+        return promptHumanAction(player);
+    }
+
+    public Action promptHumanAction(Player player) {
 
         // prompts the user for an action input
         System.out.println("Your turn, " + player.getName());
@@ -72,20 +99,28 @@ public class TurnManager{
         System.out.print("Key in an action: ");
 
         // inputValidater calls on getValidInt
-        int choice = inputValidater.getValidInt();
+        int choice = inputValidator.getValidInt("Key in an action: ", 1, 3);
 
         switch (choice) {
             // TakeGemAction
             case 1: 
-                Map<GemType, Integer> GemTypes = inputValidater.selectGems(gameState.getBoard().getBank());
-                return new TakeGemAction(GemTypes);
+                // making changes on their end
+                // getBank() returns bank, not a map
+                Map<GemType, Integer> GemTypes = view.selectGems(gameState.getBoard().getBank());
+                return new TakeGemsAction(GemTypes);
             // BuyCardAction takes in a card and from reserved
             case 2: 
-                DevelopmentCard buyingCard = inputValidater.selectCard(gameState.getBoard().canBuyCards(player));
+                // ignore error for now
+                // because board has not been changed to DevelopmentCard
+                DevelopmentCard buyingCard = view.selectCard(canBuyCards(player));
+
+                // There might be something wrong with buycardaction
                 return new BuyCardAction(buyingCard);
             // ReserveCardAction
             case 3:
-                DevelopmentCard reservingCard = inputValidater.selectCard(gameState.getBoard().getAllFaceUpCards());
+                // ignore error for now
+                // because board has not been changed to DevelopmentCard
+                DevelopmentCard reservingCard = view.selectCard(gameState.getBoard().allFaceUpCards());
                 return new ReserveCardAction(reservingCard);
             // user keys in the wrong input
             default:
@@ -94,27 +129,50 @@ public class TurnManager{
         }
     }
 
-    // this method will be placed in board
-    // private ArrayList<Card> allFaceUpCards(Player player) {
+    // ComputerPlayer will choose an action that they can make
+    // public Action promptBotAction(ComputerPlayer computerPlayer) {
 
-    //     ArrayList<Card> tier1FaceUpCards = gameState.getBoard().getLevel1FaceUp();
-    //     ArrayList<Card> tier2FaceUpCards = gameState.getBoard().getLevel2FaceUp();
-    //     ArrayList<Card> tier3FaceUpCards = gameState.getBoard().getLevel3FaceUp();
+    //     // prompts the user for an action input
+    //     System.out.println("Your turn, " + player.getName());
+    //     System.out.println("(1): Take tokens");
+    //     System.out.println("(2): Buy a card");
+    //     System.out.println("(3): Reserve a card");
+    //     System.out.println("");
+    //     System.out.print("Key in an action: ");
 
-    //     ArrayList<Card> allFaceUpCards = new ArrayList<>();
+    //     // inputValidater calls on getValidInt
+    //     // asking to change this
+    //     int choice = inputValidator.getValidInt(); // has not yet been implemented
 
-    //     allFaceUpCards.addAll(tier1FaceUpCards);
-    //     allFaceUpCards.addAll(tier2FaceUpCards);
-    //     allFaceUpCards.addAll(tier3FaceUpCards);
+    //     switch (choice) {
+    //         // TakeGemAction
+    //         case 1: 
+    //             Map<GemType, Integer> GemTypes = inputValidator.selectGems(gameState.getBoard().getBank());
+    //             return new TakeGemsAction(GemTypes);
+    //         // BuyCardAction takes in a card and from reserved
+    //         case 2: 
+    //             DevelopmentCard buyingCard = inputValidator.selectCard(canBuyCards(player));
 
-    //     return allFaceUpCards;
+    //             // There might be something wrong with buycardaction
+    //             return new BuyCardAction(buyingCard);
+    //         // ReserveCardAction
+    //         case 3:
+    //             DevelopmentCard reservingCard = inputValidator.selectCard(gameState.getBoard().getAllFaceUpCards());
+    //             return new ReserveCardAction(reservingCard);
+    //         // user keys in the wrong input
+    //         default:
+    //             System.out.println("Invalid number/input! Please try again.");
+    //             return promptAction(player);
+    //     }
     // }
 
-    // Produces an ArrayList<Card> to show what cards you can afford
-    private ArrayList<Card> canBuyCards(Player player) {
-        List <DevelopmentCard> canBuyList = new ArrayList<>();
+    // Produces an List<Card> to show what cards you can afford
+    public List<Card> canBuyCards(Player player) {
+        List<DevelopmentCard> canBuyList = new ArrayList<>();
 
-        ArrayList<DevelopmentCard> allFaceUpCards = gameState.getBoard().getAllFaceUpCards();
+        // board has not been changed to developmentcard
+        // ignore this error
+        List<DevelopmentCard> allFaceUpCards = gameState.getBoard().allFaceUpCards();
 
         // Loop through all the cards that are faceup right now on the board
         for (DevelopmentCard card: allFaceUpCards) {
@@ -129,6 +187,7 @@ public class TurnManager{
                 canBuyList.add(card);
             }
         }
+        // board has not been changed to developmentcard; ignore this error
         return canBuyList;
     }
 
@@ -156,7 +215,7 @@ public class TurnManager{
         return true;
     }
 
-    // Produces a map to that maps the gems to the real cost, of a single card
+    // Produces a map that maps the gems to the real cost, of a single card
     public Map<GemType, Integer> getTrueCost(Player player, DevelopmentCard card) { // change name to something else
         Map<GemType, Integer> trueCost = new HashMap<>();
         Map<GemType, Integer> bonuses = player.getBonuses();
@@ -164,7 +223,7 @@ public class TurnManager{
         for (Map.Entry<GemType, Integer> entry : card.getCost().entrySet()) { 
             GemType gemType = entry.getKey();
             int cost = entry.getValue();
-            int bonus = bonuses.getOrDefault(Gemtype, 0);
+            int bonus = bonuses.getOrDefault(gemType, 0);
 
             // The trueCost cannot go below 0
             int remaining = cost - bonus > 0 ? cost - bonus : 0;
@@ -182,16 +241,16 @@ public class TurnManager{
     public void checkNobleVisitCondition(Player player, Board board) {
         List<Noble> eligibleList = getEligibleNobles(player, board.getNobles());
 
-        if (eligible.size() == 1) {
+        if (eligibleList.size() == 1) {
 
             Noble noble = eligibleList.get(0);
             player.addNoble(noble); // Need to add this into the UML diagram
             board.removeNoble(noble);
-        } else if (eligible.size() > 1) {
+        } else if (eligibleList.size() > 1) {
 
             // since the player has satisfied the conditions of multiple nobles,
             // he needs to select one of the nobles that he satisfied to add to his own
-            Noble noble = inputValidater.selectNoble(eligibleList);
+            Noble noble = view.selectNoble(eligibleList);
             player.addNoble(noble);
             board.removeNoble(noble);
         }
@@ -212,7 +271,7 @@ public class TurnManager{
             
             for (Map.Entry<GemType, Integer> entry : requirements.entrySet()) {
 
-                Gemtype gemType = entry.getKey();
+                GemType gemType = entry.getKey();
                 int requiredValue = entry.getValue();
                 int currentValue = bonuses.getOrDefault(gemType, 0);
 
@@ -249,18 +308,19 @@ public class TurnManager{
         }
     }
 
-    public TurnManager(int playerCount) {
-        this(playerCount, 0);
+    public TurnManager(InputValidator inputValidator, ConsoleManager view, 
+                   WinConditionChecker winConditionChecker,
+                   int playerCount, int firstPlayerIndex) {
+    if (playerCount < 2) {
+        throw new IllegalArgumentException("At least 2 players required");
     }
-
-    public TurnManager(int playerCount, int firstPlayerIndex) {
-        if (playerCount < 2) {
-            throw new IllegalArgumentException("At least 2 players required");
-        }
-        this.playerCount = playerCount;
-        this.firstPlayerIndex = firstPlayerIndex;
-        this.currentPlayerIndex = firstPlayerIndex;
-    }
+    this.inputValidator = inputValidator;
+    this.view = view;
+    this.winConditionChecker = winConditionChecker;
+    this.playerCount = playerCount;
+    this.firstPlayerIndex = firstPlayerIndex;
+    this.currentPlayerIndex = firstPlayerIndex;
+}
 
     public int getPlayerCount() {
         return playerCount;
@@ -274,8 +334,22 @@ public class TurnManager{
         return currentPlayerIndex;
     }
 
-    public int advanceToNextPlayer() {
+    public void advanceToNextPlayer() {
         currentPlayerIndex = (currentPlayerIndex + 1) % playerCount;
-        return currentPlayerIndex;
     }
 }
+
+// public TurnManager(int playerCount) {
+    //     this(playerCount, 0);
+    // }
+
+    // // Look at these two constructors another day
+
+    // public TurnManager(int playerCount, int firstPlayerIndex) {
+    //     if (playerCount < 2) {
+    //         throw new IllegalArgumentException("At least 2 players required");
+    //     }
+    //     this.playerCount = playerCount;
+    //     this.firstPlayerIndex = firstPlayerIndex;
+    //     this.currentPlayerIndex = firstPlayerIndex;
+    // }

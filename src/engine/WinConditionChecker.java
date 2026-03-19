@@ -8,7 +8,7 @@ public class WinConditionChecker {
     private int winningPrestigeRequirement = 15;
 
     // Get the list of current winners
-    public boolean winnerList(ArrayList<Player> players) {
+    public boolean hasWinner(List<Player> players) {
         for (Player player : players) {
             
             if (player.getPrestigePoints() >= winningPrestigeRequirement) {
