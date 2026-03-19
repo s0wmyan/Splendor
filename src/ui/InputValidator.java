@@ -26,6 +26,31 @@ public class InputValidator {
         }
     }
 
+    // Overload with min and max values
+    public int getValidInt(String prompt, int min, int max) {
+        int input = -1;
+        boolean isValid = false;
+
+        while (!isValid) {
+            System.out.print(prompt);
+            String rawInput = scanner.nextLine().trim();
+
+            try {
+                input = Integer.parseInt(rawInput);
+
+                if (input >= min && input <= max) {
+                    isValid = true;
+                } else {
+                    System.out.println(">>> ERROR: Please enter a number between " + min + " and " + max + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println(">>> ERROR: Invalid input. Please enter a valid number.");
+            }
+        }
+
+        return input;
+    }
+
     public String getValidString(String prompt) {
         String input = "";
 
