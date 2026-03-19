@@ -8,42 +8,33 @@ public class InputValidator {
 
     // Constructor
     public InputValidator(Scanner sc) {
-        this.scanner = scanner;
+        this.scanner = sc;
     }
 
-    public int getValidInt(String prompt, int min, int max) {
-        int input = -1;
-        boolean isValid = false;
-
-        while(!isValid) {
-            System.out.print(prompt);
-            String rawInput = scanner.nextLine().trim();
-
+    public int getValidInt() {
+        Scanner scanner = new Scanner(System.in);
+        
+        while (true) {
             try {
-                input = Integer.parseInt(rawInput);
-
-                if (input >= min && input <= max) {
-                    isValid = true;
-                } else {
-                    System.out.println(">>> ERROR: Please enter a number between " + min + " and " + max + ".");
-                }
+                String input = scanner.nextLine();  // read the whole line
+                int value = Integer.parseInt(input.trim()); // try to convert to int
+                return value;
             } catch (NumberFormatException e) {
-                System.out.println(">>> ERROR: Invalid input. Please enter a valid number.");
+                // user typed something that isn't a number
+                System.out.println("ERROR: Invalid input! Please enter a number: ");
             }
         }
-
-        return input;
     }
 
     public String getValidString(String prompt) {
-        string input = "";
+        String input = "";
 
         while(input.isEmpty()) {
             System.out.print(prompt);
             input = scanner.nextLine().trim();
 
             if (input.isEmpty()) {
-                System.out.println(">>> ERROR: Input cannot be empty. Please try again.")
+                System.out.println("ERROR: Input cannot be empty. Please try again.");
             }
         }
 
@@ -53,16 +44,15 @@ public class InputValidator {
     public boolean getConfirmation(String prompt) {
         while (true) {
             System.out.print(prompt + "(y/n): ");
-            String input = scanner.nextLine().trim().toLowercase();
+            String input = scanner.nextLine().trim().toLowerCase();
 
             if (input.equals("y")) {
                 return true;
             } else if (input.equals("n")) {
 
             } else {
-                System.out.println(">>> ERROR: Please enter 'y' for yes or 'n' for no.");
+                System.out.println("ERROR: Please enter 'y' for yes or 'n' for no.");
             }
         }
     }
-
 }
