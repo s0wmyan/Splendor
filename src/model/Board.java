@@ -67,17 +67,17 @@ public class Board {
         }
     }
 
-    private void refillLevel(Deck deck, List<Card> faceUp) {
+    private void refillLevel(Deck deck, List<DevelopmentCard> faceUp) {
         while (faceUp.size() < FACE_UP_PER_LEVEL && !deck.isEmpty()) {
-            Card drawn = deck.draw();
+            DevelopmentCard drawn = deck.draw();
             if (drawn != null) {
                 faceUp.add(drawn);
             }
         }
     }
 
-    public Card takeFaceUpCard(int level, int index) {
-        List<Card> list = switch (level) {
+    public DevelopmentCard takeFaceUpCard(int level, int index) {
+        List<DevelopmentCard> list = switch (level) {
             case 1 -> level1FaceUp;
             case 2 -> level2FaceUp;
             case 3 -> level3FaceUp;
@@ -89,7 +89,7 @@ public class Board {
         return list.remove(index);
     }
 
-    public Card drawFromDeck(int level) {
+    public DevelopmentCard drawFromDeck(int level) {
         return switch (level) {
             case 1 -> level1Deck.isEmpty() ? null : level1Deck.draw();
             case 2 -> level2Deck.isEmpty() ? null : level2Deck.draw();
@@ -107,13 +107,13 @@ public class Board {
         };
     }
 
-    public List<Card> allFaceUpCards() {
+    public List<DevelopmentCard> allFaceUpCards() {
 
-        List<Card> tier1FaceUpCards = getLevel1FaceUp();
-        List<Card> tier2FaceUpCards = getLevel2FaceUp();
-        List<Card> tier3FaceUpCards = getLevel3FaceUp();
+        List<DevelopmentCard> tier1FaceUpCards = getLevel1FaceUp();
+        List<DevelopmentCard> tier2FaceUpCards = getLevel2FaceUp();
+        List<DevelopmentCard> tier3FaceUpCards = getLevel3FaceUp();
 
-        List<Card> allFaceUpCards = new ArrayList<>();
+        List<DevelopmentCard> allFaceUpCards = new ArrayList<>();
 
         allFaceUpCards.addAll(tier1FaceUpCards);
         allFaceUpCards.addAll(tier2FaceUpCards);

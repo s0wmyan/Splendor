@@ -15,9 +15,10 @@ public class GameState {
     private final List<Player> players;
     private TurnManager turnManager;
 
-    public GameState(Board board, List<Player> players) {
+    public GameState(Board board, List<Player> players, TurnManager turnManager) {
         this.board = board;
         this.players = new ArrayList<>(players);
+        this.turnManager = turnManager;
     }
 
     public Board getBoard() {
