@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.smartcardio.Card;
-
 public class Board {
 
     public static final int FACE_UP_PER_LEVEL = 4;
@@ -129,6 +127,10 @@ public class Board {
             case 3 -> level3Deck;
             default -> throw new IllegalArgumentException("Invalid deck: " + deckNo);
         };
+    }
+
+    public int getTokenCount(GemType type){
+        return bank.getTokenCount(type);
     }
 }
 
