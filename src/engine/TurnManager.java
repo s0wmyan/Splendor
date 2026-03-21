@@ -185,7 +185,7 @@ public class TurnManager{
         return true;
     }
 
-    // Produces a map that maps the gems to the real cost, of a single card
+    // Returns a map that maps the gems to the real cost, of a single card
     public Map<GemType, Integer> getTrueCost(Player player, DevelopmentCard card) { // change name to something else
         Map<GemType, Integer> trueCost = new HashMap<>();
         Map<GemType, Integer> bonuses = player.getBonuses();
@@ -306,6 +306,10 @@ public class TurnManager{
 
     public void advanceToNextPlayer() {
         currentPlayerIndex = (currentPlayerIndex + 1) % playerCount;
+    }
+
+    public boolean hasWinner(List<Player> playerList) {
+        return winConditionChecker.hasWinner(playerList);
     }
 }
 
