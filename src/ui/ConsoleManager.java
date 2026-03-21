@@ -34,7 +34,7 @@ public class ConsoleManager {
 
     public void displayBoard(GameState gameState) {
         System.out.println("\n=== CURRENT BOARD STATE ===");
-        System.out.println("Bank Tokens: " + formatTokenMap(gameState.getBoard().getSupplyTokens()));
+        System.out.println("Bank Tokens: " + formatTokenMap(gameState.getBoard().getBank().getTokens()));
         System.out.println("Available Nobles: " + gameState.getBoard().getNobles().size());
         System.out.println("Level 3 Cards: " + gameState.getBoard().getLevel3FaceUp().size() + " visible");
         System.out.println("Level 2 Cards: " + gameState.getBoard().getLevel2FaceUp().size() + " visible");
@@ -81,8 +81,7 @@ public class ConsoleManager {
         for (int i = 0; i < cards.size(); i++) {
             DevelopmentCard card = cards.get(i);
             // Print format: "1. Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE"
-            System.out.println((i + 1) + ". Card ID: " + card.getId() + 
-                               " | Cost: " + formatTokenMap(card.getCost()) + 
+            System.out.println((i + 1) + ". Cost: " + formatTokenMap(card.getCost()) + 
                                " | Gives: " + card.getBonus().name());
         }
 
@@ -105,7 +104,7 @@ public class ConsoleManager {
         for (int i = 0; i < nobleList.size(); i++) {
             Noble noble = nobleList.get(i);
             // Print format: "1. Points: 3 | Requires: RED: 4, WHITE: 4"
-            System.out.println((i + 1) + ". Points: " + noble.getPoints() + 
+            System.out.println((i + 1) + ". Points: " + noble.getPrestigePoints() + 
                                " | Requires: " + formatTokenMap(noble.getCost()));
         }
 
