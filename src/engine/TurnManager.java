@@ -281,16 +281,16 @@ public class TurnManager{
     public TurnManager(InputValidator inputValidator, ConsoleManager view, 
                    WinConditionChecker winConditionChecker,
                    int playerCount, int firstPlayerIndex) {
-    if (playerCount < 2) {
-        throw new IllegalArgumentException("At least 2 players required");
+        if (playerCount < 2) {
+            throw new IllegalArgumentException("At least 2 players required");
+        }
+        this.inputValidator = inputValidator;
+        this.view = view;
+        this.winConditionChecker = winConditionChecker;
+        this.playerCount = playerCount;
+        this.firstPlayerIndex = firstPlayerIndex;
+        this.currentPlayerIndex = firstPlayerIndex;
     }
-    this.inputValidator = inputValidator;
-    this.view = view;
-    this.winConditionChecker = winConditionChecker;
-    this.playerCount = playerCount;
-    this.firstPlayerIndex = firstPlayerIndex;
-    this.currentPlayerIndex = firstPlayerIndex;
-}
 
     public int getPlayerCount() {
         return playerCount;
