@@ -129,43 +129,6 @@ public class TurnManager{
         }
     }
 
-    // ComputerPlayer will choose an action that they can make
-    // public Action promptBotAction(ComputerPlayer computerPlayer) {
-
-    //     // prompts the user for an action input
-    //     System.out.println("Your turn, " + player.getName());
-    //     System.out.println("(1): Take tokens");
-    //     System.out.println("(2): Buy a card");
-    //     System.out.println("(3): Reserve a card");
-    //     System.out.println("");
-    //     System.out.print("Key in an action: ");
-
-    //     // inputValidater calls on getValidInt
-    //     // asking to change this
-    //     int choice = inputValidator.getValidInt(); // has not yet been implemented
-
-    //     switch (choice) {
-    //         // TakeGemAction
-    //         case 1: 
-    //             Map<GemType, Integer> GemTypes = inputValidator.selectGems(gameState.getBoard().getBank());
-    //             return new TakeGemsAction(GemTypes);
-    //         // BuyCardAction takes in a card and from reserved
-    //         case 2: 
-    //             DevelopmentCard buyingCard = inputValidator.selectCard(canBuyCards(player));
-
-    //             // There might be something wrong with buycardaction
-    //             return new BuyCardAction(buyingCard);
-    //         // ReserveCardAction
-    //         case 3:
-    //             DevelopmentCard reservingCard = inputValidator.selectCard(gameState.getBoard().getAllFaceUpCards());
-    //             return new ReserveCardAction(reservingCard);
-    //         // user keys in the wrong input
-    //         default:
-    //             System.out.println("Invalid number/input! Please try again.");
-    //             return promptAction(player);
-    //     }
-    // }
-
     // Produces an List<Card> to show what cards you can afford
     public List<Card> canBuyCards(Player player) {
         List<DevelopmentCard> canBuyList = new ArrayList<>();
@@ -352,4 +315,41 @@ public class TurnManager{
     //     this.playerCount = playerCount;
     //     this.firstPlayerIndex = firstPlayerIndex;
     //     this.currentPlayerIndex = firstPlayerIndex;
+    // }
+
+    // ComputerPlayer will choose an action that they can make
+    // public Action promptBotAction(ComputerPlayer computerPlayer) {
+
+    //     // prompts the user for an action input
+    //     System.out.println("Your turn, " + player.getName());
+    //     System.out.println("(1): Take tokens");
+    //     System.out.println("(2): Buy a card");
+    //     System.out.println("(3): Reserve a card");
+    //     System.out.println("");
+    //     System.out.print("Key in an action: ");
+
+    //     // inputValidater calls on getValidInt
+    //     // asking to change this
+    //     int choice = inputValidator.getValidInt(); // has not yet been implemented
+
+    //     switch (choice) {
+    //         // TakeGemAction
+    //         case 1: 
+    //             Map<GemType, Integer> GemTypes = inputValidator.selectGems(gameState.getBoard().getBank());
+    //             return new TakeGemsAction(GemTypes);
+    //         // BuyCardAction takes in a card and from reserved
+    //         case 2: 
+    //             DevelopmentCard buyingCard = inputValidator.selectCard(canBuyCards(player));
+
+    //             // There might be something wrong with buycardaction
+    //             return new BuyCardAction(buyingCard);
+    //         // ReserveCardAction
+    //         case 3:
+    //             DevelopmentCard reservingCard = inputValidator.selectCard(gameState.getBoard().getAllFaceUpCards());
+    //             return new ReserveCardAction(reservingCard);
+    //         // user keys in the wrong input
+    //         default:
+    //             System.out.println("Invalid number/input! Please try again.");
+    //             return promptAction(player);
+    //     }
     // }
