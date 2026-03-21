@@ -111,11 +111,18 @@ public class TurnManager{
             // BuyCardAction takes in a card and from reserved
             case 2: 
                 // ignore error for now
-                // because board has not been changed to DevelopmentCard
-                DevelopmentCard buyingCard = view.selectCard(canBuyCards(player));
+                // because board has not been changed to 
+                // get the list of buyable cards that the player can buy now
+                List<DevelopmentCard> buyableCards = canBuyCards(player);
 
-                // There might be something wrong with buycardaction
-                return new BuyCardAction(buyingCard);
+                // player now selects the card
+                DevelopmentCard buyingCard = view.selectCard(buyableCards);
+
+                // does the player select a currently reserved card?
+                boolean isReserved = player.getReservedCards().contains(buyingCard);
+
+                // There might be something wrong with buyCardAction
+                return new BuyCardAction(buyingCard, isReserved);
             // ReserveCardAction
             case 3:
                 // ignore error for now
@@ -130,7 +137,7 @@ public class TurnManager{
     }
 
     // Produces an List<Card> to show what cards you can afford
-    public List<Card> canBuyCards(Player player) {
+    public List<DevelopmentCard> canBuyCards(Player player) {
         List<DevelopmentCard> canBuyList = new ArrayList<>();
 
         // board has not been changed to developmentcard
@@ -167,7 +174,7 @@ public class TurnManager{
             int currentlyOwned = gems.getOrDefault(entry.getKey(), 0); 
 
             int moreRequired = required - currentlyOwned;
-            if (moreRequired < 0) {
+            if (moreRequired > 0) {
 
                 if (gems.getOrDefault(GemType.GOLD, 0) < moreRequired) {
                     return false;
