@@ -74,7 +74,7 @@ public class InputValidator {
             if (input.equals("y")) {
                 return true;
             } else if (input.equals("n")) {
-
+                return false;
             } else {
                 System.out.println("ERROR: Please enter 'y' for yes or 'n' for no.");
             }
