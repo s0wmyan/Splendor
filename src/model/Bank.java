@@ -18,8 +18,12 @@ public class Bank {
         if (tokens != null) this.tokens = tokens;
     }
 
+    public Map<GemType, Integer> getTokens() {
+        return tokens;
+    }
+
     public int getTokenCount(GemType type) {
-        return tokens.getOrDefault(type, -1);
+        return tokens.getOrDefault(type, 0);
 
         // returns -1 if not present
     }

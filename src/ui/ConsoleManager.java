@@ -55,6 +55,24 @@ public class ConsoleManager {
         System.out.println("-----------------------------------");
     }
 
+    public int promptForPlayerCount() {
+        return inputValidator.getValidInt("Enter Player Count (2/4) : ", 2, 4);
+    }
+
+    // "name": "dd/mm/yyyy" format 
+    // Can't have the same name, else it will override. 
+    public Map<String, String> promptForPlayerDetails(int playerCount) {
+        Map<String, String> playerDetails = new HashMap<>();
+
+        for (int i = 1; i <= playerCount; i++) {
+            String name = inputValidator.getValidString(String.format("Enter Player %d's name : ", i));
+            String birthday = inputValidator.getValidString(String.format("Enter Player %d's birthday (DD/MM/YYYY) : ", i));
+            playerDetails.put(name, birthday); // cannot be the same name 
+        }
+
+        return playerDetails;
+    }
+
     // utility method to format token maps for clean console printing
     // clean, readable string like "RED: 2, GREEN: 1" instead of raw data
     private String formatTokenMap(Map<GemType, Integer> map) {

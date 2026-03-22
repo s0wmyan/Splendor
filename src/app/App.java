@@ -100,7 +100,7 @@ public class App {
             Birthday playerBirthday = new Birthday(day, month, year);
             // Initialize Player
 
-            players.add(new HumanPlayer(playerName, playerBirthday, cManager));
+            players.add(new HumanPlayer(playerName, playerBirthday));
         }
 
 
@@ -109,14 +109,16 @@ public class App {
         Board board = new Board(buildDeck(1), buildDeck(2), buildDeck(3), buildNobles());
         seedBank(board.getBank(), playerCount);
         board.refillAll();
-        TurnManager turnManager = new TurnManager(playerCount);
+
+        WinConditionChecker winConditionChecker = new WinConditionChecker();
+        int firstPlayerIndex = 1; // => to be defined 
+        TurnManager turnManager = new TurnManager(inputValidator, cManager, winConditionChecker, playerCount, firstPlayerIndex); 
+
         GameState gameState = new GameState(board, players, turnManager);
         Game game = new Game(gameState);
-        game.run();
 
-        // console manager
-        // game state
-        // game
+        // prompt for action until someone wins 
+        game.run();
     
     }
 }

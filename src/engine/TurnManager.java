@@ -30,6 +30,19 @@ public class TurnManager{
     private int currentPlayerIndex;
 
     // missing a constructor 
+    public TurnManager(InputValidator inputValidator, ConsoleManager view, 
+                   WinConditionChecker winConditionChecker,
+                   int playerCount, int firstPlayerIndex) {
+        if (playerCount < 2) {
+            throw new IllegalArgumentException("At least 2 players required");
+        }
+        this.inputValidator = inputValidator;
+        this.view = view;
+        this.winConditionChecker = winConditionChecker;
+        this.playerCount = playerCount;
+        this.firstPlayerIndex = firstPlayerIndex;
+        this.currentPlayerIndex = firstPlayerIndex;
+    }
 
     public void executeTurn(GameState gameState) {
 
@@ -106,7 +119,7 @@ public class TurnManager{
             case 1: 
                 // making changes on their end
                 // getBank() returns bank, not a map
-                Map<GemType, Integer> GemTypes = view.selectGems(gameState.getBoard().getBank());
+                Map<GemType, Integer> GemTypes = view.selectGems(gameState.getBoard().getBank().getTokens());
                 return new TakeGemsAction(GemTypes);
             // BuyCardAction takes in a card and from reserved
             case 2: 
@@ -276,20 +289,6 @@ public class TurnManager{
         while (level3FaceUp.size() < 4 && !board.getDeck(3).isEmpty()) {
             board.refillLevel(3);
         }
-    }
-
-    public TurnManager(InputValidator inputValidator, ConsoleManager view, 
-                   WinConditionChecker winConditionChecker,
-                   int playerCount, int firstPlayerIndex) {
-        if (playerCount < 2) {
-            throw new IllegalArgumentException("At least 2 players required");
-        }
-        this.inputValidator = inputValidator;
-        this.view = view;
-        this.winConditionChecker = winConditionChecker;
-        this.playerCount = playerCount;
-        this.firstPlayerIndex = firstPlayerIndex;
-        this.currentPlayerIndex = firstPlayerIndex;
     }
 
     public int getPlayerCount() {

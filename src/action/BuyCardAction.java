@@ -15,7 +15,7 @@ public class BuyCardAction implements Action {
     }
 
     public boolean validate(GameState state, Board board) {
-        Player player = state.getPlayer();
+        Player player = state.getCurrentPlayer(); // not getPlayer()
 
         if (isReserved) {
             if (!player.getReservedCards().contains(card)) {
@@ -51,7 +51,7 @@ public class BuyCardAction implements Action {
     }
 
     public void apply(GameState state, Board board) {
-        Player player = state.getPlayer();
+        Player player = state.getCurrentPlayer();
 
         for (Map.Entry<GemType, Integer> entry : card.getCost().entrySet()) {
             GemType requiredToken = entry.getKey();
@@ -70,10 +70,10 @@ public class BuyCardAction implements Action {
                 
                 int goldNeeded = remainingCost - tokensToSpend;
                 if (goldNeeded > 0) {
-                    int goldOwned = player.getWallet().get(GemType.YELLOW);
-                    player.getWallet().put(GemType.YELLOW, goldOwned - goldNeeded);
+                    int goldOwned = player.getTokens().get(GemType.GOLD);
+                    player.getTokens().put(GemType.GOLD, goldOwned - goldNeeded);
                     
-                    board.getBank().addTokenCount(GemType.YELLOW, goldNeeded);
+                    board.getBank().addTokenCount(GemType.GOLD, goldNeeded);
                 }
             }
             
@@ -85,13 +85,14 @@ public class BuyCardAction implements Action {
         } else {
             int level = card.getLevel();
             if (board.hasCardsInDeck(level)) {
-                refillLevel(level);
+                board.refillLevel(level);
             }
         }
 
     }
 
-    private static boolean canAfford(Player player) {
+    // no static 
+    private boolean canAfford(Player player) {
         
         int goldNeeded = 0;
         Map<GemType, Integer> cardCost = card.getCost();
@@ -106,91 +107,94 @@ public class BuyCardAction implements Action {
                 continue; 
             }
 
-            int tokensOwned = player.getTokens.get(requiredToken);
+            int tokensOwned = player.getTokens().get(requiredToken);
             if (tokensOwned < remainingCost) {
                 goldNeeded += (remainingCost - tokensOwned);
             }
         }
 
-        return player.getTokens.get(GemType.YELLOW) >= goldNeeded;
+        return player.getTokens().get(GemType.GOLD) >= goldNeeded;
     }
-}
 
-    /**
-     * Attempts to execute the "Buy 1 Card" action.
-     * Returns true if successful, false if illegal.
-     */
-    private boolean attemptBuyCard(Player player, DevelopmentCard targetCard, boolean isReserved) {
-        // 0. The Location Gatekeeper: Does this card actually exist where they claim it does?
-        if (isReserved) {
-            if (!player.getReservedCards().contains(targetCard)) {
-                System.out.println("Security Error: This card is not in your reserved hand.");
-                return false;
-            }
-        } else {
-            int level = targetCard.getLevel();
-            if (!this.board.getFaceUpCards().get(level).contains(targetCard)) {
-                System.out.println("Security Error: This card is not currently face-up on the board.");
-                return false;
-            }
-        }
+    // ? 
+
+    // /**
+    //  * Attempts to execute the "Buy 1 Card" action.
+    //  * Returns true if successful, false if illegal.
+    //  */
+    // private boolean attemptBuyCard(Player player, DevelopmentCard targetCard, boolean isReserved) {
+    //     // 0. The Location Gatekeeper: Does this card actually exist where they claim it does?
+    //     if (isReserved) {
+    //         if (!player.getReservedCards().contains(targetCard)) {
+    //             System.out.println("Security Error: This card is not in your reserved hand.");
+    //             return false;
+    //         }
+    //     } else {
+    //         int level = targetCard.getLevel();
+    //         // there is no this.board. 
+    //         if (!this.board.getFaceUpCards().get(level).contains(targetCard)) {
+    //             System.out.println("Security Error: This card is not currently face-up on the board.");
+    //             return false;
+    //         }
+    //     }
         
-        // 1. The Gatekeeper: Can they actually afford it?
-        if (!player.canAfford(targetCard)) {
-            System.out.println("Invalid move: You do not have enough tokens/bonuses to afford this card.");
-            return false;
-        }
+    //     // 1. The Gatekeeper: Can they actually afford it?
+    //     if (!player.canAfford(targetCard.getCost())) {
+    //         System.out.println("Invalid move: You do not have enough tokens/bonuses to afford this card.");
+    //         return false;
+    //     }
 
-        // 2. The Payment Algorithm (Deducting from Player, Returning to Bank)
-        for (Map.Entry<GemType, Integer> entry : targetCard.getCost().entrySet()) {
-            GemType requiredToken = entry.getKey();
-            int requiredAmount = entry.getValue();
+    //     // 2. The Payment Algorithm (Deducting from Player, Returning to Bank)
+    //     for (Map.Entry<GemType, Integer> entry : targetCard.getCost().entrySet()) {
+    //         GemType requiredToken = entry.getKey();
+    //         int requiredAmount = entry.getValue();
 
-            // Apply the discount!
-            int bonus = player.calculateBonus(requiredToken);
-            int remainingCost = requiredAmount - bonus;
+    //         // Apply the discount!
+    //         int bonus = player.getBonus(requiredToken);
+    //         int remainingCost = requiredAmount - bonus;
 
-            if (remainingCost > 0) {
-                int tokensOwned = player.getWallet().get(requiredToken);
+    //         if (remainingCost > 0) {
+    //             int tokensOwned = player.getTokens().get(requiredToken);
                 
-                // Prioritize standard gems
-                int tokensToSpend = Math.min(remainingCost, tokensOwned);
-                player.getWallet().put(requiredToken, tokensOwned - tokensToSpend);
+    //             // Prioritize standard gems
+    //             int tokensToSpend = Math.min(remainingCost, tokensOwned);
+    //             player.getTokens().put(requiredToken, tokensOwned - tokensToSpend);
                 
-                // Return spent gems to the Board's bank
-                int bankGems = this.board.getBank().get(requiredToken);
-                this.board.getBank().put(requiredToken, bankGems + tokensToSpend);
+    //             // Return spent gems to the Board's bank
+    //             int bankGems = this.board.getBank().get(requiredToken);
+    //             this.board.getBank().put(requiredToken, bankGems + tokensToSpend);
                 
-                // Handle the Gold shortfall
-                int goldNeeded = remainingCost - tokensToSpend;
-                if (goldNeeded > 0) {
-                    int goldOwned = player.getWallet().get(GemType.GOLD);
-                    player.getWallet().put(GemType.GOLD, goldOwned - goldNeeded);
+    //             // Handle the Gold shortfall
+    //             int goldNeeded = remainingCost - tokensToSpend;
+    //             if (goldNeeded > 0) {
+    //                 int goldOwned = player.getTokens().get(GemType.GOLD);
+    //                 player.getTokens().put(GemType.GOLD, goldOwned - goldNeeded);
                     
-                    // Return spent Gold to the Board's bank
-                    int bankGold = this.board.getBank().get(GemType.GOLD);
-                    this.board.getBank().put(GemType.GOLD, bankGold + goldNeeded);
-                }
-            }
-        }
+    //                 // Return spent Gold to the Board's bank
+    //                 int bankGold = this.board.getBank().get(GemType.GOLD);
+    //                 this.board.getBank().put(GemType.GOLD, bankGold + goldNeeded);
+    //             }
+    //         }
+    //     }
 
-        // 3. Transfer the card to the player's purchased list
-        player.getPurchasedCards().add(targetCard);
+    //     // 3. Transfer the card to the player's purchased list
+    //     player.getPurchasedCards().add(targetCard);
 
-        // 4. Remove the card from its original location
-        if (isReserved) {
-            player.getReservedCards().remove(targetCard);
-        } else {
-            int level = targetCard.getLevel();
-            this.board.getFaceUpCards().get(level).remove(targetCard);
+    //     // 4. Remove the card from its original location
+    //     if (isReserved) {
+    //         player.getReservedCards().remove(targetCard);
+    //     } else {
+    //         int level = targetCard.getLevel();
+    //         this.board.getFaceUpCards().get(level).remove(targetCard);
             
-            // Refill the empty spot on the board if deck has cards left
-            List<Card> deck = this.board.getDecks().get(level);
-            if (!deck.isEmpty()) {
-                this.board.getFaceUpCards().get(level).add(deck.remove(0));
-            }
-        }
+    //         // Refill the empty spot on the board if deck has cards left
+    //         List<DevelopmentCard> deck = this.board.getDecks().get(level);
+    //         if (!deck.isEmpty()) {
+    //             this.board.getFaceUpCards().get(level).add(deck.remove(0));
+    //         }
+    //     }
 
-        System.out.println("Card purchased successfully!");
-        return true;
-    }
+    //     System.out.println("Card purchased successfully!");
+    //     return true;
+    // }
+}

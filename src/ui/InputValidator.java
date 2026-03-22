@@ -12,7 +12,6 @@ public class InputValidator {
     }
 
     public int getValidInt() {
-        Scanner scanner = new Scanner(System.in);
         
         while (true) {
             try {
