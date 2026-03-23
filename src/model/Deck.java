@@ -33,7 +33,7 @@ public class Deck {
         Collections.shuffle(cards);
     }
 
-    public DevelopmentCard drawCard() {
+    public DevelopmentCard draw() {
         // draws from the deck 
         return cards.remove(cards.size() - 1); // remove from the end
     }

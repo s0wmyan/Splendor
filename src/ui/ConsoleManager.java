@@ -34,7 +34,7 @@ public class ConsoleManager {
 
     public void displayBoard(GameState gameState) {
         System.out.println("\n=== CURRENT BOARD STATE ===");
-        System.out.println("Bank Tokens: " + formatTokenMap(gameState.getBoard().getSupplyTokens()));
+        System.out.println("Bank Tokens: " + formatTokenMap(gameState.getBoard().getBank().getTokens()));
         System.out.println("Available Nobles: " + gameState.getBoard().getNobles().size());
         System.out.println("Level 3 Cards: " + gameState.getBoard().getLevel3FaceUp().size() + " visible");
         System.out.println("Level 2 Cards: " + gameState.getBoard().getLevel2FaceUp().size() + " visible");
@@ -53,6 +53,24 @@ public class ConsoleManager {
         System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3");
         System.out.println("Permanent Bonuses: " + formatTokenMap(player.getBonuses()));
         System.out.println("-----------------------------------");
+    }
+
+    public int promptForPlayerCount() {
+        return inputValidator.getValidInt("Enter Player Count (2/4) : ", 2, 4);
+    }
+
+    // "name": "dd/mm/yyyy" format 
+    // Can't have the same name, else it will override. 
+    public Map<String, String> promptForPlayerDetails(int playerCount) {
+        Map<String, String> playerDetails = new HashMap<>();
+
+        for (int i = 1; i <= playerCount; i++) {
+            String name = inputValidator.getValidString(String.format("Enter Player %d's name : ", i));
+            String birthday = inputValidator.getValidString(String.format("Enter Player %d's birthday (DD/MM/YYYY) : ", i));
+            playerDetails.put(name, birthday); // cannot be the same name 
+        }
+
+        return playerDetails;
     }
 
     // utility method to format token maps for clean console printing
@@ -81,8 +99,7 @@ public class ConsoleManager {
         for (int i = 0; i < cards.size(); i++) {
             DevelopmentCard card = cards.get(i);
             // Print format: "1. Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE"
-            System.out.println((i + 1) + ". Card ID: " + card.getId() + 
-                               " | Cost: " + formatTokenMap(card.getCost()) + 
+            System.out.println((i + 1) + ". Cost: " + formatTokenMap(card.getCost()) + 
                                " | Gives: " + card.getBonus().name());
         }
 
@@ -105,7 +122,7 @@ public class ConsoleManager {
         for (int i = 0; i < nobleList.size(); i++) {
             Noble noble = nobleList.get(i);
             // Print format: "1. Points: 3 | Requires: RED: 4, WHITE: 4"
-            System.out.println((i + 1) + ". Points: " + noble.getPoints() + 
+            System.out.println((i + 1) + ". Points: " + noble.getPrestigePoints() + 
                                " | Requires: " + formatTokenMap(noble.getCost()));
         }
 

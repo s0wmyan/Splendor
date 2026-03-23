@@ -49,7 +49,7 @@ public class ComputerPlayer extends Player {
         int gemsTaken = 0; // tracker
         for (GemType gem : availableStandardGems) { // loop through newly shuffled list
             // if bank has more than 0, computer takes one
-            if (board.getSupplyTokens().getTokenCount(gem) > 0) { 
+            if (board.getBank().getTokenCount(gem) > 0) { 
                 gemsToTake.put(gem, 1); // record that we took one
                 gemsTaken++; // increase counter
             }
@@ -59,6 +59,6 @@ public class ComputerPlayer extends Player {
         }
 
         // take gems chosen
-        return new TakeGemAction(gemsToTake);
+        return new TakeGemsAction(gemsToTake);
     }
 }

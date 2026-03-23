@@ -21,7 +21,9 @@ public class Game {
 
     public Game(GameState state) {
         this.state = state;
-        this.turnManager = new TurnManager();
+        // this.turnManager = new TurnManager(); => turn manager now under game state
+        // game instantiates turn manager? 
+        
         // this.validator = new ActionValidator();
         // this.executor = new ActionExecutor();
         // this.endGameManager = new EndGameManager();
