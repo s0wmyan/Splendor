@@ -1,20 +1,15 @@
 package engine;
 
-import java.util.*;
-
-import javax.smartcardio.Card;
 import action.*;
-// import action.TakeGemsAction;
-// import action.BuyCardAction;    
-// import action.ReserveCardAction;
 import game.GameState;
+import java.util.*;
 import model.Board;
+import model.ComputerPlayer;
+import model.DevelopmentCard;
 import model.GemType;
 import model.Noble;
 import model.Player;
-import model.DevelopmentCard;
-import model.ComputerPlayer; // code has not been written for ComputerPlayer
-import ui.*;
+import ui.*; // code has not been written for ComputerPlayer
 
 
 
@@ -130,6 +125,11 @@ public class TurnManager{
 
                 // player now selects the card
                 DevelopmentCard buyingCard = view.selectCard(buyableCards);
+
+                if (buyingCard == null) {
+                    System.out.println("No Card has been selected. Please choose another action.");
+                    return promptAction(player);
+                }
 
                 // does the player select a currently reserved card?
                 boolean isReserved = player.getReservedCards().contains(buyingCard);
