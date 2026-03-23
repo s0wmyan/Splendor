@@ -67,9 +67,9 @@ public class TurnManager{
         Board board = gameState.getBoard();
 
         // Check if the action is legal
-        // if (!action.validate(gameState, board)) {
-        //     System.out.println("Invalid action!");
-        // }   
+        if (!action.validate(gameState, board)) {
+            System.out.println("Invalid action!");
+        }   
 
         // action.apply(gameState, board); // no need to validate again 
 
