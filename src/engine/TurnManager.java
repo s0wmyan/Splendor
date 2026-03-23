@@ -13,7 +13,7 @@ import model.GemType;
 import model.Noble;
 import model.Player;
 import model.DevelopmentCard;
-import model.ComputerPlayer; // code has not been written for ComputerPlayer
+import model.ComputerPlayer; 
 import ui.*;
 
 
