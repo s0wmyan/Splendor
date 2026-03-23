@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import game.engine.TurnManager;
 import model.Bank;
 import model.Board;
 import model.Player;
