@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class Board {
 
@@ -131,6 +132,10 @@ public class Board {
 
     public int getTokenCount(GemType type){
         return bank.getTokenCount(type);
+    }
+
+    public Map<GemType, Integer> getTokens(){
+        return bank.getTokens();
     }
 }
 

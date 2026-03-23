@@ -14,7 +14,12 @@ public class BuyCardAction implements Action {
         this.isReserved = isReserved;
     }
 
-    public boolean validate(GameState state, Board board) {
+    public boolean validate(GameState state) {
+        if (card.equals(null)) {
+            return false
+        }
+        
+        Board board = state.getBoard();
         Player player = state.getCurrentPlayer(); // not getPlayer()
 
         if (isReserved) {
@@ -50,7 +55,8 @@ public class BuyCardAction implements Action {
         return canAfford(player);
     }
 
-    public void apply(GameState state, Board board) {
+    public void apply(GameState state) {
+        Board board = state.getBoard();
         Player player = state.getCurrentPlayer();
 
         for (Map.Entry<GemType, Integer> entry : card.getCost().entrySet()) {
