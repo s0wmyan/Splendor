@@ -105,12 +105,14 @@ public class TurnManager{
     public Action promptHumanAction(Player player) {
 
         // prompts the user for an action input
+        System.out.println("-----------------------------------");
         System.out.println("Your turn, " + player.getName());
         System.out.println("(1): Take tokens");
         System.out.println("(2): Buy a card");
         System.out.println("(3): Reserve a card");
         System.out.println("");
         System.out.print("Key in an action: ");
+        System.out.println("-----------------------------------");
 
         // inputValidater calls on getValidInt
         int choice = inputValidator.getValidInt();
