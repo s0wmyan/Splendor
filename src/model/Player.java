@@ -140,4 +140,9 @@ public abstract class Player {
             this.tokens.put(gem, this.tokens.get(gem) - amountToSpend);
         }
     }
+
+    // toString() 
+    public String toString() {
+        return "Name: " + name + ", Birthday: " + birthday.toString();
+    }
 }
