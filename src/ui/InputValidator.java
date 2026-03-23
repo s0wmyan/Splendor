@@ -1,6 +1,6 @@
 package ui;
 
-import java.util.*;
+import java.util.Scanner;
 
 // Handles console input to ensure app doesnt crash from invalid user data 
 public class InputValidator {

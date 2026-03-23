@@ -36,4 +36,10 @@ public class DevelopmentCard {
     // public int getID() {
     //     return this.id;
     // }
+
+    public boolean isValid() {
+        return (level >= 1 && level <= 3) && 
+               (bonus != null) && 
+               (cost != null && !cost.isEmpty());
+    }
 }

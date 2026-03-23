@@ -1,20 +1,23 @@
 package engine;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import javax.smartcardio.Card;
-import action.*;
-// import action.TakeGemsAction;
-// import action.BuyCardAction;    
-// import action.ReserveCardAction;
+import action.Action;
+import action.BuyCardAction;
+import action.ReserveCardAction;
+import action.TakeGemsAction;
 import game.GameState;
-import model.Board;
+import model.Board; // code has not been written for ComputerPlayer
+import model.ComputerPlayer;
+import model.DevelopmentCard;
 import model.GemType;
 import model.Noble;
 import model.Player;
-import model.DevelopmentCard;
-import model.ComputerPlayer; // code has not been written for ComputerPlayer
-import ui.*;
+import ui.ConsoleManager;
+import ui.InputValidator;
 
 
 
@@ -74,19 +77,20 @@ public class TurnManager{
         // Check if the action is legal
         if (!action.validate(gameState, board)) {
             System.out.println("Invalid action!");
-        }    
+        } else {
 
         // if the action is valid, apply the action to the gameState
-        action.apply(gameState, board);
+            action.apply(gameState, board);
 
-        // call the checkNobleVisitCondition method to see if got lucky noble visit
-        checkNobleVisitCondition(player, board);
-        
-        // Now that the player has taken action, you need to fill up the board (provided the player has a taken a card from the board)
-        refillBoard(board);
+            // call the checkNobleVisitCondition method to see if got lucky noble visit
+            checkNobleVisitCondition(player, board);
+            
+            // Now that the player has taken action, you need to fill up the board (provided the player has a taken a card from the board)
+            refillBoard(board);
 
-        // get the next player 
-        advanceToNextPlayer();
+            // get the next player 
+            advanceToNextPlayer();
+        }
     }
 
     // settled

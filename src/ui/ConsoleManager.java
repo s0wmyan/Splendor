@@ -1,9 +1,14 @@
 package ui;
 
-import action.*;
-import game.*;
-import model.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import game.GameState;
+import model.DevelopmentCard;
+import model.GemType;
+import model.Noble;
+import model.Player;
 
 public class ConsoleManager {
     private InputValidator inputValidator;
@@ -171,7 +176,8 @@ public class ConsoleManager {
             
             // check if valid: bank has more than enough
             if (bankSupply.getOrDefault(selectedType, 0) - chosenGems.get(selectedType) > 0) {
-                chosenGems.put(selectedType, chosenGems.get(selectedType) + 1); // add 1 to player
+                // chosenGems.put(selectedType, chosenGems.get(selectedType) + 1); // add 1 to player
+                chosenGems.put(selectedType, chosenGems.getOrDefault(selectedType, 0) + 1);
                 gemsTaken++; // increase counter
                 System.out.println("Added 1 " + selectedType.name() + " to your hand.");
             } else {

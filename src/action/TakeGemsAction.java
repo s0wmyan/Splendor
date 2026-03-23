@@ -1,8 +1,12 @@
 package action;
 
-import java.util.*;
-import game.*;
-import model.*;
+import java.util.Map;
+
+import game.GameState;
+import model.Bank;
+import model.Board;
+import model.GemType;
+import model.Player;
 
 public class TakeGemsAction implements Action {
     private Map<GemType,Integer> selections;
@@ -14,7 +18,7 @@ public class TakeGemsAction implements Action {
     public boolean validate(GameState state, Board board) {
         Bank bank = state.getBank();
 
-        if (selections.containsKey(GemType.GOLD)) {
+        if (selections.getOrDefault(GemType.GOLD, 0) > 0) {
             return false;
         }
 
@@ -28,21 +32,45 @@ public class TakeGemsAction implements Action {
             return true;
         }
 
-        if (selections.size() == 3) {
-            for (GemType type : selections.keySet()) {
-                int count = selections.get(type);
-                if (count != 1) {
-                    return false;
-                }
-                int bankStock = bank.getTokenCount(type);
-                if (bankStock < 1) {
-                    return false;
-                }
+        int total = 0;
+        int distinct = selections.size();
+
+        for (int count : selections.values()) {
+            total += count;
+        }
+
+        // Case 1: 3 different gems
+        if (total == 3 && distinct == 3) {
+            for (int count : selections.values()) {
+                if (count != 1) return false;
             }
             return true;
         }
 
+        // Case 2: 2 same gems
+        if (total == 2 && distinct == 1) {
+            for (int count : selections.values()) {
+                if (count == 2) return true;
+            }
+        }
+            
         return false;
+
+        // if (selections.size() == 3) {
+        //     for (GemType type : selections.keySet()) {
+        //         int count = selections.get(type);
+        //         if (count != 1) {
+        //             return false;
+        //         }
+        //         int bankStock = bank.getTokenCount(type);
+        //         if (bankStock < 1) {
+        //             return false;
+        //         }
+        //     }
+        //     return true;
+        // }
+
+        // return false;
     }
 
     public void apply(GameState state, Board board) {

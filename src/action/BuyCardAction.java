@@ -1,8 +1,12 @@
 package action;
 
-import model.*;
-import game.*;
-import java.util.*;
+import java.util.Map;
+
+import game.GameState;
+import model.Board;
+import model.DevelopmentCard;
+import model.GemType;
+import model.Player;
 
 
 public class BuyCardAction implements Action {
@@ -16,6 +20,8 @@ public class BuyCardAction implements Action {
 
     public boolean validate(GameState state, Board board) {
         Player player = state.getCurrentPlayer(); // not getPlayer()
+
+        if (!card.isValid()) return false;
 
         if (isReserved) {
             if (!player.getReservedCards().contains(card)) {
