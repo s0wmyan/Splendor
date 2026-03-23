@@ -21,8 +21,7 @@ public class ReserveCardAction implements Action {
         this.fromDeck = true;
     }
 
-    public boolean validate(GameState state) {
-        Board board = state.getBoard();
+    public boolean validate(GameState state, Board board) {
         Player player = state.getCurrentPlayer();
         
         if (player.getReservedCards().size() >= 3) {
@@ -61,8 +60,7 @@ public class ReserveCardAction implements Action {
     }
 
 
-    public void apply(GameState state) {
-        Board board = state.getBoard();
+    public void apply(GameState state, Board board) {
         Player player = state.getCurrentPlayer();
 
         if (fromDeck) {

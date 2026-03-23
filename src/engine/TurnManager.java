@@ -72,8 +72,9 @@ public class TurnManager{
         Board board = gameState.getBoard();
 
         // Check if the action is legal
-        if (!action.validate(gameState, board)) {
+        while (!action.validate(gameState, board)) {
             System.out.println("Invalid action!");
+            action = promptAction(player);
         }    
 
         // if the action is valid, apply the action to the gameState
@@ -104,12 +105,14 @@ public class TurnManager{
     public Action promptHumanAction(Player player) {
 
         // prompts the user for an action input
+        System.out.println("-----------------------------------");
         System.out.println("Your turn, " + player.getName());
         System.out.println("(1): Take tokens");
         System.out.println("(2): Buy a card");
         System.out.println("(3): Reserve a card");
         System.out.println("");
         System.out.print("Key in an action: ");
+        System.out.println("-----------------------------------");
 
         // inputValidater calls on getValidInt
         int choice = inputValidator.getValidInt();

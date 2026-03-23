@@ -6,7 +6,7 @@ import java.util.Map;
 // no OOB, invalid input logic 
 public class Bank {
     private Map<GemType, Integer> tokens = new EnumMap<>(GemType.class);
-    
+
     public Bank() {
         for (GemType type : GemType.values()) {
             tokens.put(type, 0);
@@ -18,8 +18,8 @@ public class Bank {
         if (tokens != null) this.tokens = tokens;
     }
 
-    public Map<GemType, Integer> getTokens(){
-        return this.tokens;
+    public Map<GemType, Integer> getTokens() {
+        return tokens;
     }
 
     public int getTokenCount(GemType type) {
