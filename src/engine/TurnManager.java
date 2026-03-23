@@ -52,32 +52,28 @@ public class TurnManager{
         // }
 
         // get player
-        // Player player = gameState.getPlayers().get(currentPlayerIndex); // replace
-        Player player = gameState.getCurrentPlayer();
-
+        Player player = gameState.getPlayers().get(currentPlayerIndex);
 
         // display current board layout
-        view.displayGame(gameState);
+        view.displayBoard(gameState);
 
         // display hand
-        // view.displayHand(player);
-
-        // display player
-        view.displayPlayerStatus(player); // includes hand too
-
-        // get action from player
-        Action action = promptAction(player); 
+        view.displayHand(player);
 
         // get board
         Board board = gameState.getBoard();
 
         // Check if the action is legal
-        if (!action.validate(gameState)) {
-            System.out.println("Invalid action!");
-        }    
+        Action action;
+        do {
+            action = promptAction(player);
+            if (!action.validate(gameState, board)) {
+                System.out.println("Invalid action! Please try again.");
+            }
+        } while (!action.validate(gameState, board))
 
         // if the action is valid, apply the action to the gameState
-        action.apply(gameState);
+        action.apply(gameState, board);
 
         // call the checkNobleVisitCondition method to see if got lucky noble visit
         checkNobleVisitCondition(player, board);
@@ -157,7 +153,6 @@ public class TurnManager{
         // board has not been changed to developmentcard
         // ignore this error
         List<DevelopmentCard> allFaceUpCards = gameState.getBoard().allFaceUpCards();
-        // System.out.println(allFaceUpCards); // not empty
 
         // Loop through all the cards that are faceup right now on the board
         for (DevelopmentCard card: allFaceUpCards) {
