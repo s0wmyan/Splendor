@@ -68,7 +68,7 @@ public class Board {
 
     private void refillLevel(Deck deck, List<DevelopmentCard> faceUp) {
         while (faceUp.size() < FACE_UP_PER_LEVEL && !deck.isEmpty()) {
-            DevelopmentCard drawn = deck.drawCard();
+            DevelopmentCard drawn = deck.draw();
             if (drawn != null) {
                 faceUp.add(drawn);
             }
@@ -90,9 +90,9 @@ public class Board {
 
     public DevelopmentCard drawFromDeck(int level) {
         return switch (level) {
-            case 1 -> level1Deck.isEmpty() ? null : level1Deck.drawCard();
-            case 2 -> level2Deck.isEmpty() ? null : level2Deck.drawCard();
-            case 3 -> level3Deck.isEmpty() ? null : level3Deck.drawCard();
+            case 1 -> level1Deck.isEmpty() ? null : level1Deck.draw();
+            case 2 -> level2Deck.isEmpty() ? null : level2Deck.draw();
+            case 3 -> level3Deck.isEmpty() ? null : level3Deck.draw();
             default -> throw new IllegalArgumentException("Invalid level: " + level);
         };
     }
