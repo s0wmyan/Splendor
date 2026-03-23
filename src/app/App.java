@@ -87,9 +87,13 @@ public class App {
             // initialize players -> initialize board -> initialize game state 
 
         int playerCount = cManager.promptForPlayerCount();
+
+        System.out.println("No. of Players: " + playerCount);
         Map<String, String> playerDetails = cManager.promptForPlayerDetails(playerCount);
 
         List<Player> players = new ArrayList<>();
+        int index = 1;
+
         for (Map.Entry<String, String> entry : playerDetails.entrySet()) {
             String playerName = entry.getKey();
             String playerBirthdayString = entry.getValue(); // parse birthday  (DD/MM/YYYY)
@@ -99,8 +103,10 @@ public class App {
 
             Birthday playerBirthday = new Birthday(day, month, year);
             // Initialize Player
+            Player player = new HumanPlayer(playerName, playerBirthday);
+            players.add(player);
 
-            players.add(new HumanPlayer(playerName, playerBirthday));
+            System.out.println("Player " + index++ + " - " + player.toString());
         }
 
 
@@ -114,11 +120,12 @@ public class App {
         int firstPlayerIndex = 1; // => to be defined 
         TurnManager turnManager = new TurnManager(inputValidator, cManager, winConditionChecker, playerCount, firstPlayerIndex); 
 
-        GameState gameState = new GameState(board, players, turnManager);
-        Game game = new Game(gameState);
+        GameState gameState = new GameState(board, players);
+        Game game = new Game(gameState, turnManager);
 
         // prompt for action until someone wins 
-        game.run();
+        System.out.println("Game is Starting !");
+        game.run(); // => needs to be done. 
     
     }
 }

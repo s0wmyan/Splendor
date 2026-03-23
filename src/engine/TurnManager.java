@@ -300,11 +300,13 @@ public class TurnManager{
     }
 
     public int getCurrentPlayerIndex() {
-        return currentPlayerIndex;
+        return gameState.getCurrentPlayerIndex();
+        // return currentPlayerIndex;
     }
 
     public void advanceToNextPlayer() {
-        currentPlayerIndex = (currentPlayerIndex + 1) % playerCount;
+        // currentPlayerIndex = (currentPlayerIndex + 1) % playerCount;
+        gameState.setPlayerIndex((gameState.getCurrentPlayerIndex() + 1) % playerCount);
     }
 
     public boolean hasWinner(List<Player> playerList) {
