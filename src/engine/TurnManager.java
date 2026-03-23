@@ -127,7 +127,7 @@ public class TurnManager{
                 DevelopmentCard buyingCard = view.selectCard(buyableCards);
 
                 if (buyingCard == null) {
-                    System.out.println("No Card has been selected. Please choose another action.");
+                    System.out.println("No Card has been selected. Please choose another action.\n\n");
                     return promptAction(player);
                 }
 
