@@ -133,8 +133,7 @@ public class ConsoleManager {
 
     // Prompts the user to select up to 3 gems from the bank
     public Map<GemType, Integer> selectGems(Map<GemType, Integer> bankSupply) {
-        // create a map to store the result
-        Map<GemType, Integer> chosenGems = new java.util.HashMap<>();
+        Map<GemType, Integer> chosenGems = new HashMap<>();
         for (GemType type : GemType.values()) {
             chosenGems.put(type, 0); // fill with 0 to prevent errors
         }
@@ -144,43 +143,103 @@ public class ConsoleManager {
         System.out.println("Available in Bank: " + formatTokenMap(bankSupply));
         System.out.println("Note: You can take 3 different tokens, or 2 of the same (if the bank has at least 4).");
 
-        // ask for 3 gems
-        int gemsTaken = 0; // tracker
-        // keep asking them to take a gem until they hit 3
-        while (gemsTaken < 3) {
-            System.out.println("\nSelect gem #" + (gemsTaken + 1) + " (or type 0 to stop taking gems):");
+        int gemCount = 0;
+        Map<GemType, Integer> gemsTaken = new HashMap<>();
+        gemCount = 0;
+        while (gemCount < 3) {
+            System.out.println("\nSelect gem #" + (gemCount + 1) + ":");
             
             // numbered menu for the standard gems
             List<GemType> standardGems = GemType.getStandardGems();
             for (int i = 0; i < standardGems.size(); i++) {
                 System.out.println((i + 1) + ". " + standardGems.get(i).name());
             }
-            System.out.println("0. Finish taking gems early");
+            int choice = inputValidator.getValidInt("Your choice: ", 1, standardGems.size());
+            GemType gemSelected = standardGems.get(choice - 1);
 
-            // get their choice from 0 to 5
-            int choice = inputValidator.getValidInt("Your choice: ", 0, standardGems.size());
-            
-            // if user wants to stop picking gems
-            if (choice == 0) {
-                break;
+            // first check: bank supply enough? 
+            if (bankSupply.get(gemSelected) <  gemsTaken.getOrDefault(gemSelected, 0) + 1) {
+                System.out.println("Invalid Move: The bank does not have enough of that gem left!");
+                System.out.println();
             }
-            
-            // convert their menu choice back to the actual GemType
-            // eg if red,blue,white, 1 gets red (0 index)
-            GemType selectedType = standardGems.get(choice - 1);
-            
-            // check if valid: bank has more than enough
-            if (bankSupply.getOrDefault(selectedType, 0) - chosenGems.get(selectedType) > 0) {
-                chosenGems.put(selectedType, chosenGems.get(selectedType) + 1); // add 1 to player
-                gemsTaken++; // increase counter
-                System.out.println("Added 1 " + selectedType.name() + " to your hand.");
-            } else {
-                // out of that colour, pick again
-                displayError("The bank does not have enough of that gem left!");
+
+            // second check: if player takes 3 tokens, with two of the same kind. 
+            if (gemsTaken.containsKey(gemSelected)) {
+                // selected before, will be 2
+                if (gemCount == 2) {
+                    System.out.println("Invalid Move: You can take 3 different tokens, or 2 of the same (if the bank has at least 4)");
+                    continue; 
+                } else {
+                    gemsTaken.put(gemSelected, gemsTaken.get(gemSelected) + 1);
+                    System.out.println("Added 1 " + gemSelected.name() + " to your hand.");
+                    break; // exit (2 is enough - time to check the move)
+                }
             }
-        }
+
+
+            gemsTaken.put(gemSelected, 1);
+            System.out.println("Added 1 " + gemSelected.name() + " to your hand.");
+            gemCount++;
+        }    
         
-        // result
-        return chosenGems;
+        return gemsTaken; // app will check if it is valid? 
     }
 }
+
+
+        // flow
+
+        // get choice -> add token to map  -> if it contains 
+
+    // // Prompts the user to select up to 3 gems from the bank
+    // public Map<GemType, Integer> selectGems(Map<GemType, Integer> bankSupply) {
+    //     // create a map to store the result
+    //     Map<GemType, Integer> chosenGems = new HashMap<>();
+    //     for (GemType type : GemType.values()) {
+    //         chosenGems.put(type, 0); // fill with 0 to prevent errors
+    //     }
+
+    //     // show user what the bank has in stock
+    //     System.out.println("\n--- Select Gems ---");
+    //     System.out.println("Available in Bank: " + formatTokenMap(bankSupply));
+    //     System.out.println("Note: You can take 3 different tokens, or 2 of the same (if the bank has at least 4).");
+
+    //     // ask for 3 gems
+    //     int gemsTaken = 0; // tracker
+    //     // keep asking them to take a gem until they hit 3
+    //     while (gemsTaken < 3) {
+    //         System.out.println("\nSelect gem #" + (gemsTaken + 1) + " (or type 0 to stop taking gems):");
+            
+    //         // numbered menu for the standard gems
+    //         List<GemType> standardGems = GemType.getStandardGems();
+    //         for (int i = 0; i < standardGems.size(); i++) {
+    //             System.out.println((i + 1) + ". " + standardGems.get(i).name());
+    //         }
+    //         System.out.println("0. Finish taking gems early");
+
+    //         // get their choice from 0 to 5
+    //         int choice = inputValidator.getValidInt("Your choice: ", 0, standardGems.size());
+            
+    //         // if user wants to stop picking gems
+    //         if (choice == 0) {
+    //             break;
+    //         }
+            
+    //         // convert their menu choice back to the actual GemType
+    //         // eg if red,blue,white, 1 gets red (0 index)
+    //         GemType selectedType = standardGems.get(choice - 1);
+            
+    //         // check if valid: bank has more than enough
+    //         if (bankSupply.getOrDefault(selectedType, 0) - chosenGems.get(selectedType) > 0) {
+    //             chosenGems.put(selectedType, chosenGems.get(selectedType) + 1); // add 1 to player
+    //             gemsTaken++; // increase counter
+    //             System.out.println("Added 1 " + selectedType.name() + " to your hand.");
+    //         } else {
+    //             // out of that colour, pick again
+    //             displayError("The bank does not have enough of that gem left!");
+    //         }
+    //     }
+        
+    //     // result
+    //     return chosenGems;
+    // }
