@@ -53,7 +53,7 @@ public class TakeGemsAction implements Action {
                 if (count == 2) return true;
             }
         }
-            
+
         return false;
 
         // if (selections.size() == 3) {
@@ -63,7 +63,7 @@ public class TakeGemsAction implements Action {
         //             return false;
         //         }
         //         int bankStock = bank.getTokenCount(type);
-        //         if (bankStock < 1) {
+        //         if (bankStock < 1) { 
         //             return false;
         //         }
         //     }
