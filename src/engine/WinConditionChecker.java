@@ -5,7 +5,13 @@ import model.*;
 
 public class WinConditionChecker {
 
-    private final int winningPrestigeRequirement = 15;
+    private int winningPrestigeRequirement = 15;
+
+    // can add this so that the player is able to adjust the prestige points 
+    // the player wants for the winning requirement
+    // public WinConditionChecker(int winningPrestigeRequirement) {
+    //     this.winningPrestigeRequirement = winningPrestigeRequirement;
+    // }
 
     // Get the list of current winners
     public boolean hasWinner(List<Player> players) {
