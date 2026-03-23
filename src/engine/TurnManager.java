@@ -9,7 +9,7 @@ import model.DevelopmentCard;
 import model.GemType;
 import model.Noble;
 import model.Player;
-import ui.*; // code has not been written for ComputerPlayer
+import ui.*;
 
 
 
@@ -67,13 +67,12 @@ public class TurnManager{
         Board board = gameState.getBoard();
 
         // Check if the action is legal
-        while (!action.validate(gameState)) {
+        if (!action.validate(gameState, board)) {
             System.out.println("Invalid action!");
-            action = promptAction(player);
         }    
 
         // if the action is valid, apply the action to the gameState
-        action.apply(gameState);
+        action.apply(gameState, board);
 
         // call the checkNobleVisitCondition method to see if got lucky noble visit
         checkNobleVisitCondition(player, board);
@@ -100,63 +99,49 @@ public class TurnManager{
     public Action promptHumanAction(Player player) {
 
         // prompts the user for an action input
-        System.out.println("-----------------------------------");
         System.out.println("Your turn, " + player.getName());
         System.out.println("(1): Take tokens");
         System.out.println("(2): Buy a card");
         System.out.println("(3): Reserve a card");
         System.out.println("");
         System.out.print("Key in an action: ");
-        System.out.println("-----------------------------------");
 
         // inputValidater calls on getValidInt
         int choice = inputValidator.getValidInt();
 
-        Board board = gameState.getBoard();
-
-        Action action; 
-
         switch (choice) {
             // TakeGemAction
             case 1: 
+                // making changes on their end
+                // getBank() returns bank, not a map
                 Map<GemType, Integer> GemTypes = view.selectGems(gameState.getBoard().getBank().getTokens());
-                action = new TakeGemsAction(GemTypes);
-                break;
+                return new TakeGemsAction(GemTypes);
             // BuyCardAction takes in a card and from reserved
             case 2: 
+                // ignore error for now
+                // because board has not been changed to 
                 // get the list of buyable cards that the player can buy now
                 List<DevelopmentCard> buyableCards = canBuyCards(player);
 
                 // player now selects the card
                 DevelopmentCard buyingCard = view.selectCard(buyableCards);
 
-                // if (buyingCard == null) {
-                //     System.out.println("No Card has been selected. Please choose another action.\n\n");
-                //     return promptAction(player);
-                // }
-
                 // does the player select a currently reserved card?
                 boolean isReserved = player.getReservedCards().contains(buyingCard);
 
-                action = new BuyCardAction(buyingCard, isReserved);
-                break;
+                // There might be something wrong with buyCardAction
+                return new BuyCardAction(buyingCard, isReserved);
             // ReserveCardAction
             case 3:
+                // ignore error for now
+                // because board has not been changed to DevelopmentCard
                 DevelopmentCard reservingCard = view.selectCard(gameState.getBoard().allFaceUpCards());
-                action = new ReserveCardAction(reservingCard);
-                break;
+                return new ReserveCardAction(reservingCard);
             // user keys in the wrong input
             default:
                 System.out.println("Invalid number/input! Please try again.");
                 return promptAction(player);
         }
-
-        if (!action.validate(gameState)) {
-            System.out.println("Invalid action! Please try again.");
-            return promptAction(player);
-        }
-
-        return action;
     }
 
     // Produces an List<Card> to show what cards you can afford
