@@ -4,63 +4,61 @@ import action.*;
 import game.*;
 import java.util.*;
 
-// Uses a basic rules-based algorithm to choose its actions.
 public class ComputerPlayer extends Player {
 
     private Random random;
 
-    // Constructor
     public ComputerPlayer(String name, Birthday birthday) {
         super(name, birthday); 
         this.random = new Random();
     }
-
-    // --- Overridden Methods ---
     
-    /**
-     1. The computer looks at the current game state and decides what to do
-     2. Priority 1: Buy a card if it can afford one.
-     3. Priority 2: Take 3 different gems to save up.
-     */
     @Override
     public Action takeTurn(GameState gameState) {
         Board board = gameState.getBoard();
 
-        // 1. Try to buy a card
-        // Loop through all visible cards on the board (Levels 1, 2, and 3)
-        List<DevelopmentCard> allVisibleCards = new ArrayList<>();
-        allVisibleCards.addAll(board.getLevel1FaceUp());
-        allVisibleCards.addAll(board.getLevel2FaceUp());
-        allVisibleCards.addAll(board.getLevel3FaceUp());
-
-        for (DevelopmentCard card : allVisibleCards) {
-            // Reusing the canAfford logic from the parent Player class!
+        // Priority 1: Try to buy a reserved card from its own hand
+        for (DevelopmentCard card : this.getReservedCards()) {
             if (this.canAfford(card.getCost())) {
-                // Return an action object representing the decision to buy
-                return new BuyCardAction(card);
+                // buy card
+                return new BuyCardAction(card, true); 
             }
         }
 
-        // 2. If it can't afford any cards, take gems.
-        // For simplicity, we'll try to grab up to 3 different standard gems from the bank.
-        List<GemType> gemsToTake = new ArrayList<>();
-        List<GemType> availableStandardGems = GemType.getStandardGems();
-        
-        // Shuffle the list to randomize which colors the AI picks
-        java.util.Collections.shuffle(availableStandardGems, random);
-
-        for (GemType gem : availableStandardGems) {
-            // Check if the bank actually has this gem in stock
-            if (board.getSupplyTokens().get(gem) > 0) {
-                gemsToTake.add(gem);
+        // Priority 2: Try to buy a face-up card from the board
+        List<DevelopmentCard> allVisibleCards = board.allFaceUpCards();
+        for (DevelopmentCard card : allVisibleCards) {
+            if (this.canAfford(card.getCost())) {
+                // isReserved is false since it's from the board
+                return new BuyCardAction(card, false); 
             }
-            // Stop once we have chosen 3 different gems
-            if (gemsToTake.size() == 3) {
+        }
+
+        // Priority 3: If it can't afford any cards, take up to 3 different gems
+        Map<GemType, Integer> gemsToTake = new HashMap<>();
+        for (GemType type : GemType.values()) {
+            gemsToTake.put(type, 0); // Initialize map with 0s to prevent NullPointerException
+        }
+
+        // Get a list of just the standard gems so we can safely shuffle without breaking the original enum
+        List<GemType> availableStandardGems = new ArrayList<>(GemType.getStandardGems());
+
+        // Shuffle so the computer doesn't just pick Red, Blue, White every single time
+        Collections.shuffle(availableStandardGems, random);
+
+        int gemsTaken = 0; // tracker
+        for (GemType gem : availableStandardGems) { // loop through newly shuffled list
+            // if bank has more than 0, computer takes one
+            if (board.getBank().getTokenCount(gem) > 0) { 
+                gemsToTake.put(gem, 1); // record that we took one
+                gemsTaken++; // increase counter
+            }
+            if (gemsTaken == 3) { // once we hit 3, stop
                 break;
             }
         }
 
-        // Return the action representing the decision to take gems
-        return new TakeGemAction(gemsToTake);
+        // take gems chosen
+        return new TakeGemsAction(gemsToTake);
     }
 }

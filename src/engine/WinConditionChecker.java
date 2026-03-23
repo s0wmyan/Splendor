@@ -5,10 +5,10 @@ import model.*;
 
 public class WinConditionChecker {
 
-    private int winningPrestigeRequirement = 15;
+    private final int winningPrestigeRequirement = 15;
 
     // Get the list of current winners
-    public boolean winnerList(ArrayList<Player> players) {
+    public boolean hasWinner(List<Player> players) {
         for (Player player : players) {
             
             if (player.getPrestigePoints() >= winningPrestigeRequirement) {
@@ -19,8 +19,10 @@ public class WinConditionChecker {
     }
 
     // From the list of winners, sort the players based on the winning conditions satisfied
-    public Player getWinner(ArrayList<Player> players) {
-        ArrayList<Player> winningPlayerList = new ArrayList<>();
+    public Player getWinner(List<Player> players) {
+
+        // put the players in a list based on whether they have more than 15 prestige points 
+        List<Player> winningPlayerList = new ArrayList<>();
 
         for (Player player : players) {
 
@@ -29,14 +31,22 @@ public class WinConditionChecker {
                 winningPlayerList.add(player);
             }    
         }
-        
-        if (winningPlayerList.size() == 1) {
 
+        // if there is no player in the winning player list, 
+        // return null
+        if (winningPlayerList.isEmpty()) {
+            return null;
+        }
+        
+        // if there is only 1 player in the list, 
+        // return that player
+        if (winningPlayerList.size() == 1) {
             return winningPlayerList.get(0);
         }
 
-        // do the last part of the tiebreaker ltr
         Player bestWinner = winningPlayerList.get(0);
+
+        // filtering mechanic to decide the winner based on the rules
         for (Player player : winningPlayerList) {
 
             List<DevelopmentCard> playerCardsOwned = player.getPurchasedCards();
@@ -50,6 +60,7 @@ public class WinConditionChecker {
             }
         }
 
+        // return the winner of the game
         return bestWinner;
     }
 }

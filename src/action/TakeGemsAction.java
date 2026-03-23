@@ -54,7 +54,7 @@ public class TakeGemsAction implements Action {
         for (GemType type : selections.keySet()) {
             int bankStock = bank.getTokenCount(type);
             int amountToTake = selections.get(type);
-            bank.remove(type, amountToTake);
+            bank.removeTokenCount(type, amountToTake);
 
             int amountOwned = wallet.get(type);
             wallet.put(type, amountOwned + amountToTake);

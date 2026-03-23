@@ -49,7 +49,7 @@ public class ReserveCardAction implements Action {
 
             }
 
-            if (!faceUpCards.contains(targetCard)) {
+            if (!faceUpCards.contains(card)) {
                     return false;
             }
         } else {
@@ -64,10 +64,10 @@ public class ReserveCardAction implements Action {
         Player player = state.getCurrentPlayer();
 
         if (fromDeck) {
-            cardTaken = board.drawFromDeck(cardLevel);
+            DevelopmentCard cardTaken = board.drawFromDeck(cardLevel);
             player.getReservedCards().add(cardTaken);
         } else {
-            List<Card> faceUpCards = null;
+            List<DevelopmentCard> faceUpCards = null;
 
             switch (cardLevel) {
                 case 1:
@@ -84,17 +84,17 @@ public class ReserveCardAction implements Action {
             }
 
             int index = faceUpCards.indexOf(card);
-            Card cardTaken = takeFaceUpCard(cardLevel, index);
+            DevelopmentCard cardTaken = board.takeFaceUpCard(cardLevel, index);
             player.getReservedCards().add(cardTaken);
 
             if (board.hasCardsInDeck(cardLevel)) {
-                refillLevel(cardLevel);
+                board.refillLevel(cardLevel);
             }
 
-            if (state.getBank().getTokenCount(GemType.YELLOW) > 0) {
-                state.getBank().remove(GemType.YELLOW, 1);
-                int yellowCount = player.getTokens().get(GemType.YELLOW);
-                player.getTokens().put(GemType.YELLOW, yellowCount + 1);
+            if (state.getBank().getTokenCount(GemType.GOLD) > 0) {
+                state.getBank().removeTokenCount(GemType.GOLD, 1); // ? 
+                int yellowCount = player.getTokens().get(GemType.GOLD);
+                player.getTokens().put(GemType.GOLD, yellowCount + 1);
             }
         }
 

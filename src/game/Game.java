@@ -1,14 +1,8 @@
 package game;
 
-import engine.TurnManager;
 // import engine.ActionValidator;
 // import engine.EndGameManager;
-
-import action.*;
-
-import model.Noble;
-import model.Player;
-
+import engine.*;
 import java.util.List;
 
 public class Game {
@@ -19,9 +13,12 @@ public class Game {
     // private ActionExecutor executor;
     // private EndGameManager endGameManager;
 
-    public Game(GameState state) {
+    public Game(GameState state, TurnManager turnManager) {
         this.state = state;
-        this.turnManager = new TurnManager();
+        this.turnManager = turnManager;
+        // this.turnManager = new TurnManager(); => turn manager now under game state
+        // game instantiates turn manager? 
+        
         // this.validator = new ActionValidator();
         // this.executor = new ActionExecutor();
         // this.endGameManager = new EndGameManager();
@@ -49,7 +46,13 @@ public class Game {
 
     // main entry method
     public void run() {
-        
+        // uses state and turnmanager
+
+        while (!turnManager.hasWinner(state.getPlayers())) {
+            turnManager.executeTurn(state);
+        }
+
+        System.out.println("Game has ended!");
     }
 }
 
