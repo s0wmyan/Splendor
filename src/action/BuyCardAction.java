@@ -1,8 +1,8 @@
 package action;
 
-import model.*;
 import game.*;
 import java.util.*;
+import model.*;
 
 
 public class BuyCardAction implements Action {

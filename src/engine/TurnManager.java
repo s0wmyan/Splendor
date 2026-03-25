@@ -1,20 +1,15 @@
 package engine;
 
-import java.util.*;
-
-import javax.smartcardio.Card;
 import action.*;
-// import action.TakeGemsAction;
-// import action.BuyCardAction;    
-// import action.ReserveCardAction;
 import game.GameState;
+import java.util.*;
 import model.Board;
+import model.ComputerPlayer;
+import model.DevelopmentCard;
 import model.GemType;
 import model.Noble;
 import model.Player;
-import model.DevelopmentCard;
-import model.ComputerPlayer; // code has not been written for ComputerPlayer
-import ui.*;
+import ui.*; // code has not been written for ComputerPlayer
 
 
 
@@ -117,39 +112,51 @@ public class TurnManager{
         // inputValidater calls on getValidInt
         int choice = inputValidator.getValidInt();
 
+        Board board = gameState.getBoard();
+
+        Action action; 
+
         switch (choice) {
             // TakeGemAction
             case 1: 
-                // making changes on their end
-                // getBank() returns bank, not a map
                 Map<GemType, Integer> GemTypes = view.selectGems(gameState.getBoard().getBank().getTokens());
-                return new TakeGemsAction(GemTypes);
+                action = new TakeGemsAction(GemTypes);
+                break;
             // BuyCardAction takes in a card and from reserved
             case 2: 
-                // ignore error for now
-                // because board has not been changed to 
                 // get the list of buyable cards that the player can buy now
                 List<DevelopmentCard> buyableCards = canBuyCards(player);
 
                 // player now selects the card
                 DevelopmentCard buyingCard = view.selectCard(buyableCards);
 
+                // if (buyingCard == null) {
+                //     System.out.println("No Card has been selected. Please choose another action.\n\n");
+                //     return promptAction(player);
+                // }
+
                 // does the player select a currently reserved card?
                 boolean isReserved = player.getReservedCards().contains(buyingCard);
 
-                // There might be something wrong with buyCardAction
-                return new BuyCardAction(buyingCard, isReserved);
+                action = new BuyCardAction(buyingCard, isReserved);
+                break;
             // ReserveCardAction
             case 3:
-                // ignore error for now
-                // because board has not been changed to DevelopmentCard
                 DevelopmentCard reservingCard = view.selectCard(gameState.getBoard().allFaceUpCards());
-                return new ReserveCardAction(reservingCard);
+                action = new ReserveCardAction(reservingCard);
+                break;
             // user keys in the wrong input
             default:
                 System.out.println("Invalid number/input! Please try again.");
                 return promptAction(player);
         }
+
+        if (!action.validate(gameState, board)) {
+            System.out.println("Invalid action! Please try again.");
+            return promptAction(player);
+        }
+
+        return action;
     }
 
     // Produces an List<Card> to show what cards you can afford
