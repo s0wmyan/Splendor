@@ -52,13 +52,18 @@ public class TurnManager{
         // }
 
         // get player
-        Player player = gameState.getPlayers().get(currentPlayerIndex);
+        // Player player = gameState.getPlayers().get(currentPlayerIndex); // replace
+        Player player = gameState.getCurrentPlayer();
+
 
         // display current board layout
         view.displayBoard(gameState);
 
         // display hand
         view.displayHand(player);
+
+        // display player
+        view.displayPlayerStatus(player);
 
         // get action from player
         Action action = promptAction(player); 
@@ -125,7 +130,8 @@ public class TurnManager{
             // BuyCardAction takes in a card and from reserved
             case 2: 
                 // get the list of buyable cards that the player can buy now
-                List<DevelopmentCard> buyableCards = canBuyCards(player);
+                List<DevelopmentCard> buyableCards = canBuyCards(player); // => issue 
+                System.out.println(buyableCards); // no cards are buyable 
 
                 // player now selects the card
                 DevelopmentCard buyingCard = view.selectCard(buyableCards);
@@ -166,6 +172,7 @@ public class TurnManager{
         // board has not been changed to developmentcard
         // ignore this error
         List<DevelopmentCard> allFaceUpCards = gameState.getBoard().allFaceUpCards();
+        // System.out.println(allFaceUpCards); // not empty
 
         // Loop through all the cards that are faceup right now on the board
         for (DevelopmentCard card: allFaceUpCards) {
