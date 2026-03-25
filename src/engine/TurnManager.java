@@ -65,12 +65,12 @@ public class TurnManager{
 
         // Check if the action is legal
         Action action;
-        do {
+        do { 
             action = promptAction(player);
             if (!action.validate(gameState, board)) {
-                System.out.println("Invalid action! Please try again.");
+                System.out.println("Invalid action! Please enter another input!");
             }
-        } while (!action.validate(gameState, board))
+        } while (!action.validate(gameState, board));
 
         // if the action is valid, apply the action to the gameState
         action.apply(gameState, board);
