@@ -11,7 +11,8 @@ public class TakeGemsAction implements Action {
         this.selections = selections;
     }
 
-    public boolean validate(GameState state, Board board) {
+    public boolean validate(GameState state) {
+        Board board = state.getBoard();
         Bank bank = state.getBank();
 
         if (selections.containsKey(GemType.GOLD)) {

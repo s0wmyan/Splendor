@@ -14,7 +14,12 @@ public class BuyCardAction implements Action {
         this.isReserved = isReserved;
     }
 
-    public boolean validate(GameState state, Board board) {
+    public boolean validate(GameState state) {
+        if (card.equals(null)) {
+            return false;
+        }
+        
+        Board board = state.getBoard();
         Player player = state.getCurrentPlayer(); // not getPlayer()
 
         if (isReserved) {
