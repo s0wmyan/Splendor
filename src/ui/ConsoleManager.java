@@ -36,10 +36,43 @@ public class ConsoleManager {
         System.out.println("\n=== CURRENT BOARD STATE ===");
         System.out.println("Bank Tokens: " + formatTokenMap(gameState.getBoard().getBank().getTokens()));
         System.out.println("Available Nobles: " + gameState.getBoard().getNobles().size());
-        System.out.println("Level 3 Cards: " + gameState.getBoard().getLevel3FaceUp().size() + " visible");
-        System.out.println("Level 2 Cards: " + gameState.getBoard().getLevel2FaceUp().size() + " visible");
-        System.out.println("Level 1 Cards: " + gameState.getBoard().getLevel1FaceUp().size() + " visible");
+        // System.out.println("Level 3 Cards: " + gameState.getBoard().getLevel3FaceUp().size() + " visible");
+        // System.out.println("Level 2 Cards: " + gameState.getBoard().getLevel2FaceUp().size() + " visible");
+        // System.out.println("Level 1 Cards: " + gameState.getBoard().getLevel1FaceUp().size() + " visible");
+        System.out.println("Level 3 Cards: ");
+        System.out.println("===========================");
+        displayCard(gameState.getBoard().getLevel3FaceUp());
         System.out.println("===========================\n");
+
+        System.out.println("Level 2 Cards: ");
+        System.out.println("===========================");
+        displayCard(gameState.getBoard().getLevel2FaceUp());
+        System.out.println("===========================\n");
+
+        System.out.println("Level 1 Cards: ");
+        System.out.println("===========================");
+        displayCard(gameState.getBoard().getLevel1FaceUp());
+        System.out.println("===========================\n");
+    }
+
+    // displays a deck of cards with the following format: 
+    // "1. Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE"
+    public void displayCard(List<DevelopmentCard> deck) {
+
+        for (DevelopmentCard card : deck) {
+            int id = card.getID(); // need to add the method. and to the constructor too? or a static variable that self increments 
+            Map<GemType, Integer> cost = card.getCost();
+            String bonus = card.getBonus().name();
+
+            // build cost string
+            StringBuilder costStr = new StringBuilder("Cost: ");
+            cost.forEach((key, value) -> costStr.append(key.name() + ": " + value + ", ")); // cannot use costStr string for += operations inside the for each 
+            // remove the last  ","
+            String costResult = costStr.toString();
+            costResult = costResult.substring(0, costResult.length() - 2);
+
+            System.out.println("Card ID: " + id + " | " + costResult +  " | " + "Gives: " + bonus);
+        }
     }
 
     public void displayPlayerStatus(Player player) {
