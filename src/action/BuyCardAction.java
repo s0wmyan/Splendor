@@ -55,8 +55,9 @@ public class BuyCardAction implements Action {
         return canAfford(player);
     }
 
-    public void apply(GameState state, Board board) {
+    public void apply(GameState state) {
         Player player = state.getCurrentPlayer();
+        Board board = state.getBoard();
 
         for (Map.Entry<GemType, Integer> entry : card.getCost().entrySet()) {
             GemType requiredToken = entry.getKey();

@@ -184,12 +184,13 @@ public class ConsoleManager {
         
         return gemsTaken; // app will check if it is valid? 
     }
-}
+
 
 
         // flow
 
         // get choice -> add token to map  -> if it contains 
+    // OLD METHOD - TO BE DELETED
 
     // // Prompts the user to select up to 3 gems from the bank
     // public Map<GemType, Integer> selectGems(Map<GemType, Integer> bankSupply) {
@@ -247,7 +248,7 @@ public class ConsoleManager {
             return false;
         }
 
-        String[] array = birthday.split("/");
+        String[] array = input.split("/");
 
         try {
             int day = Integer.parseInt(array[0]);
@@ -275,4 +276,9 @@ public class ConsoleManager {
             return false;
         }
     }
+
+
 }
+
+
+

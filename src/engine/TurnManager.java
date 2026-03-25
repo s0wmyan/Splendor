@@ -67,13 +67,13 @@ public class TurnManager{
         Board board = gameState.getBoard();
 
         // Check if the action is legal
-        while (!action.validate(gameState, board)) {
+        while (!action.validate(gameState)) {
             System.out.println("Invalid action!");
             action = promptAction(player);
         }    
 
         // if the action is valid, apply the action to the gameState
-        action.apply(gameState, board);
+        action.apply(gameState);
 
         // call the checkNobleVisitCondition method to see if got lucky noble visit
         checkNobleVisitCondition(player, board);
@@ -151,7 +151,7 @@ public class TurnManager{
                 return promptAction(player);
         }
 
-        if (!action.validate(gameState, board)) {
+        if (!action.validate(gameState)) {
             System.out.println("Invalid action! Please try again.");
             return promptAction(player);
         }

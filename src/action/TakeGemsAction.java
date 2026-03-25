@@ -46,7 +46,7 @@ public class TakeGemsAction implements Action {
         return false;
     }
 
-    public void apply(GameState state, Board board) {
+    public void apply(GameState state) {
         Bank bank = state.getBank();
 
         Player player = state.getCurrentPlayer();
