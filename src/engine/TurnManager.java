@@ -52,13 +52,18 @@ public class TurnManager{
         // }
 
         // get player
-        Player player = gameState.getPlayers().get(currentPlayerIndex);
+        // Player player = gameState.getPlayers().get(currentPlayerIndex); // replace
+        Player player = gameState.getCurrentPlayer();
+
 
         // display current board layout
         view.displayBoard(gameState);
 
         // display hand
         view.displayHand(player);
+
+        // display player
+        view.displayPlayerStatus(player);
 
         // get action from player
         Action action = promptAction(player); 
@@ -67,12 +72,12 @@ public class TurnManager{
         Board board = gameState.getBoard();
 
         // Check if the action is legal
-        if (!action.validate(gameState, board)) {
+        if (!action.validate(gameState)) {
             System.out.println("Invalid action!");
         }    
 
         // if the action is valid, apply the action to the gameState
-        action.apply(gameState, board);
+        action.apply(gameState);
 
         // call the checkNobleVisitCondition method to see if got lucky noble visit
         checkNobleVisitCondition(player, board);
@@ -121,7 +126,8 @@ public class TurnManager{
                 // ignore error for now
                 // because board has not been changed to 
                 // get the list of buyable cards that the player can buy now
-                List<DevelopmentCard> buyableCards = canBuyCards(player);
+                List<DevelopmentCard> buyableCards = canBuyCards(player); // => issue 
+                System.out.println(buyableCards); // no cards are buyable 
 
                 // player now selects the card
                 DevelopmentCard buyingCard = view.selectCard(buyableCards);
@@ -151,6 +157,7 @@ public class TurnManager{
         // board has not been changed to developmentcard
         // ignore this error
         List<DevelopmentCard> allFaceUpCards = gameState.getBoard().allFaceUpCards();
+        // System.out.println(allFaceUpCards); // not empty
 
         // Loop through all the cards that are faceup right now on the board
         for (DevelopmentCard card: allFaceUpCards) {

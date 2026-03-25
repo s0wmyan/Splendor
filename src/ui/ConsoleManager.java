@@ -79,10 +79,11 @@ public class ConsoleManager {
         System.out.println("\n--- " + player.getName() + "'s Turn ---");
         System.out.println("Prestige Points: " + player.getPrestigePoints());
         System.out.println("Tokens: " + formatTokenMap(player.getTokens()));
+        displayHand(player);
     }
 
     public void displayHand(Player player) {
-        System.out.println("\n--- " + player.getName() + "'s Field ---");
+        // System.out.println("\n--- " + player.getName() + "'s Field ---");
         System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3");
         System.out.println("Permanent Bonuses: " + formatTokenMap(player.getBonuses()));
         System.out.println("-----------------------------------");
