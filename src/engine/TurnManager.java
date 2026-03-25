@@ -57,13 +57,13 @@ public class TurnManager{
 
 
         // display current board layout
-        view.displayBoard(gameState);
+        view.displayGame(gameState);
 
         // display hand
-        view.displayHand(player);
+        // view.displayHand(player);
 
         // display player
-        view.displayPlayerStatus(player);
+        view.displayPlayerStatus(player); // includes hand too
 
         // get action from player
         Action action = promptAction(player); 

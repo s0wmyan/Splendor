@@ -33,13 +33,13 @@ public class ConsoleManager {
     }
 
     public void displayBoard(GameState gameState) {
-        System.out.println("\n=== CURRENT BOARD STATE ===");
+        System.out.println("\n=== CURRENT BOARD STATE ===\n");
         System.out.println("Bank Tokens: " + formatTokenMap(gameState.getBoard().getBank().getTokens()));
         System.out.println("Available Nobles: " + gameState.getBoard().getNobles().size());
         // System.out.println("Level 3 Cards: " + gameState.getBoard().getLevel3FaceUp().size() + " visible");
         // System.out.println("Level 2 Cards: " + gameState.getBoard().getLevel2FaceUp().size() + " visible");
         // System.out.println("Level 1 Cards: " + gameState.getBoard().getLevel1FaceUp().size() + " visible");
-        System.out.println("Level 3 Cards: ");
+        System.out.println("\nLevel 3 Cards: ");
         System.out.println("===========================");
         displayCard(gameState.getBoard().getLevel3FaceUp());
         System.out.println("===========================\n");
@@ -75,12 +75,39 @@ public class ConsoleManager {
         }
     }
 
+    public void displayGame(GameState state) {
+        displayBoard(state); 
+        displayGameState(state); // Player details 
+    }
+
     public void displayPlayerStatus(Player player) {
         System.out.println("\n--- " + player.getName() + "'s Turn ---");
         System.out.println("Prestige Points: " + player.getPrestigePoints());
         System.out.println("Tokens: " + formatTokenMap(player.getTokens()));
         displayHand(player);
     }
+
+
+    public void displayGameState(GameState state) {
+        // displays all players state
+        System.out.println("=== CURRENT PLAYERS STATE ===");
+        for (Player player : state.getPlayers()) {
+            displayPlayerState(player);
+        }
+        System.out.println("-----------------------------------");
+    }
+
+    private void displayPlayerState(Player player) {
+        System.out.println("\n--- " + player.getName() + " ---");
+        System.out.println("Prestige Points: " + player.getPrestigePoints());
+        System.out.println("Tokens: " + formatTokenMap(player.getTokens()));
+        // reserved cards, permanent bonuses, cards in hand? 
+        System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3"); // only the size?? 
+        System.out.println("Permanent Bonuses: " + formatTokenMap(player.getBonuses())); // is this even working? 
+
+        // cards in hand? 
+    }
+
 
     public void displayHand(Player player) {
         // System.out.println("\n--- " + player.getName() + "'s Field ---");
