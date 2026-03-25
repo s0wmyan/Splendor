@@ -67,13 +67,13 @@ public class TurnManager{
         Action action;
         do { 
             action = promptAction(player);
-            if (!action.validate(gameState, board)) {
+            if (!action.validate(gameState)) {
                 System.out.println("Invalid action! Please enter another input!");
             }
-        } while (!action.validate(gameState, board));
+        } while (!action.validate(gameState));
 
         // if the action is valid, apply the action to the gameState
-        action.apply(gameState, board);
+        action.apply(gameState);
 
         // call the checkNobleVisitCondition method to see if got lucky noble visit
         checkNobleVisitCondition(player, board);
