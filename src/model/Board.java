@@ -137,5 +137,32 @@ public class Board {
     public Map<GemType, Integer> getTokens(){
         return bank.getTokens();
     }
+    
+    public List<DevelopmentCard> getFaceUpCards(int level) {
+        return switch (level) {
+            case 1 -> getLevel1FaceUp();
+            case 2 -> getLevel2FaceUp();
+            case 3 -> getLevel3FaceUp();
+            default -> throw new IllegalArgumentException("Invalid level: " + level);
+        };
+    }
+
+    public boolean containsCard(int level, DevelopmentCard card) {
+        return switch (level) {
+            case 1 -> level1FaceUp.contains(card);
+            case 2 -> level2FaceUp.contains(card);
+            case 3 -> level3FaceUp.contains(card);
+            default -> throw new IllegalArgumentException("Invalid level: " + level);
+        };
+    }
+
+    public boolean takeFaceUpCard(int level, DevelopmentCard card) {
+        return switch (level) {
+            case 1 -> level1FaceUp.remove(card);
+            case 2 -> level2FaceUp.remove(card);
+            case 3 -> level3FaceUp.remove(card);
+            default -> throw new IllegalArgumentException("Invalid level: " + level);
+        };
+    }
 }
 
