@@ -1,12 +1,8 @@
 package action;
 
-import java.util.Map;
-
-import game.GameState;
-import model.Board;
-import model.DevelopmentCard;
-import model.GemType;
-import model.Player;
+import model.*;
+import game.*;
+import java.util.*;
 
 
 public class BuyCardAction implements Action {
@@ -18,7 +14,12 @@ public class BuyCardAction implements Action {
         this.isReserved = isReserved;
     }
 
-    public boolean validate(GameState state, Board board) {
+    public boolean validate(GameState state) {
+        if (card.equals(null)) {
+            return false
+        }
+        
+        Board board = state.getBoard();
         Player player = state.getCurrentPlayer(); // not getPlayer()
 
         if (!card.isValid()) return false;
@@ -56,7 +57,8 @@ public class BuyCardAction implements Action {
         return canAfford(player);
     }
 
-    public void apply(GameState state, Board board) {
+    public void apply(GameState state) {
+        Board board = state.getBoard();
         Player player = state.getCurrentPlayer();
 
         for (Map.Entry<GemType, Integer> entry : card.getCost().entrySet()) {

@@ -15,7 +15,7 @@ public class TakeGemsAction implements Action {
         this.selections = selections;
     }
 
-    public boolean validate(GameState state, Board board) {
+    public boolean validate(GameState state) {
         Bank bank = state.getBank();
 
         if (selections.getOrDefault(GemType.GOLD, 0) > 0) {
@@ -73,7 +73,7 @@ public class TakeGemsAction implements Action {
         // return false;
     }
 
-    public void apply(GameState state, Board board) {
+    public void apply(GameState state) {
         Bank bank = state.getBank();
 
         Player player = state.getCurrentPlayer();
@@ -88,5 +88,15 @@ public class TakeGemsAction implements Action {
             wallet.put(type, amountOwned + amountToTake);
         }
 
+    }
+
+    public void returnTokenToBank(GameState state, GemType toReturn) {
+        Player player = state.getCurrentPlayer();
+        int playerStock = player.getTokens().get(toReturn);
+        player.getTokens().put(toReturn, playerStock - 1);
+
+        Bank bank = state.getBank();
+        int bankStock = bank.get(toReturn);
+        bank.put(toReturn, bankStock + 1);
     }
 }

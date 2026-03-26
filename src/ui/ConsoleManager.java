@@ -189,4 +189,39 @@ public class ConsoleManager {
         // result
         return chosenGems;
     }
+
+    // birthdayValidator
+    public boolean birthdayValidator(String input) {
+        if (input == null || input.length() != 10 || input.charAt(2) != '/' || input.charAt(5) != '/') {
+            return false;
+        }
+
+        String[] array = birthday.split("/");
+
+        try {
+            int day = Integer.parseInt(array[0]);
+            int month = Integer.parseInt(array[1]);
+            int year = Integer.parseInt(array[2]);
+
+            if (month < 1 || month > 12) {
+                return false;
+            }
+
+            int maxDays = 31;
+
+            if (month == 4 || month ==  6|| month == 9 || month == 1) {
+                maxDays = 30;
+            } else if (month == 2) {
+                maxDays = 28;
+            }
+
+            if (day < 1 || day > maxDays) {
+                return false;
+            }
+
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 }
