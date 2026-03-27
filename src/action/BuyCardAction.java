@@ -88,17 +88,14 @@ public class BuyCardAction implements Action {
 
         player.getPurchasedCards().add(card);
         if (isReserved) {
-            player.getReservedCards().remove(card);
+            player.getReservedCards().remove(card); // then what?
         } else {
             int level = card.getLevel();
             // method only checks if there are cards in the faceuplevel (empty or not), 
             // not whether the card exists within the level. 
-            if (board.hasCardsInDeck(level)) {
-                System.out.println("It exists , and it not being removed");
-                // board.takeFaceUpCard(level, card);
-                board.refillLevel(level);
-
-            }
+            // remove redundant check -> validated so card exists 
+            board.removeCard(level, card);
+            board.refillLevel(level);
         }
 
         player.addBonus(card.getBonus(), 1);

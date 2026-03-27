@@ -88,6 +88,18 @@ public class Board {
         return list.remove(index);
     }
 
+    public void removeCard(int level, DevelopmentCard card) {
+        List<DevelopmentCard> list = switch (level) {
+            case 1 -> level1FaceUp;
+            case 2 -> level2FaceUp;
+            case 3 -> level3FaceUp;
+            default -> throw new IllegalArgumentException("Invalid level: " + level);
+        };
+
+        list.remove(card);
+        System.out.println("(Board.java, Line 100) : Removed card from deck");
+    }
+
     public DevelopmentCard drawFromDeck(int level) {
         return switch (level) {
             case 1 -> level1Deck.isEmpty() ? null : level1Deck.draw();
