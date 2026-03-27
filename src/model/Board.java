@@ -88,7 +88,7 @@ public class Board {
         return list.remove(index);
     }
 
-    public void removeCard(int level, DevelopmentCard card) {
+    public void removeFaceUpCard(int level, DevelopmentCard card) {
         List<DevelopmentCard> list = switch (level) {
             case 1 -> level1FaceUp;
             case 2 -> level2FaceUp;
