@@ -95,7 +95,7 @@ public class BuyCardAction implements Action {
             // not whether the card exists within the level. 
             if (board.hasCardsInDeck(level)) {
                 System.out.println("It exists , and it not being removed");
-                board.takeFaceUpCard(level, card);
+                // board.takeFaceUpCard(level, card);
                 board.refillLevel(level);
 
             }
