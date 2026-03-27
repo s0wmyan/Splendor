@@ -15,10 +15,12 @@ public class TakeGemsAction implements Action {
         Board board = state.getBoard();
         Bank bank = state.getBank();
 
+        // player cannot choose gold tokens
         if (selections.containsKey(GemType.GOLD)) {
             return false;
         }
 
+        // if player chooses 2 of a type, bank must have at least 4 of that type
         if (selections.size() == 1 && selections.containsValue(2)) {
             for (GemType type : selections.keySet()) {
                 int bankStock = bank.getTokenCount(type);
@@ -29,6 +31,7 @@ public class TakeGemsAction implements Action {
             return true;
         }
 
+        // check if bank has the tokens player wants
         if (selections.size() == 3) {
             for (GemType type : selections.keySet()) {
                 int count = selections.get(type);
@@ -52,6 +55,7 @@ public class TakeGemsAction implements Action {
         Player player = state.getCurrentPlayer();
         Map<GemType, Integer> wallet = player.getTokens();
 
+        // add tokens to player's wallet
         for (GemType type : selections.keySet()) {
             int bankStock = bank.getTokenCount(type);
             int amountToTake = selections.get(type);
