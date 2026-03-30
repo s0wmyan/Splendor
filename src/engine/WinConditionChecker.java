@@ -1,7 +1,10 @@
 package engine;
 
-import java.util.*;
-import model.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import model.DevelopmentCard;
+import model.Player;
 
 public class WinConditionChecker {
 
@@ -72,5 +75,9 @@ public class WinConditionChecker {
 
         // return the winner of the game
         return bestWinner;
+    }
+
+    public int getWinningPrestigeRequirement() {
+        return winningPrestigeRequirement;
     }
 }

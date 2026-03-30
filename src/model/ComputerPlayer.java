@@ -36,9 +36,6 @@ public class ComputerPlayer extends Player {
 
         // Priority 3: If it can't afford any cards, take up to 3 different gems
         Map<GemType, Integer> gemsToTake = new HashMap<>();
-        for (GemType type : GemType.values()) {
-            gemsToTake.put(type, 0); // Initialize map with 0s to prevent NullPointerException
-        }
 
         // Get a list of just the standard gems so we can safely shuffle without breaking the original enum
         List<GemType> availableStandardGems = new ArrayList<>(GemType.getStandardGems());

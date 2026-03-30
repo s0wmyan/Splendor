@@ -75,6 +75,19 @@ public class Board {
         }
     }
 
+    public boolean containsCardInDeck(DevelopmentCard card) {
+        int level = card.getLevel();
+        List<DevelopmentCard> list = switch (level) {
+            case 1 -> level1FaceUp;
+            case 2 -> level2FaceUp;
+            case 3 -> level3FaceUp;
+            default -> new ArrayList<>();
+        };
+
+        return list.contains(card); // for same memory address, which should be right 
+    }
+    
+
     public DevelopmentCard takeFaceUpCard(int level, int index) {
         List<DevelopmentCard> list = switch (level) {
             case 1 -> level1FaceUp;

@@ -1,12 +1,30 @@
 package app;
 
-import model.*;
-import action.*;
-import game.*;
-import ui.*;
-import engine.*;
-import util.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
+import engine.TurnManager;
+import engine.WinConditionChecker;
+import game.Game;
+import game.GameState;
+import model.Bank;
+import model.Birthday;
+import model.Board;
+import model.Deck;
+import model.DevelopmentCard;
+import model.GemType;
+import model.HumanPlayer;
+import model.ComputerPlayer;
+import model.Noble;
+import model.Player;
+import ui.ConsoleManager;
+import ui.InputValidator;
+import util.ConfigLoader;
+import util.DataLoader;
 
 
 public class App {
@@ -99,15 +117,33 @@ public class App {
             int year = Integer.parseInt(playerBirthdayString.substring(6, 10));
 
             Birthday playerBirthday = new Birthday(day, month, year);
-            // Initialize Player
-            Player player = new HumanPlayer(playerName, playerBirthday);
+
+            // ask what type of Player it is: computer or human
+            boolean isComputer = cManager.promptForComputerPlayer(playerName);
+            Player player;
+
+            // initialize player
+            if (isComputer) {
+                player = new ComputerPlayer(playerName, playerBirthday);
+            } else {
+                player = new HumanPlayer(playerName, playerBirthday);
+            }
+
+            // add the player and print
             players.add(player);
 
-            System.out.println("Player " + index++ + " - " + player.toString());
+            // sort the list of players, youngest first
+            players.sort(
+                Comparator.comparing(Player::getBirthday)
+                .reversed()                              // youngest (latest date) first
+                .thenComparing(Player::getName));        
+
+            // print turn order
+            System.out.println("\nOffical turn order");
+            for (int i = 0; i < players.size(); i++) {
+                System.out.println("Player " + (i + 1) + " - " + players.get(i).toString());
+            }
         }
-
-
-        // need a function to sort players
 
         Board board = new Board(buildDeck(1, config), buildDeck(2, config), buildDeck(3, config), buildNobles(playerCount, config));
         seedBank(board.getBank(), playerCount, config);
@@ -117,15 +153,15 @@ public class App {
         int winningPrestigeRequirement = config.getIntProperty("winningConditionPoints", 15);
         WinConditionChecker winConditionChecker = new WinConditionChecker(winningPrestigeRequirement);
 
-        int firstPlayerIndex = 1; // => to be defined 
+        int firstPlayerIndex = 0; // => to be defined 
         TurnManager turnManager = new TurnManager(inputValidator, cManager, winConditionChecker, playerCount, firstPlayerIndex); 
 
         GameState gameState = new GameState(board, players);
         Game game = new Game(gameState, turnManager);
 
+        gameState.setPlayerIndex(firstPlayerIndex);
         // prompt for action until someone wins 
         System.out.println("Game is Starting !");
         game.run(); // => needs to be done. 
-    
     }
 }
