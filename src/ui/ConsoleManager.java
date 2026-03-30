@@ -34,7 +34,7 @@ public class ConsoleManager {
 
     public void displayBoard(GameState gameState) {
         System.out.println("\n=== CURRENT BOARD STATE ===\n");
-        System.out.println("Bank Tokens: " + formatTokenMap(gameState.getBoard().getBank().getTokens()));
+        System.out.println("Bank Tokens: " + GemType.formatGemMap(gameState.getBoard().getBank().getTokens()));
         System.out.println("Available Nobles: " + gameState.getBoard().getNobles().size());
         // System.out.println("Level 3 Cards: " + gameState.getBoard().getLevel3FaceUp().size() + " visible");
         // System.out.println("Level 2 Cards: " + gameState.getBoard().getLevel2FaceUp().size() + " visible");
@@ -74,7 +74,7 @@ public class ConsoleManager {
     public void displayPlayerStatus(Player player) {
         System.out.println("\n--- " + player.getName() + "'s Turn ---");
         System.out.println("Prestige Points: " + player.getPrestigePoints());
-        System.out.println("Tokens: " + formatTokenMap(player.getTokens()));
+        System.out.println("Tokens: " + GemType.formatGemMap(player.getTokens()));
         displayHand(player);
     }
 
@@ -91,10 +91,10 @@ public class ConsoleManager {
     private void displayPlayerState(Player player) {
         System.out.println("\n--- " + player.getName() + " ---");
         System.out.println("Prestige Points: " + player.getPrestigePoints());
-        System.out.println("Tokens: " + formatTokenMap(player.getTokens()));
+        System.out.println("Tokens: " + GemType.formatGemMap(player.getTokens()));
         // reserved cards, permanent bonuses, cards in hand? 
         System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3"); // only the size?? 
-        System.out.println("Permanent Bonuses: " + formatTokenMap(player.getBonuses())); // is this even working?
+        System.out.println("Permanent Bonuses: " + GemType.formatGemMap(player.getBonuses())); // is this even working?
         System.out.println("Purchased Cards: "); 
         displayCard(player.getPurchasedCards());
 
@@ -105,7 +105,7 @@ public class ConsoleManager {
     public void displayHand(Player player) {
         // System.out.println("\n--- " + player.getName() + "'s Field ---");
         System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3");
-        System.out.println("Permanent Bonuses: " + formatTokenMap(player.getBonuses()));
+        System.out.println("Permanent Bonuses: " + GemType.formatGemMap(player.getBonuses()));
         System.out.println("-----------------------------------");
     }
 
@@ -128,21 +128,10 @@ public class ConsoleManager {
         return playerDetails;
     }
 
-    // utility method to format token maps for clean console printing
-    // clean, readable string like "RED: 2, GREEN: 1" instead of raw data
-    private String formatTokenMap(Map<GemType, Integer> map) {
-        StringBuilder sb = new StringBuilder(); // Sb is faster than + and more memory efficient
-        for (Map.Entry<GemType, Integer> entry : map.entrySet()) { // loop through gems and their counts
-            if (entry.getValue() > 0) { // if count > 0, print gem
-                sb.append(entry.getKey().name()).append(": ").append(entry.getValue()).append(", ");
-            }
-        }
-        if (sb.length() > 0) sb.setLength(sb.length() - 2); // chop off ", " at the end if added entries
-        return sb.toString();
-    }
+    
 
     private String formatCardDetails(DevelopmentCard card) {
-        return "[Card ID: " + card.getID() + " | Cost: " + formatTokenMap(card.getCost()) + 
+        return "[Card ID: " + card.getID() + " | Cost: " + GemType.formatGemMap(card.getCost()) + 
             " | Gives: " + card.getBonus().name() + "]";
     }
 
@@ -188,7 +177,7 @@ public class ConsoleManager {
             Noble noble = nobleList.get(i);
             // Print format: "1. Points: 3 | Requires: RED: 4, WHITE: 4"
             System.out.println((i + 1) + ". Points: " + noble.getPrestigePoints() + 
-                               " | Requires: " + formatTokenMap(noble.getCost()));
+                               " | Requires: " + GemType.formatGemMap(noble.getCost()));
         }
 
         // get the noble
@@ -199,7 +188,7 @@ public class ConsoleManager {
     // alternative to selectgems
     public Map<GemType, Integer> selectGems(Map<GemType, Integer> bankSupply) {
         System.out.println("\n--- Select Gems ---");
-        System.out.println("Available in Bank: " + formatTokenMap(bankSupply));
+        System.out.println("Available in Bank: " + GemType.formatGemMap(bankSupply));
         System.out.println("Note: You can take 3 different tokens, or 2 of the same (if the bank has at least 4).");
         
         System.out.println("\nLegend: [R : Red, B - Blue, W - White, G - Green, K - Black] (e.g. Type 'RBK' to take 1 Red, 1 Blue, 1 Black token)");
