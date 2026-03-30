@@ -8,58 +8,41 @@ import java.util.*;
 public class ReserveCardAction implements Action {
     private DevelopmentCard card;
     private int cardLevel;
-    private boolean fromDeck;
+    private boolean luckyReserve;
 
     public ReserveCardAction(DevelopmentCard card) {
         this.card = card;
         this.cardLevel = card.getLevel();
-        this.fromDeck = false;
+        this.luckyReserve = false; // rule where player randomly reserves a card from facedowncards
     }
 
     public ReserveCardAction(int cardLevel) {
         this.cardLevel = cardLevel;
-        this.fromDeck = true;
+        this.luckyReserve = true;
     }
 
-    public boolean validate(GameState state) {
+    public String validate(GameState state) {
         Player player = state.getCurrentPlayer();
         Board board = state.getBoard();
         
-        // plaayer can only reserve max 3 cards)
+        // player can only reserve max 3 cards)
         if (player.getReservedCards().size() >= 3) {
-            return false;
+            return "You can only have a maximum of 3 reserved cards";
         }
 
+        // check if board has selected card 
+
+        if (luckyReserve) {
+            if (!board.hasCardsInDeck(cardLevel)) {
+                return "No more cards left in deck to perform a lucky reserve!";
+            }
+        } else {
+            if (!board.containsCardInDeck(card)) {
+                return "Card does not exist in the faceup cards";
+            }
+        }
         
-        if (!fromDeck) { // chack if board has selected card
-            List<DevelopmentCard> faceUpCards = null;
-
-            switch (cardLevel) {
-                case 1:
-                    faceUpCards = board.getLevel1FaceUp();
-                    break;
-
-                case 2:
-                    faceUpCards = board.getLevel2FaceUp();
-                    break;
-
-                case 3:
-                    faceUpCards = board.getLevel3FaceUp();
-                    break;
-
-                default:
-                    return false;
-
-            }
-
-            if (!faceUpCards.contains(card)) {
-                    return false;
-            }
-        } else { // check if deck has cards to blindly reserve from
-            return board.hasCardsInDeck(cardLevel);
-        }
-
-        return true;
+        return null; // no errors 
     }
 
 
@@ -68,7 +51,7 @@ public class ReserveCardAction implements Action {
         Board board = state.getBoard();
 
 
-        if (fromDeck) { // reserve from deck
+        if (luckyReserve) { // reserve from deck
             DevelopmentCard cardTaken = board.drawFromDeck(cardLevel);
             player.getReservedCards().add(cardTaken);
         } else { // reserve from board

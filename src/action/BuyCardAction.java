@@ -14,48 +14,26 @@ public class BuyCardAction implements Action {
         this.isReserved = isReserved;
     }
 
-    public boolean validate(GameState state) {
+    public String validate(GameState state) {
         // check if card is null
         if (card == null) {
-            return false;
+            return "There is no available card to purchase!"; // duplicate message
         }
         
         Board board = state.getBoard();
         Player player = state.getCurrentPlayer();
 
-        // check if card is where the player intends to buy from
-        if (isReserved) {
-            if (!player.getReservedCards().contains(card)) {
-                return false;
-            }
-        } else {
-            int level = card.getLevel();
-            switch (level) {
-                case 1:
-                    if (!board.getLevel1FaceUp().contains(card)) {
-                        return false;
-                    }
-                    break;
-
-                case 2:
-                    if (!board.getLevel2FaceUp().contains(card)) {
-                        return false;
-                    }
-                    break;
-
-                case 3:
-                    if (!board.getLevel3FaceUp().contains(card)) {
-                        return false;
-                    }
-                    break;
-                
-                default:
-                    return false;
-            }
+        // check whether the card is present 
+        if (!board.containsCardInDeck(card)) {
+            return "This card does not exist in the deck!"; // which shouldn't happen 
         }
 
         // check if player can afford the card
-        return player.canAfford(card.getCost());
+        if (!player.canAfford(card.getCost())) {
+            return "You cannot afford this card!";
+        }
+
+        return null;
     }
 
     public void apply(GameState state) {

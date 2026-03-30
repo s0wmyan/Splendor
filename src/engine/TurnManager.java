@@ -72,9 +72,12 @@ public class TurnManager{
         Board board = gameState.getBoard();
 
         // Check if the action is legal
-        while (!action.validate(gameState)) {
-            System.out.println("Invalid action! Try another action.\n"); // why exactly is it invalid? can throw an error and catch it 
+        String message = action.validate(gameState);
+        while (message != null) {
+            System.out.println(message);
+            // System.out.println("Invalid action! Try another action.\n"); 
             action = promptAction(player); // continue prompting until it is valid 
+            message = action.validate(gameState); // try again
         }    
 
         // if the action is valid, apply the action to the gameState

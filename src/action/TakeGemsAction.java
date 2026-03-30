@@ -11,13 +11,13 @@ public class TakeGemsAction implements Action {
         this.selections = selections;
     }
 
-    public boolean validate(GameState state) {
+    public String validate(GameState state) {
         Board board = state.getBoard();
         Bank bank = state.getBank();
 
         // player cannot choose gold tokens
         if (selections.containsKey(GemType.GOLD)) {
-            return false;
+            return "You cannot choose gold!";
         }
 
         // if player chooses 2 of a type, bank must have at least 4 of that type
@@ -25,28 +25,29 @@ public class TakeGemsAction implements Action {
             for (GemType type : selections.keySet()) {
                 int bankStock = bank.getTokenCount(type);
                 if (bankStock < 4) {
-                    return false;
+                    return "The bank does not have sufficient " + type.name() + " tokens for you to take 2 of the same token!";
                 }
             }
-            return true;
+            return null; // works
         }
 
         // check if bank has the tokens player wants
         if (selections.size() == 3) {
             for (GemType type : selections.keySet()) {
                 int count = selections.get(type);
-                if (count != 1) {
-                    return false;
+                if (count > 1) {
+                    return "You cannot take more than 1 token of the same color as you have taken 3 tokens!";
                 }
                 int bankStock = bank.getTokenCount(type);
                 if (bankStock < 1) {
-                    return false;
+                    return "The bank does not have sufficient " + type.name() + " tokens";
                 }
             }
-            return true;
+            return null; // works 
         }
 
-        return false;
+        // when it doesn't fufill any criteria = take too many or too little
+        return "You can only take two tokens of the same color, or three tokens of different colors!";
     }
 
     public void apply(GameState state) {

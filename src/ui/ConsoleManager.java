@@ -58,13 +58,15 @@ public class ConsoleManager {
     // displays a deck of cards with the following format: 
     // "1. Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE"
     public void displayCard(List<DevelopmentCard> deck) {
-
         for (DevelopmentCard card : deck) {
             System.out.println(formatCardDetails(card));
         }
     }
 
+    // main method
     public void displayGame(GameState state) {
+        System.out.print("\033[H\033[2J"); // clear screen 
+
         displayBoard(state); 
         displayGameState(state); // Player details 
     }
@@ -192,6 +194,49 @@ public class ConsoleManager {
         // get the noble
         int choice = inputValidator.getValidInt("Enter the number of the Noble: ", 1, nobleList.size());
         return nobleList.get(choice - 1);
+    }
+
+    // alternative to selectgems
+    public Map<GemType, Integer> selectGems2(Map<GemType, Integer> bankSupply) {
+        System.out.println("\n--- Select Gems ---");
+        System.out.println("Available in Bank: " + formatTokenMap(bankSupply));
+        System.out.println("Note: You can take 3 different tokens, or 2 of the same (if the bank has at least 4).");
+        
+        String input = inputValidator.getValidString("Enter your choice (e.g. RBG to take 1 red, 1 blue, 1 green token) : ");
+        while (!validSelectGemsInput(input)) {
+            System.out.println("Invalid Input!");
+            inputValidator.getValidString("Enter your choice (e.g. RBG to take 1 red, 1 blue, 1 green token) : ");
+        }
+
+        Map<GemType, Integer> chosenGems = new HashMap<>();
+        for (char c : input.toCharArray()) {
+            GemType gemSelected = GemType.fromChar(c);
+            chosenGems.put(gemSelected, chosenGems.getOrDefault(gemSelected, 0) + 1);
+        }
+
+        // if simple check says invalid -> skip 
+
+        // check 
+
+        // either of length 2 or 3. parse to 
+        return null;
+    }
+
+    private boolean validSelectGemsInput(String input) {
+        if (input.length() != 3 || input.length() != 2) {
+            return false;
+        }
+
+        Set<Character> validCharacters = new HashSet<>(Arrays.asList('R', 'B', 'W', 'G', 'B'));
+        input = input.toUpperCase(); // case insensitive
+
+        for (char c : input.toCharArray()) {
+            if (validCharacters.contains(c)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Prompts the user to select up to 3 gems from the bank
