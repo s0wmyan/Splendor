@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Collections;
 
 import engine.TurnManager;
 import engine.WinConditionChecker;
