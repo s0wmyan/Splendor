@@ -1,9 +1,15 @@
 package ui;
 
-import action.*;
-import game.*;
-import model.*;
-import java.util.*;
+import game.GameState;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import model.DevelopmentCard;
+import model.GemType;
+import model.Noble;
+import model.Player;
 
 public class ConsoleManager {
     private InputValidator inputValidator;
@@ -39,6 +45,17 @@ public class ConsoleManager {
         // System.out.println("Level 3 Cards: " + gameState.getBoard().getLevel3FaceUp().size() + " visible");
         // System.out.println("Level 2 Cards: " + gameState.getBoard().getLevel2FaceUp().size() + " visible");
         // System.out.println("Level 1 Cards: " + gameState.getBoard().getLevel1FaceUp().size() + " visible");
+        List<Noble> nobles = gameState.getBoard().getNobles();
+        System.out.println("\nNobles on board (" + nobles.size() + "): ");
+        System.out.println("===========================");
+        for (int i = 0; i < nobles.size(); i++) {
+            Noble n = nobles.get(i);
+            System.out.println((i + 1) + ". " + n.getName()
+                + " | Points: " + n.getPrestigePoints()
+                + " | Requires: " + formatTokenMap(n.getCost()));
+        }
+        System.out.println("===========================\n");
+
         System.out.println("\nLevel 3 Cards: ");
         System.out.println("===========================");
         displayCard(gameState.getBoard().getLevel3FaceUp());
@@ -104,6 +121,9 @@ public class ConsoleManager {
 
     public void displayHand(Player player) {
         // System.out.println("\n--- " + player.getName() + "'s Field ---");
+        System.out.println("Prestige Points: " + player.getPrestigePoints());
+        System.out.println("Tokens: " + formatTokenMap(player.getTokens()));
+        // reserved cards, permanent bonuses, cards in hand? 
         System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3");
         System.out.println("Permanent Bonuses: " + GemType.formatGemMap(player.getBonuses()));
         System.out.println("-----------------------------------");
@@ -116,13 +136,24 @@ public class ConsoleManager {
 
     // "name": "dd/mm/yyyy" format 
     // Can't have the same name, else it will override. 
+    
+    
     public Map<String, String> promptForPlayerDetails(int playerCount) {
-        Map<String, String> playerDetails = new HashMap<>();
+        Map<String, String> playerDetails = new LinkedHashMap<>();
 
         for (int i = 1; i <= playerCount; i++) {
-            String name = inputValidator.getValidString(String.format("Enter Player %d's name : ", i));
-            String birthday = inputValidator.getValidString(String.format("Enter Player %d's birthday (DD/MM/YYYY) : ", i));
-            playerDetails.put(name, birthday); // cannot be the same name 
+            String name;
+            while (true) {
+                name = inputValidator.getValidString(String.format("Enter Player %d's name : ", i));
+                if (!playerDetails.containsKey(name)) {
+                    break;
+                }
+                System.out.println("This name is already taken. Please enter a unique name.");
+            }
+
+            String birthday = inputValidator.getValidBirthday(
+                String.format("Enter Player %d's birthday (DD/MM/YYYY) : ", i));
+            playerDetails.put(name, birthday);
         }
 
         return playerDetails;
@@ -132,36 +163,57 @@ public class ConsoleManager {
 
     private String formatCardDetails(DevelopmentCard card) {
         return "[Card ID: " + card.getID() + " | Cost: " + GemType.formatGemMap(card.getCost()) + 
-            " | Gives: " + card.getBonus().name() + "]";
+            " | Gives: " + card.getBonus().name() + " | Prestige Points: " + card.getPrestigePoints() + "]";
     }
 
     // Displays a list of cards and forces the user to pick a valid one
-    public DevelopmentCard selectCard(Player player, List<DevelopmentCard> cards) {
+    public DevelopmentCard selectCard(Player player, List<DevelopmentCard> boardCards, List<DevelopmentCard> reservedCards) {
         // if no cards, let the fella know and just exit 
-        if (cards.isEmpty()) {
+        if (boardCards.isEmpty() && reservedCards.isEmpty()) {
             displayMessage("No cards available to select.");
             return null;
         }
 
         System.out.println("\n--- Select a Card ---");
         // Print the cards with numbers next to them (1, 2, 3...)
-        for (int i = 0; i < cards.size(); i++) {
-            DevelopmentCard card = cards.get(i);
+
+        List<DevelopmentCard> allCardsList = new ArrayList<>();
+
+        for (int i = 0; i < boardCards.size(); i++) {
+            DevelopmentCard card = boardCards.get(i);
             // Print format: "1. Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE"
             System.out.println((i + 1) + ". " + formatCardDetails(card)); // added card id
+            allCardsList.add(boardCards.get(i));
         }
         System.out.println();
 
+        if (!reservedCards.isEmpty()) {
+            System.out.println("\n--- Your reserved cards ---");
+            for (int i = 0; i < reservedCards.size(); i++) {
+                System.out.println((boardCards.size() + i + 1) + ". " + formatCardDetails(reservedCards.get(i)));
+                allCardsList.add(reservedCards.get(i));
+            }
+        }
+
+        System.out.println("0. Return to menu");
+        
         // Use the InputValidator to get choice
-        int choice = inputValidator.getValidInt("Enter the number of your choice: ", 1, cards.size());
+        int choice = inputValidator.getValidInt("Enter the number of your choice: ", 0, allCardsList.size());
+
+        if (choice == 0) {
+            System.out.println("");
+            System.out.println("** Returning to menu **\n");
+            return null;
+        }
+        
         // what choice selected ?
         // method to parse card into ( Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE ) string. 
-        DevelopmentCard cardSelected = cards.get(choice - 1);
+        DevelopmentCard cardSelected = allCardsList.get(choice - 1);
         System.out.println("Choice " + choice + " selected!");
         System.out.println(player.getName() + " selected card: " + formatCardDetails(cardSelected));
         
-        // 0-index array, subtract 1 from choice
-        return cards.get(choice - 1);
+        // 0-index array, subtract 1 from choice from allCardsList
+        return cardSelected;
     }
 
     // Displays available nobles and forces the user to pick one
@@ -185,8 +237,13 @@ public class ConsoleManager {
         return nobleList.get(choice - 1);
     }
 
+    public DevelopmentCard selectCard(Player player, List<DevelopmentCard> boardCards) {
+        return selectCard(player, boardCards, new ArrayList<>());
+    }
+
     // alternative to selectgems
     public Map<GemType, Integer> selectGems(Map<GemType, Integer> bankSupply) {
+        // show user what the bank has in stock
         System.out.println("\n--- Select Gems ---");
         System.out.println("Available in Bank: " + GemType.formatGemMap(bankSupply));
         System.out.println("Note: You can take 3 different tokens, or 2 of the same (if the bank has at least 4).");
@@ -255,12 +312,12 @@ public class ConsoleManager {
     //         int choice = inputValidator.getValidInt("Your choice: ", 1, standardGems.size());
     //         GemType gemSelected = standardGems.get(choice - 1);
 
-    //         // first check: bank supply enough? 
-    //         if (bankSupply.get(gemSelected) <  gemsTaken.getOrDefault(gemSelected, 0) + 1) {
-    //             System.out.println("Invalid Move: The bank does not have enough of that gem left!");
-    //             System.out.println();
-    //             continue; 
-    //         }
+            // // first check: bank supply enough? 
+            // if (bankSupply.getOrDefault(gemSelected, 0) <  gemsTaken.getOrDefault(gemSelected, 0) + 1) {
+            //     System.out.println("Invalid Move: The bank does not have enough of that gem left!");
+            //     System.out.println();
+            //     continue; 
+            // }
 
     //         // second check: if player takes 3 tokens, with two of the same kind. 
     //         if (gemsTaken.containsKey(gemSelected)) {
@@ -341,42 +398,19 @@ public class ConsoleManager {
     //     }
         
 
-    // birthdayValidator
     public boolean birthdayValidator(String input) {
-        if (input == null || input.length() != 10 || input.charAt(2) != '/' || input.charAt(5) != '/') {
-            return false;
-        }
-
-        String[] array = input.split("/");
-
-        try {
-            int day = Integer.parseInt(array[0]);
-            int month = Integer.parseInt(array[1]);
-            int year = Integer.parseInt(array[2]);
-
-            if (month < 1 || month > 12) {
-                return false;
-            }
-
-            int maxDays = 31;
-
-            if (month == 4 || month ==  6|| month == 9 || month == 1) {
-                maxDays = 30;
-            } else if (month == 2) {
-                maxDays = 28;
-            }
-
-            if (day < 1 || day > maxDays) {
-                return false;
-            }
-
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+        return inputValidator.isValidBirthdayDDMMYYYY(input);
     }
 
+    // prompt for ComputerPlayer 
+    public boolean promptForComputerPlayer(String playerName) {
+        System.out.println();
+        System.out.printf("Is %s a Human player or Computer Player?%n", playerName);
+        System.out.println("Enter 1 for Human or 2 for Computer");
 
+        int choice = inputValidator.getValidInt("Select player type (1-2): ", 1, 2);
+        return choice == 2;
+    }
 }
 
 
