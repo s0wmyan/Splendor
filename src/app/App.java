@@ -18,6 +18,7 @@ import model.Deck;
 import model.DevelopmentCard;
 import model.GemType;
 import model.HumanPlayer;
+import model.ComputerPlayer;
 import model.Noble;
 import model.Player;
 import ui.ConsoleManager;
@@ -118,19 +119,33 @@ public class App {
             int year = Integer.parseInt(playerBirthdayString.substring(6, 10));
 
             Birthday playerBirthday = new Birthday(day, month, year);
-            // Initialize Player
-            Player player = new HumanPlayer(playerName, playerBirthday);
+
+            // ask what type of Player it is: computer or human
+            boolean isComputer = cManager.promptForComputerPlayer(playerName);
+            Player player;
+
+            // initialize player
+            if (isComputer) {
+                player = new ComputerPlayer(playerName, playerBirthday);
+            } else {
+                player = new HumanPlayer(playerName, playerBirthday);
+            }
+
+            // add the player and print
             players.add(player);
+
+            // sort the list of players, youngest first
             players.sort(
-            Comparator.comparing(Player::getBirthday)
+                Comparator.comparing(Player::getBirthday)
                 .reversed()                              // youngest (latest date) first
                 .thenComparing(Player::getName));        
 
-            System.out.println("Player " + index++ + " - " + player.toString());
+            // print turn order
+            System.out.println("\nOffical turn order");
+            for (int i = 0; i < players.size(); i++) {
+                System.out.println("Player " + (i + 1) + " - " + players.get(i).toString);
+            }
         }
-
-
-        // need a function to sort players
 
         Board board = new Board(buildDeck(1), buildDeck(2), buildDeck(3), buildNobles());
         seedBank(board.getBank(), playerCount);
@@ -147,6 +162,5 @@ public class App {
         // prompt for action until someone wins 
         System.out.println("Game is Starting !");
         game.run(); // => needs to be done. 
-    
     }
 }

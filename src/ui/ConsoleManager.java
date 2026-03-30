@@ -136,7 +136,7 @@ public class ConsoleManager {
     
     
     public Map<String, String> promptForPlayerDetails(int playerCount) {
-        Map<String, String> playerDetails = new HashMap<>();
+        Map<String, String> playerDetails = new LinkedHashMap<>();
 
         for (int i = 1; i <= playerCount; i++) {
             String name;
@@ -251,27 +251,36 @@ public class ConsoleManager {
 
     // Prompts the user to select up to 3 gems from the bank
     public Map<GemType, Integer> selectGems(Map<GemType, Integer> bankSupply) {
-        Map<GemType, Integer> chosenGems = new HashMap<>();
-        for (GemType type : GemType.values()) {
-            chosenGems.put(type, 0); // fill with 0 to prevent errors
-        }
-
         // show user what the bank has in stock
         System.out.println("\n--- Select Gems ---");
         System.out.println("Available in Bank: " + formatTokenMap(bankSupply));
         System.out.println("Note: You can take 3 different tokens, or 2 of the same (if the bank has at least 4).");
 
+        // count how many different colours exist in the bank
+        int availableColours = 0;
+        List<GemType> standardGems = GemType.getStandardGems();
+        for (GemType type : standardGems) {
+            if (bankSupply.getOrDefault(type, 0) > 0) {
+                availableColours++;
+            }
+        }
+
+        int requiredPicks = Math.min(3, availableColours);
+        if (requiredPicks == 0) {
+            System.out.println("The bank is completely empty, you cannot take gems");
+            return new HashMap<>();
+        }
+
         int gemCount = 0;
         Map<GemType, Integer> gemsTaken = new HashMap<>();
-        gemCount = 0;
-        while (gemCount < 3) {
+
+        while (gemCount < requiredPicks) {
             System.out.println("\nSelect gem #" + (gemCount + 1) + ":");
-            
-            // numbered menu for the standard gems
-            List<GemType> standardGems = GemType.getStandardGems();
+
             for (int i = 0; i < standardGems.size(); i++) {
                 System.out.println((i + 1) + ". " + standardGems.get(i).name());
             }
+
             System.out.println("0. Return to menu");
 
             int choice = inputValidator.getValidInt("Your choice: ", 0, standardGems.size());
@@ -280,10 +289,11 @@ public class ConsoleManager {
                 System.out.println("** Returning to main menu **\n");
                 return null;
             }
+
             GemType gemSelected = standardGems.get(choice - 1);
 
             // first check: bank supply enough? 
-            if (bankSupply.get(gemSelected) <  gemsTaken.getOrDefault(gemSelected, 0) + 1) {
+            if (bankSupply.getOrDefault(gemSelected, 0) <  gemsTaken.getOrDefault(gemSelected, 0) + 1) {
                 System.out.println("Invalid Move: The bank does not have enough of that gem left!");
                 System.out.println();
                 continue; 
@@ -372,6 +382,15 @@ public class ConsoleManager {
         return inputValidator.isValidBirthdayDDMMYYYY(input);
     }
 
+    // prompt for ComputerPlayer 
+    public boolean promptForComputerPlayer(String playerName) {
+        System.out.println();
+        System.out.printf("Is %s a Human player or Computer Player?%n", playerName);
+        System.out.println("Enter 1 for Human or 2 for Computer");
+
+        int choice = inputValidator.getValidInt("Select player type (1-2): ", 1, 2);
+        return choice == 2;
+    }
 }
 
 
