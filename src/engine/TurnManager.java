@@ -64,13 +64,10 @@ public class TurnManager{
         Board board = gameState.getBoard();
 
         // Check if the action is legal
-        Action action;
-        do { 
-            action = promptAction(player);
-            if (!action.validate(gameState)) {
-                System.out.println("Invalid action! Please enter another input!");
-            }
-        } while (!action.validate(gameState));
+        while (!action.validate(gameState)) {
+            System.out.println("Invalid action! Try another action.\n"); // why exactly is it invalid? can throw an error and catch it 
+            action = promptAction(player); // continue prompting until it is valid 
+        }    
 
         // if the action is valid, apply the action to the gameState
         action.apply(gameState);
@@ -126,7 +123,7 @@ public class TurnManager{
                 System.out.println(buyableCards); // no cards are buyable 
 
                 // player now selects the card
-                DevelopmentCard buyingCard = view.selectCard(buyableCards);
+                DevelopmentCard buyingCard = view.selectCard(player, buyableCards);
 
                 // does the player select a currently reserved card?
                 boolean isReserved = player.getReservedCards().contains(buyingCard);
@@ -137,7 +134,7 @@ public class TurnManager{
             case 3:
                 // ignore error for now
                 // because board has not been changed to DevelopmentCard
-                DevelopmentCard reservingCard = view.selectCard(gameState.getBoard().allFaceUpCards());
+                DevelopmentCard reservingCard = view.selectCard(player, gameState.getBoard().allFaceUpCards());
                 return new ReserveCardAction(reservingCard);
             // user keys in the wrong input
             default:

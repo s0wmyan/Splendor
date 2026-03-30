@@ -60,18 +60,7 @@ public class ConsoleManager {
     public void displayCard(List<DevelopmentCard> deck) {
 
         for (DevelopmentCard card : deck) {
-            int id = card.getID(); // need to add the method. and to the constructor too? or a static variable that self increments 
-            Map<GemType, Integer> cost = card.getCost();
-            String bonus = card.getBonus().name();
-
-            // build cost string
-            StringBuilder costStr = new StringBuilder("Cost: ");
-            cost.forEach((key, value) -> costStr.append(key.name() + ": " + value + ", ")); // cannot use costStr string for += operations inside the for each 
-            // remove the last  ","
-            String costResult = costStr.toString();
-            costResult = costResult.substring(0, costResult.length() - 2);
-
-            System.out.println("Card ID: " + id + " | " + costResult +  " | " + "Gives: " + bonus);
+            System.out.println(formatCardDetails(card));
         }
     }
 
@@ -103,7 +92,9 @@ public class ConsoleManager {
         System.out.println("Tokens: " + formatTokenMap(player.getTokens()));
         // reserved cards, permanent bonuses, cards in hand? 
         System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3"); // only the size?? 
-        System.out.println("Permanent Bonuses: " + formatTokenMap(player.getBonuses())); // is this even working? 
+        System.out.println("Permanent Bonuses: " + formatTokenMap(player.getBonuses())); // is this even working?
+        System.out.println("Purchased Cards: "); 
+        displayCard(player.getPurchasedCards());
 
         // cards in hand? 
     }
@@ -115,6 +106,7 @@ public class ConsoleManager {
         System.out.println("Permanent Bonuses: " + formatTokenMap(player.getBonuses()));
         System.out.println("-----------------------------------");
     }
+
 
     public int promptForPlayerCount() {
         return inputValidator.getValidInt("Enter Player Count (2/4) : ", 2, 4);
@@ -147,8 +139,13 @@ public class ConsoleManager {
         return sb.toString();
     }
 
+    private String formatCardDetails(DevelopmentCard card) {
+        return "[Card ID: " + card.getID() + " | Cost: " + formatTokenMap(card.getCost()) + 
+            " | Gives: " + card.getBonus().name() + "]";
+    }
+
     // Displays a list of cards and forces the user to pick a valid one
-    public DevelopmentCard selectCard(List<DevelopmentCard> cards) {
+    public DevelopmentCard selectCard(Player player, List<DevelopmentCard> cards) {
         // if no cards, let the fella know and just exit 
         if (cards.isEmpty()) {
             displayMessage("No cards available to select.");
@@ -160,12 +157,17 @@ public class ConsoleManager {
         for (int i = 0; i < cards.size(); i++) {
             DevelopmentCard card = cards.get(i);
             // Print format: "1. Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE"
-            System.out.println((i + 1) + ". Cost: " + formatTokenMap(card.getCost()) + 
-                               " | Gives: " + card.getBonus().name());
+            System.out.println((i + 1) + ". " + formatCardDetails(card)); // added card id
         }
+        System.out.println();
 
         // Use the InputValidator to get choice
         int choice = inputValidator.getValidInt("Enter the number of your choice: ", 1, cards.size());
+        // what choice selected ?
+        // method to parse card into ( Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE ) string. 
+        DevelopmentCard cardSelected = cards.get(choice - 1);
+        System.out.println("Choice " + choice + " selected!");
+        System.out.println(player.getName() + " selected card: " + formatCardDetails(cardSelected));
         
         // 0-index array, subtract 1 from choice
         return cards.get(choice - 1);
@@ -222,6 +224,7 @@ public class ConsoleManager {
             if (bankSupply.get(gemSelected) <  gemsTaken.getOrDefault(gemSelected, 0) + 1) {
                 System.out.println("Invalid Move: The bank does not have enough of that gem left!");
                 System.out.println();
+                continue; 
             }
 
             // second check: if player takes 3 tokens, with two of the same kind. 
