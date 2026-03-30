@@ -8,7 +8,7 @@ import model.Player;
 
 public class WinConditionChecker {
 
-    private int winningPrestigeRequirement = 2;
+    private int winningPrestigeRequirement = 15;
 
     // can add this so that the player is able to adjust the prestige points 
     // the player wants for the winning requirement
