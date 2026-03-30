@@ -172,7 +172,7 @@ public class ConsoleManager {
 
     private String formatCardDetails(DevelopmentCard card) {
         return "[Card ID: " + card.getID() + " | Cost: " + formatTokenMap(card.getCost()) + 
-            " | Gives: " + card.getBonus().name() + "]";
+            " | Gives: " + card.getBonus().name() + " | Prestige Points: " + card.getPrestigePoints() + "]";
     }
 
     // Displays a list of cards and forces the user to pick a valid one
