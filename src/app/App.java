@@ -143,7 +143,7 @@ public class App {
             // print turn order
             System.out.println("\nOffical turn order");
             for (int i = 0; i < players.size(); i++) {
-                System.out.println("Player " + (i + 1) + " - " + players.get(i).toString);
+                System.out.println("Player " + (i + 1) + " - " + players.get(i).toString());
             }
         }
 
