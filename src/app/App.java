@@ -102,10 +102,20 @@ public class App {
             int year = Integer.parseInt(playerBirthdayString.substring(6, 10));
 
             Birthday playerBirthday = new Birthday(day, month, year);
-            // Initialize Player
-            Player player = new HumanPlayer(playerName, playerBirthday);
-            players.add(player);
 
+            // ask what type of Player it is: computer or human
+            boolean isComputer = cManager.promptForComputerPlayer(playerName);
+            Player player;
+
+            // initialize player
+            if (isComputer) {
+                player = new ComputerPlayer(playerName, playerBirthday);
+            } else {
+                player = new HumanPlayer(playerName, playerBirthday);
+            }
+
+            // add the player and print
+            players.add(player);
             System.out.println("Player " + index++ + " - " + player.toString());
         }
 
