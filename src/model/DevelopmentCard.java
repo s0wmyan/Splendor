@@ -40,7 +40,4 @@ public class DevelopmentCard {
         return this.cost;
     }
 
-    // public int getID() {
-    //     return this.id;
-    // }
 }
