@@ -2,8 +2,8 @@ package game;
 
 // import engine.ActionValidator;
 // import engine.EndGameManager;
-import engine.*;
-import java.util.List;
+import engine.TurnManager;
+import engine.WinConditionChecker;
 
 public class Game {
 
@@ -45,14 +45,55 @@ public class Game {
     // }
 
     // main entry method
+    // public void run() {
+    //     // uses state and turnmanager
+
+    //     while (!turnManager.hasWinner(state.getPlayers())) {
+    //         turnManager.executeTurn(state);
+    //     }
+
+    //     System.out.println("Game has ended!");
+    // }
+
+    // main entry method
     public void run() {
-        // uses state and turnmanager
+        WinConditionChecker checker = new WinConditionChecker();
+        int playerCount = turnManager.getPlayerCount();
 
-        while (!turnManager.hasWinner(state.getPlayers())) {
+        boolean finalRound = false;
+        int remainingTurnsInFinalRound = 0;
+
+        while (true) {
+            model.Player playerWhoStartsTurn = state.getCurrentPlayer();
+
+            // executes the whole turn and then advances to next player
             turnManager.executeTurn(state);
-        }
 
-        System.out.println("Game has ended!");
+            // If the game hasn't entered the final round yet,
+            // check whether the player who just played reached checkpoint+.
+            if (!finalRound) {
+                if (playerWhoStartsTurn.getPrestigePoints() >= checker.getWinningPrestigeRequirement()) {
+                    finalRound = true;
+                    remainingTurnsInFinalRound = playerCount - 1;
+
+                    if (remainingTurnsInFinalRound <= 0) {
+                        break;
+                    }
+                }
+            } else {
+                // in the final round, consume exactly one remaining turn per loop.
+                remainingTurnsInFinalRound--;
+                if (remainingTurnsInFinalRound <= 0) {
+                    break;
+                }
+            }
+        }
+        model.Player winner = checker.getWinner(state.getPlayers());
+        if (winner != null) {
+            System.out.println("Game has ended! Winner: " + winner.getName());
+        } else {
+            System.out.println("Game has ended! No winner determined.");
+        }
     }
 }
 

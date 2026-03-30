@@ -1,11 +1,14 @@
 package engine;
 
-import java.util.*;
-import model.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import model.DevelopmentCard;
+import model.Player;
 
 public class WinConditionChecker {
 
-    private int winningPrestigeRequirement = 15;
+    private int winningPrestigeRequirement = 2;
 
     // can add this so that the player is able to adjust the prestige points 
     // the player wants for the winning requirement
@@ -68,5 +71,9 @@ public class WinConditionChecker {
 
         // return the winner of the game
         return bestWinner;
+    }
+
+    public int getWinningPrestigeRequirement() {
+        return winningPrestigeRequirement;
     }
 }
