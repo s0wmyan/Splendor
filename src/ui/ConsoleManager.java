@@ -40,10 +40,21 @@ public class ConsoleManager {
     public void displayBoard(GameState gameState) {
         System.out.println("\n=== CURRENT BOARD STATE ===\n");
         System.out.println("Bank Tokens: " + formatTokenMap(gameState.getBoard().getBank().getTokens()));
-        System.out.println("Available Nobles: " + gameState.getBoard().getNobles().size());
+        // System.out.println("Available Nobles: " + gameState.getBoard().getNobles().size());
         // System.out.println("Level 3 Cards: " + gameState.getBoard().getLevel3FaceUp().size() + " visible");
         // System.out.println("Level 2 Cards: " + gameState.getBoard().getLevel2FaceUp().size() + " visible");
         // System.out.println("Level 1 Cards: " + gameState.getBoard().getLevel1FaceUp().size() + " visible");
+        List<Noble> nobles = gameState.getBoard().getNobles();
+        System.out.println("\nNobles on board (" + nobles.size() + "): ");
+        System.out.println("===========================");
+        for (int i = 0; i < nobles.size(); i++) {
+            Noble n = nobles.get(i);
+            System.out.println((i + 1) + ". " + n.getName()
+                + " | Points: " + n.getPrestigePoints()
+                + " | Requires: " + formatTokenMap(n.getCost()));
+        }
+        System.out.println("===========================\n");
+
         System.out.println("\nLevel 3 Cards: ");
         System.out.println("===========================");
         displayCard(gameState.getBoard().getLevel3FaceUp());
