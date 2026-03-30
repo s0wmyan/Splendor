@@ -398,14 +398,13 @@ public class ConsoleManager {
         return inputValidator.isValidBirthdayDDMMYYYY(input);
     }
 
-    // prompt for ComputerPlayer 
-    public boolean promptForComputerPlayer(String playerName) {
-        System.out.println();
-        System.out.printf("Is %s a Human player or Computer Player?%n", playerName);
-        System.out.println("Enter 1 for Human or 2 for Computer");
+    // prompt for the game mode, vs computers or humans?
+    public int promptForGameMode() {
+        System.out.println("\nSelect game mode");
+        System.out.println("1. Party (vs Humans)");
+        System.out.println("2. Solo (vs Computers)");
 
-        int choice = inputValidator.getValidInt("Select player type (1-2): ", 1, 2);
-        return choice == 2;
+        return inputValidator.getValidInt("Select mode (1-2): ", 1, 2);
     }
 }
 

@@ -8,8 +8,8 @@ public class ComputerPlayer extends Player {
 
     private Random random;
 
-    public ComputerPlayer(String name, Birthday birthday) {
-        super(name, birthday); 
+    public ComputerPlayer(String name) {
+        super(name, new Birthday(1, 1, 2000)); // bday unimpt, will not be used
         this.random = new Random();
     }
     

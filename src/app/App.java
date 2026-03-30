@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Collections;
 
@@ -92,13 +93,81 @@ public class App {
     // }
 
     public static void main(String[] args) {
-        
         // get input for the number of players etc
         Scanner sc = new Scanner(System.in);
         InputValidator inputValidator = new InputValidator(sc);
         ConsoleManager cManager = new ConsoleManager(inputValidator);
         ConfigLoader config = new ConfigLoader("config.properties");
 
+        // check gamemode and no of players
+        int gameMode = cManager.promptForGameMode();
+        int playerCount = cManager.promptForPlayerCount();
+
+        System.out.println("No. of players: " + playerCount);
+
+        List<Player> players = new ArrayList<>();
+        int firstPlayerIndex = 0;
+
+        // mode 1: human vs humans
+        if (gameMode == 1) {
+            Map<String, String> playerDetails = cManager.promptForPlayerDetails(playerCount);
+
+            // initialize the humans
+            for (Map.Entry<String, String> entry : playerDetails.entrySet()) {
+                String playerName = entry.getKey();
+                String bday = entry.getValue();
+
+                int day = Integer.parseInt(bday.substring(0, 2));
+                int month = Integer.parseInt(bday.substring(3, 5));
+                int year = Integer.parseInt(bday.substring(6, 10));
+
+                players.add(new HumanPlayer(playerName, new Birthday(day, month, year)));
+            }
+
+            // sort the list of players, starting w youngest
+            players.sort(
+                Comparator.comparing(Player::getBirthday)
+                .reversed()                         // youngest first
+                .thenComparing(Player::getName));
+
+            // print turn order
+            System.out.println("\nOffical turn order");
+            for (int i = 0; i < players.size(); i++) {
+                System.out.println("Player " + (i + 1) + " - " + players.get(i).toString());
+            }
+
+            // youngest player -> firstPlayerIndex = 0;
+        } else { // mode 2: human vs Computers
+            // enter human details and initialize as first player
+            System.out.println("\nEnter your details ");
+            Map<String, String> humanDetails = cManager.promptForPlayerDetails(1);
+            Map.Entry<String, String> entry = humanDetails.entrySet().iterator().next();
+
+            String bday = entry.getValue();
+            int day = Integer.parseInt(bday.substring(0, 2));
+            int month = Integer.parseInt(bday.substring(3, 5));
+            int year = Integer.parseInt(bday.substring(6, 10));
+
+            players.add(new HumanPlayer(entry.getKey(), new Birthday(day, month, year)));
+
+            // auto generate the computer players
+            for (int i = 1; i < playerCount; i++) {
+                players.add(new ComputerPlayer("Bot " + i));
+            }
+
+            // shuffle list to randomize
+            Collections.shuffle(players);
+            firstPlayerIndex = 0; // first player is random
+
+             // print turn order
+            System.out.println("\nOffical turn order");
+            for (int i = 0; i < players.size(); i++) {
+                System.out.println("Player " + (i + 1) + " - " + players.get(i).getName()); // dont use toString here as it will print out the bogus birthday as well
+            }
+        }
+
+        // old version
+        /*
         // Initialize game state
             // initialize players -> initialize board -> initialize game state 
 
@@ -145,6 +214,7 @@ public class App {
                 System.out.println("Player " + (i + 1) + " - " + players.get(i).toString());
             }
         }
+        */
 
         Board board = new Board(buildDeck(1, config), buildDeck(2, config), buildDeck(3, config), buildNobles(playerCount, config));
         seedBank(board.getBank(), playerCount, config);
@@ -154,13 +224,13 @@ public class App {
         int winningPrestigeRequirement = config.getIntProperty("winningConditionPoints", 15);
         WinConditionChecker winConditionChecker = new WinConditionChecker(winningPrestigeRequirement);
 
-        int firstPlayerIndex = 0; // => to be defined 
         TurnManager turnManager = new TurnManager(inputValidator, cManager, winConditionChecker, playerCount, firstPlayerIndex); 
 
         GameState gameState = new GameState(board, players);
         Game game = new Game(gameState, turnManager);
 
         gameState.setPlayerIndex(firstPlayerIndex);
+
         // prompt for action until someone wins 
         System.out.println("Game is Starting !");
         game.run(); // => needs to be done. 
