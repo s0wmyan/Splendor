@@ -1,8 +1,15 @@
 package ui;
 
-import game.*;
-import java.util.*;
-import model.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import game.GameState;
+import model.DevelopmentCard;
+import model.GemType;
+import model.Noble;
+import model.Player;
 
 public class ConsoleManager {
     private InputValidator inputValidator;
@@ -112,6 +119,9 @@ public class ConsoleManager {
 
     public void displayHand(Player player) {
         // System.out.println("\n--- " + player.getName() + "'s Field ---");
+        System.out.println("Prestige Points: " + player.getPrestigePoints());
+        System.out.println("Tokens: " + formatTokenMap(player.getTokens()));
+        // reserved cards, permanent bonuses, cards in hand? 
         System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3");
         System.out.println("Permanent Bonuses: " + formatTokenMap(player.getBonuses()));
         System.out.println("-----------------------------------");
