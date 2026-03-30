@@ -75,7 +75,6 @@ public class TurnManager{
         advanceToNextPlayer();
     }
 
-    // settled
     public Action promptAction(Player player) {
 
         // If the player is a bot, prompt the bot for their input
@@ -103,12 +102,14 @@ public class TurnManager{
         switch (choice) {
             // TakeGemAction
             case 1: 
-                Map<GemType, Integer> GemTypes = view.selectGems(gameState.getBoard().getBank().getTokens());
-                return new TakeGemsAction(GemTypes);
+                Map<GemType, Integer> gemTypes = view.selectGems(gameState.getBoard().getBank().getTokens());
+                if (gemTypes == null) return promptAction(player);
+
+                return new TakeGemsAction(gemTypes);
             // BuyCardAction takes in a card and from reserved
             case 2: 
-                List<DevelopmentCard> boardCards = canBuyFromBoard(player); // --> needs to be checked again
-                List<DevelopmentCard> reservedCards = canBuyFromReserved(player); // --> needs to be checked again 
+                List<DevelopmentCard> boardCards = canBuyFromBoard(player); 
+                List<DevelopmentCard> reservedCards = canBuyFromReserved(player); 
                 
                 if (boardCards.isEmpty() && reservedCards.isEmpty()) {
                     System.out.println("You don't have enough gems to buy a card");
@@ -117,7 +118,8 @@ public class TurnManager{
 
                 // player now selects the card
                 DevelopmentCard buyingCard = view.selectCard(player, boardCards, reservedCards);
-
+                if (buyingCard == null) return promptAction(player);
+                
                 // // does the player select a currently reserved card?
                 boolean isReserved = player.getReservedCards().contains(buyingCard);
 
@@ -125,9 +127,9 @@ public class TurnManager{
                 return new BuyCardAction(buyingCard, isReserved);
             // ReserveCardAction
             case 3:
-                // putting a null for the last parameter so that there can be 1 method 
-                // under consolemanager
                 DevelopmentCard reservingCard = view.selectCard(player, gameState.getBoard().allFaceUpCards());
+                if (reservingCard == null) return promptAction(player);
+                
                 return new ReserveCardAction(reservingCard);
             // user keys in the wrong input
             default:
@@ -136,7 +138,6 @@ public class TurnManager{
         }
     }
 
-    // This needs to be changed
     // Produces an List<DevelopmentCard> to show what cards you can afford
     public List<DevelopmentCard> canBuyFromBoard(Player player) {
         List<DevelopmentCard> canBuyList = new ArrayList<>();
@@ -152,7 +153,6 @@ public class TurnManager{
         return canBuyList;
     }
 
-    // This needs to be edited
     // Returns a List<DevelopmentCard> to show what cards can be bought from your reservedCards
     public List<DevelopmentCard> canBuyFromReserved(Player player) {
         List<DevelopmentCard> canBuyList = new ArrayList<>();
@@ -165,7 +165,6 @@ public class TurnManager{
                 canBuyList.add(card);
             }
         }
-        // board has not been changed to developmentcard; ignore this error
         return canBuyList;
     }
 

@@ -1,11 +1,10 @@
 package ui;
 
+import game.GameState;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import game.GameState;
 import model.DevelopmentCard;
 import model.GemType;
 import model.Noble;
@@ -204,8 +203,17 @@ public class ConsoleManager {
             }
         }
 
+        System.out.println("0. Return to menu");
+        
         // Use the InputValidator to get choice
-        int choice = inputValidator.getValidInt("Enter the number of your choice: ", 1, allCardsList.size());
+        int choice = inputValidator.getValidInt("Enter the number of your choice: ", 0, allCardsList.size());
+
+        if (choice == 0) {
+            System.out.println("");
+            System.out.println("** Returning to menu **\n");
+            return null;
+        }
+        
         // what choice selected ?
         // method to parse card into ( Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE ) string. 
         DevelopmentCard cardSelected = allCardsList.get(choice - 1);
@@ -213,7 +221,7 @@ public class ConsoleManager {
         System.out.println(player.getName() + " selected card: " + formatCardDetails(cardSelected));
         
         // 0-index array, subtract 1 from choice from allCardsList
-        return allCardsList.get(choice - 1);
+        return cardSelected;
     }
 
     // Displays available nobles and forces the user to pick one
@@ -264,7 +272,14 @@ public class ConsoleManager {
             for (int i = 0; i < standardGems.size(); i++) {
                 System.out.println((i + 1) + ". " + standardGems.get(i).name());
             }
-            int choice = inputValidator.getValidInt("Your choice: ", 1, standardGems.size());
+            System.out.println("0. Return to menu");
+
+            int choice = inputValidator.getValidInt("Your choice: ", 0, standardGems.size());
+            if (choice == 0) {
+                System.out.println("");
+                System.out.println("** Returning to main menu **\n");
+                return null;
+            }
             GemType gemSelected = standardGems.get(choice - 1);
 
             // first check: bank supply enough? 
