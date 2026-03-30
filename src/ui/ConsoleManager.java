@@ -1,14 +1,8 @@
 package ui;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import game.GameState;
-import model.DevelopmentCard;
-import model.GemType;
-import model.Noble;
-import model.Player;
+import game.*;
+import java.util.*;
+import model.*;
 
 public class ConsoleManager {
     private InputValidator inputValidator;
@@ -172,32 +166,44 @@ public class ConsoleManager {
     }
 
     // Displays a list of cards and forces the user to pick a valid one
-    public DevelopmentCard selectCard(Player player, List<DevelopmentCard> cards) {
+    public DevelopmentCard selectCard(Player player, List<DevelopmentCard> boardCards, List<DevelopmentCard> reservedCards) {
         // if no cards, let the fella know and just exit 
-        if (cards.isEmpty()) {
+        if (boardCards.isEmpty() && reservedCards.isEmpty()) {
             displayMessage("No cards available to select.");
             return null;
         }
 
         System.out.println("\n--- Select a Card ---");
         // Print the cards with numbers next to them (1, 2, 3...)
-        for (int i = 0; i < cards.size(); i++) {
-            DevelopmentCard card = cards.get(i);
+
+        List<DevelopmentCard> allCardsList = new ArrayList<>();
+
+        for (int i = 0; i < boardCards.size(); i++) {
+            DevelopmentCard card = boardCards.get(i);
             // Print format: "1. Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE"
             System.out.println((i + 1) + ". " + formatCardDetails(card)); // added card id
+            allCardsList.add(boardCards.get(i));
         }
         System.out.println();
 
+        if (!reservedCards.isEmpty()) {
+            System.out.println("\n--- Your reserved cards ---");
+            for (int i = 0; i < reservedCards.size(); i++) {
+                System.out.println((boardCards.size() + i + 1) + ". " + formatCardDetails(reservedCards.get(i)));
+                allCardsList.add(reservedCards.get(i));
+            }
+        }
+
         // Use the InputValidator to get choice
-        int choice = inputValidator.getValidInt("Enter the number of your choice: ", 1, cards.size());
+        int choice = inputValidator.getValidInt("Enter the number of your choice: ", 1, allCardsList.size());
         // what choice selected ?
         // method to parse card into ( Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE ) string. 
-        DevelopmentCard cardSelected = cards.get(choice - 1);
+        DevelopmentCard cardSelected = allCardsList.get(choice - 1);
         System.out.println("Choice " + choice + " selected!");
         System.out.println(player.getName() + " selected card: " + formatCardDetails(cardSelected));
         
-        // 0-index array, subtract 1 from choice
-        return cards.get(choice - 1);
+        // 0-index array, subtract 1 from choice from allCardsList
+        return allCardsList.get(choice - 1);
     }
 
     // Displays available nobles and forces the user to pick one
@@ -219,6 +225,10 @@ public class ConsoleManager {
         // get the noble
         int choice = inputValidator.getValidInt("Enter the number of the Noble: ", 1, nobleList.size());
         return nobleList.get(choice - 1);
+    }
+
+    public DevelopmentCard selectCard(Player player, List<DevelopmentCard> boardCards) {
+        return selectCard(player, boardCards, new ArrayList<>());
     }
 
     // Prompts the user to select up to 3 gems from the bank

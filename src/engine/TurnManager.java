@@ -43,38 +43,23 @@ public class TurnManager{
 
         this.gameState = gameState;
 
-        // runs a loop that continues
-        // this needs to be under game
-        // and needs to have 
-        // private GameState gameState;
-        // while (!winConditionChecker.hasWinner(gameState.getPlayers())) {
-        //     executeTurn(gameState);
-        // }
-
         // get player
-        // Player player = gameState.getPlayers().get(currentPlayerIndex); // replace
-        Player player = gameState.getCurrentPlayer();
-
+        Player player = gameState.getPlayers().get(gameState.getCurrentPlayerIndex());
 
         // display current board layout
-        view.displayGame(gameState);
+        view.displayBoard(gameState);
 
         // display hand
-        // view.displayHand(player);
-
-        // display player
-        view.displayPlayerStatus(player); // includes hand too
-
-        // get action from player
-        Action action = promptAction(player); 
+        view.displayHand(player);
 
         // get board
         Board board = gameState.getBoard();
 
+        Action action = promptAction(player);
         // Check if the action is legal
         while (!action.validate(gameState)) {
-            System.out.println("Invalid action! Try another action.\n"); // why exactly is it invalid? can throw an error and catch it 
-            action = promptAction(player); // continue prompting until it is valid 
+            System.out.println("Invalid action! Try another action.\n"); 
+            action = promptAction(player);  
         }    
 
         // if the action is valid, apply the action to the gameState
@@ -118,30 +103,30 @@ public class TurnManager{
         switch (choice) {
             // TakeGemAction
             case 1: 
-                // making changes on their end
-                // getBank() returns bank, not a map
                 Map<GemType, Integer> GemTypes = view.selectGems(gameState.getBoard().getBank().getTokens());
                 return new TakeGemsAction(GemTypes);
             // BuyCardAction takes in a card and from reserved
             case 2: 
-                // ignore error for now
-                // because board has not been changed to 
-                // get the list of buyable cards that the player can buy now
-                List<DevelopmentCard> buyableCards = canBuyCards(player); // => issue 
-                System.out.println(buyableCards); // no cards are buyable 
+                List<DevelopmentCard> boardCards = canBuyFromBoard(player); // --> needs to be checked again
+                List<DevelopmentCard> reservedCards = canBuyFromReserved(player); // --> needs to be checked again 
+                
+                if (boardCards.isEmpty() && reservedCards.isEmpty()) {
+                    System.out.println("You don't have enough gems to buy a card");
+                    return promptAction(player);
+                }
 
                 // player now selects the card
-                DevelopmentCard buyingCard = view.selectCard(player, buyableCards);
+                DevelopmentCard buyingCard = view.selectCard(player, boardCards, reservedCards);
 
-                // does the player select a currently reserved card?
+                // // does the player select a currently reserved card?
                 boolean isReserved = player.getReservedCards().contains(buyingCard);
 
-                // There might be something wrong with buyCardAction
+                // return the action for BuyCardAction
                 return new BuyCardAction(buyingCard, isReserved);
             // ReserveCardAction
             case 3:
-                // ignore error for now
-                // because board has not been changed to DevelopmentCard
+                // putting a null for the last parameter so that there can be 1 method 
+                // under consolemanager
                 DevelopmentCard reservingCard = view.selectCard(player, gameState.getBoard().allFaceUpCards());
                 return new ReserveCardAction(reservingCard);
             // user keys in the wrong input
@@ -151,14 +136,12 @@ public class TurnManager{
         }
     }
 
-    // Produces an List<Card> to show what cards you can afford
-    public List<DevelopmentCard> canBuyCards(Player player) {
+    // This needs to be changed
+    // Produces an List<DevelopmentCard> to show what cards you can afford
+    public List<DevelopmentCard> canBuyFromBoard(Player player) {
         List<DevelopmentCard> canBuyList = new ArrayList<>();
 
-        // board has not been changed to developmentcard
-        // ignore this error
         List<DevelopmentCard> allFaceUpCards = gameState.getBoard().allFaceUpCards();
-        // System.out.println(allFaceUpCards); // not empty
 
         // Loop through all the cards that are faceup right now on the board
         for (DevelopmentCard card: allFaceUpCards) {
@@ -166,9 +149,18 @@ public class TurnManager{
                 canBuyList.add(card);
             }
         }
+        return canBuyList;
+    }
+
+    // This needs to be edited
+    // Returns a List<DevelopmentCard> to show what cards can be bought from your reservedCards
+    public List<DevelopmentCard> canBuyFromReserved(Player player) {
+        List<DevelopmentCard> canBuyList = new ArrayList<>();
+
+        List<DevelopmentCard> reservedCards = player.getReservedCards();
 
         // Loop through the reservedCards that the player currently has 
-        for (DevelopmentCard card: player.getReservedCards()) {
+        for (DevelopmentCard card: reservedCards) {
             if (canBuy(player, card)) {
                 canBuyList.add(card);
             }
@@ -230,7 +222,7 @@ public class TurnManager{
         if (eligibleList.size() == 1) {
 
             Noble noble = eligibleList.get(0);
-            player.addNoble(noble); // Need to add this into the UML diagram
+            player.addNoble(noble); 
             board.removeNoble(noble);
         } else if (eligibleList.size() > 1) {
 
@@ -316,55 +308,3 @@ public class TurnManager{
         return winConditionChecker.hasWinner(playerList);
     }
 }
-
-// public TurnManager(int playerCount) {
-    //     this(playerCount, 0);
-    // }
-
-    // // Look at these two constructors another day
-
-    // public TurnManager(int playerCount, int firstPlayerIndex) {
-    //     if (playerCount < 2) {
-    //         throw new IllegalArgumentException("At least 2 players required");
-    //     }
-    //     this.playerCount = playerCount;
-    //     this.firstPlayerIndex = firstPlayerIndex;
-    //     this.currentPlayerIndex = firstPlayerIndex;
-    // }
-
-    // ComputerPlayer will choose an action that they can make
-    // public Action promptBotAction(ComputerPlayer computerPlayer) {
-
-    //     // prompts the user for an action input
-    //     System.out.println("Your turn, " + player.getName());
-    //     System.out.println("(1): Take tokens");
-    //     System.out.println("(2): Buy a card");
-    //     System.out.println("(3): Reserve a card");
-    //     System.out.println("");
-    //     System.out.print("Key in an action: ");
-
-    //     // inputValidater calls on getValidInt
-    //     // asking to change this
-    //     int choice = inputValidator.getValidInt(); // has not yet been implemented
-
-    //     switch (choice) {
-    //         // TakeGemAction
-    //         case 1: 
-    //             Map<GemType, Integer> GemTypes = inputValidator.selectGems(gameState.getBoard().getBank());
-    //             return new TakeGemsAction(GemTypes);
-    //         // BuyCardAction takes in a card and from reserved
-    //         case 2: 
-    //             DevelopmentCard buyingCard = inputValidator.selectCard(canBuyCards(player));
-
-    //             // There might be something wrong with buycardaction
-    //             return new BuyCardAction(buyingCard);
-    //         // ReserveCardAction
-    //         case 3:
-    //             DevelopmentCard reservingCard = inputValidator.selectCard(gameState.getBoard().getAllFaceUpCards());
-    //             return new ReserveCardAction(reservingCard);
-    //         // user keys in the wrong input
-    //         default:
-    //             System.out.println("Invalid number/input! Please try again.");
-    //             return promptAction(player);
-    //     }
-    // }
