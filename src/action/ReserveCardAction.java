@@ -89,10 +89,12 @@ public class ReserveCardAction implements Action {
             DevelopmentCard cardTaken = board.takeFaceUpCard(cardLevel, index);
             player.getReservedCards().add(cardTaken);
 
+            // use of wrong method 
             if (board.hasCardsInDeck(cardLevel)) {
                 board.refillLevel(cardLevel);
             }
 
+            // what does this even do
             if (state.getBank().getTokenCount(GemType.GOLD) > 0) {
                 state.getBank().removeTokenCount(GemType.GOLD, 1); // ? 
                 int yellowCount = player.getTokens().get(GemType.GOLD);
