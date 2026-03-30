@@ -1,9 +1,14 @@
 package ui;
 
-import action.*;
-import game.*;
-import model.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import game.GameState;
+import model.DevelopmentCard;
+import model.GemType;
+import model.Noble;
+import model.Player;
 
 public class ConsoleManager {
     private InputValidator inputValidator;
@@ -114,14 +119,24 @@ public class ConsoleManager {
 
     // "name": "dd/mm/yyyy" format 
     // Can't have the same name, else it will override. 
+    
+    
     public Map<String, String> promptForPlayerDetails(int playerCount) {
         Map<String, String> playerDetails = new HashMap<>();
 
         for (int i = 1; i <= playerCount; i++) {
-            String name = inputValidator.getValidString(String.format("Enter Player %d's name : ", i));
-            String birthday = inputValidator.getValidString(String.format("Enter Player %d's birthday (DD/MM/YYYY) : ", i));
-            playerDetails.put(name, birthday); // cannot be the same name 
-        }
+            String name;
+            while (true) {
+                name = inputValidator.getValidString(String.format("Enter Player %d's name : ", i));
+                if (!playerDetails.containsKey(name)) {
+                    break;
+                }
+                System.out.println("This name is already taken. Please enter a unique name.");
+            }
+        
+    String birthday = inputValidator.getValidString(String.format("Enter Player %d's birthday (DD/MM/YYYY) : ", i));
+    playerDetails.put(name, birthday);
+}
 
         return playerDetails;
     }

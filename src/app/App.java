@@ -1,11 +1,27 @@
 package app;
 
-import model.*;
-import action.*;
-import game.*;
-import ui.*;
-import engine.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
+import engine.TurnManager;
+import engine.WinConditionChecker;
+import game.Game;
+import game.GameState;
+import model.Bank;
+import model.Birthday;
+import model.Board;
+import model.Deck;
+import model.DevelopmentCard;
+import model.GemType;
+import model.HumanPlayer;
+import model.Noble;
+import model.Player;
+import ui.ConsoleManager;
+import ui.InputValidator;
 
 
 public class App {
@@ -105,6 +121,10 @@ public class App {
             // Initialize Player
             Player player = new HumanPlayer(playerName, playerBirthday);
             players.add(player);
+            players.sort(
+            Comparator.comparing(Player::getBirthday)
+                .reversed()                              // youngest (latest date) first
+                .thenComparing(Player::getName));        
 
             System.out.println("Player " + index++ + " - " + player.toString());
         }
@@ -117,12 +137,13 @@ public class App {
         board.refillAll();
 
         WinConditionChecker winConditionChecker = new WinConditionChecker();
-        int firstPlayerIndex = 1; // => to be defined 
+        int firstPlayerIndex = 0;
         TurnManager turnManager = new TurnManager(inputValidator, cManager, winConditionChecker, playerCount, firstPlayerIndex); 
 
         GameState gameState = new GameState(board, players);
         Game game = new Game(gameState, turnManager);
 
+        gameState.setPlayerIndex(firstPlayerIndex);
         // prompt for action until someone wins 
         System.out.println("Game is Starting !");
         game.run(); // => needs to be done. 

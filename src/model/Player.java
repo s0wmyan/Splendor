@@ -1,8 +1,12 @@
 package model;
 
-import action.*;
-import game.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import action.Action;
+import game.GameState;
 
 public abstract class Player {
 
@@ -145,4 +149,5 @@ public abstract class Player {
     public String toString() {
         return "Name: " + name + ", Birthday: " + birthday.toString();
     }
+    
 }
