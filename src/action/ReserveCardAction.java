@@ -46,6 +46,8 @@ public class ReserveCardAction implements Action {
     }
 
 
+    // command query separation: method should only modify state or return data, not both at the same time. 
+    // separate apply and getSuccessMessage()
     public void apply(GameState state) {
         Player player = state.getCurrentPlayer();
         Board board = state.getBoard();
@@ -72,5 +74,11 @@ public class ReserveCardAction implements Action {
             player.getTokens().put(GemType.GOLD, goldCount + 1);
         }
 
+    }
+
+
+    public String getSuccessMessage(GameState state) {
+        Player player = state.getCurrentPlayer();
+        return "Player " + player.getName() + " has reserved the card " + card;
     }
 }

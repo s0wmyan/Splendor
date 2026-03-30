@@ -74,7 +74,7 @@ public class TurnManager{
         // Check if the action is legal
         String message = action.validate(gameState);
         while (message != null) {
-            System.out.println(message);
+            view.displayError(message);
             // System.out.println("Invalid action! Try another action.\n"); 
             action = promptAction(player); // continue prompting until it is valid 
             message = action.validate(gameState); // try again
@@ -82,6 +82,9 @@ public class TurnManager{
 
         // if the action is valid, apply the action to the gameState
         action.apply(gameState);
+        
+        // return message result
+        view.displayMessage(action.getSuccessMessage(gameState));
 
         // call the checkNobleVisitCondition method to see if got lucky noble visit
         checkNobleVisitCondition(player, board);

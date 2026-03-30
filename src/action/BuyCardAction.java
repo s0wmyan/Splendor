@@ -85,6 +85,11 @@ public class BuyCardAction implements Action {
 
     }
 
+    public String getSuccessMessage(GameState state) {
+        Player player = state.getCurrentPlayer();
+        return "Player " + player.getName() + " has bought the card: " + card;
+    }
+
     // supposed canAfford method (transfered to Player class)
     // private boolean canAfford(Player player) {
         

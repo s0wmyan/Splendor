@@ -66,5 +66,10 @@ public class TakeGemsAction implements Action {
             wallet.put(type, amountOwned + amountToTake);
         }
 
+
+    }
+    public String getSuccessMessage(GameState state) {
+        Player player = state.getCurrentPlayer();
+        return "Player " + player.getName() + " has bought the tokens (TODO: add tokens)";
     }
 }

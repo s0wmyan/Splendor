@@ -197,15 +197,18 @@ public class ConsoleManager {
     }
 
     // alternative to selectgems
-    public Map<GemType, Integer> selectGems2(Map<GemType, Integer> bankSupply) {
+    public Map<GemType, Integer> selectGems(Map<GemType, Integer> bankSupply) {
         System.out.println("\n--- Select Gems ---");
         System.out.println("Available in Bank: " + formatTokenMap(bankSupply));
         System.out.println("Note: You can take 3 different tokens, or 2 of the same (if the bank has at least 4).");
         
-        String input = inputValidator.getValidString("Enter your choice (e.g. RBG to take 1 red, 1 blue, 1 green token) : ");
+        System.out.println("\nLegend: [R : Red, B - Blue, W - White, G - Green, K - Black] (e.g. Type 'RBK' to take 1 Red, 1 Blue, 1 Black token)");
+        String input = inputValidator.getValidString("Enter your choice : ");
+
         while (!validSelectGemsInput(input)) {
-            System.out.println("Invalid Input!");
-            inputValidator.getValidString("Enter your choice (e.g. RBG to take 1 red, 1 blue, 1 green token) : ");
+            System.out.println("(Console Manager Line 207): Invalid Input!");
+            System.out.println("\nLegend: [R : Red, B - Blue, W - White, G - Green, K - Black] (e.g. Type 'RBK' to take 1 Red, 1 Blue, 1 Black token)");
+            input = inputValidator.getValidString("Enter your choice :");
         }
 
         Map<GemType, Integer> chosenGems = new HashMap<>();
@@ -215,22 +218,20 @@ public class ConsoleManager {
         }
 
         // if simple check says invalid -> skip 
-
-        // check 
-
-        // either of length 2 or 3. parse to 
-        return null;
+        return chosenGems; // return and leave it to action.validate to work its magic. 
     }
 
     private boolean validSelectGemsInput(String input) {
-        if (input.length() != 3 || input.length() != 2) {
+        if (input.length() != 3 && input.length() != 2) {
             return false;
         }
 
-        Set<Character> validCharacters = new HashSet<>(Arrays.asList('R', 'B', 'W', 'G', 'B'));
+
+        Set<Character> validCharacters = new HashSet<>(Arrays.asList('R', 'B', 'W', 'G', 'K'));
         input = input.toUpperCase(); // case insensitive
 
         for (char c : input.toCharArray()) {
+
             if (validCharacters.contains(c)) {
                 return true;
             }
@@ -240,59 +241,59 @@ public class ConsoleManager {
     }
 
     // Prompts the user to select up to 3 gems from the bank
-    public Map<GemType, Integer> selectGems(Map<GemType, Integer> bankSupply) {
-        Map<GemType, Integer> chosenGems = new HashMap<>();
-        for (GemType type : GemType.values()) {
-            chosenGems.put(type, 0); // fill with 0 to prevent errors
-        }
+    // public Map<GemType, Integer> selectGems(Map<GemType, Integer> bankSupply) {
+    //     Map<GemType, Integer> chosenGems = new HashMap<>();
+    //     for (GemType type : GemType.values()) {
+    //         chosenGems.put(type, 0); // fill with 0 to prevent errors
+    //     }
 
-        // show user what the bank has in stock
-        System.out.println("\n--- Select Gems ---");
-        System.out.println("Available in Bank: " + formatTokenMap(bankSupply));
-        System.out.println("Note: You can take 3 different tokens, or 2 of the same (if the bank has at least 4).");
+    //     // show user what the bank has in stock
+    //     System.out.println("\n--- Select Gems ---");
+    //     System.out.println("Available in Bank: " + formatTokenMap(bankSupply));
+    //     System.out.println("Note: You can take 3 different tokens, or 2 of the same (if the bank has at least 4).");
 
-        int gemCount = 0;
-        Map<GemType, Integer> gemsTaken = new HashMap<>();
-        gemCount = 0;
-        while (gemCount < 3) {
-            System.out.println("\nSelect gem #" + (gemCount + 1) + ":");
+    //     int gemCount = 0;
+    //     Map<GemType, Integer> gemsTaken = new HashMap<>();
+    //     gemCount = 0;
+    //     while (gemCount < 3) {
+    //         System.out.println("\nSelect gem #" + (gemCount + 1) + ":");
             
-            // numbered menu for the standard gems
-            List<GemType> standardGems = GemType.getStandardGems();
-            for (int i = 0; i < standardGems.size(); i++) {
-                System.out.println((i + 1) + ". " + standardGems.get(i).name());
-            }
-            int choice = inputValidator.getValidInt("Your choice: ", 1, standardGems.size());
-            GemType gemSelected = standardGems.get(choice - 1);
+    //         // numbered menu for the standard gems
+    //         List<GemType> standardGems = GemType.getStandardGems();
+    //         for (int i = 0; i < standardGems.size(); i++) {
+    //             System.out.println((i + 1) + ". " + standardGems.get(i).name());
+    //         }
+    //         int choice = inputValidator.getValidInt("Your choice: ", 1, standardGems.size());
+    //         GemType gemSelected = standardGems.get(choice - 1);
 
-            // first check: bank supply enough? 
-            if (bankSupply.get(gemSelected) <  gemsTaken.getOrDefault(gemSelected, 0) + 1) {
-                System.out.println("Invalid Move: The bank does not have enough of that gem left!");
-                System.out.println();
-                continue; 
-            }
+    //         // first check: bank supply enough? 
+    //         if (bankSupply.get(gemSelected) <  gemsTaken.getOrDefault(gemSelected, 0) + 1) {
+    //             System.out.println("Invalid Move: The bank does not have enough of that gem left!");
+    //             System.out.println();
+    //             continue; 
+    //         }
 
-            // second check: if player takes 3 tokens, with two of the same kind. 
-            if (gemsTaken.containsKey(gemSelected)) {
-                // selected before, will be 2
-                if (gemCount == 2) {
-                    System.out.println("Invalid Move: You can take 3 different tokens, or 2 of the same (if the bank has at least 4)");
-                    continue; 
-                } else {
-                    gemsTaken.put(gemSelected, gemsTaken.get(gemSelected) + 1);
-                    System.out.println("Added 1 " + gemSelected.name() + " to your hand.");
-                    break; // exit (2 is enough - time to check the move)
-                }
-            }
+    //         // second check: if player takes 3 tokens, with two of the same kind. 
+    //         if (gemsTaken.containsKey(gemSelected)) {
+    //             // selected before, will be 2
+    //             if (gemCount == 2) {
+    //                 System.out.println("Invalid Move: You can take 3 different tokens, or 2 of the same (if the bank has at least 4)");
+    //                 continue; 
+    //             } else {
+    //                 gemsTaken.put(gemSelected, gemsTaken.get(gemSelected) + 1);
+    //                 System.out.println("Added 1 " + gemSelected.name() + " to your hand.");
+    //                 break; // exit (2 is enough - time to check the move)
+    //             }
+    //         }
 
 
-            gemsTaken.put(gemSelected, 1);
-            System.out.println("Added 1 " + gemSelected.name() + " to your hand.");
-            gemCount++;
-        }    
+    //         gemsTaken.put(gemSelected, 1);
+    //         System.out.println("Added 1 " + gemSelected.name() + " to your hand.");
+    //         gemCount++;
+    //     }    
         
-        return gemsTaken; // app will check if it is valid? 
-    }
+    //     return gemsTaken; // app will check if it is valid? 
+    // }
 
 
 

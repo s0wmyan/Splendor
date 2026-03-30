@@ -7,4 +7,6 @@ public interface Action {
     public String validate(GameState state);
 
     public void apply(GameState state);
+
+    public String getSuccessMessage(GameState state);
 }
