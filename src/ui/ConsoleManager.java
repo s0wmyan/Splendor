@@ -208,7 +208,11 @@ public class ConsoleManager {
         // Use the InputValidator to get choice
         int choice = inputValidator.getValidInt("Enter the number of your choice: ", 0, allCardsList.size());
 
-        if (choice == 0) return null;
+        if (choice == 0) {
+            System.out.println("");
+            System.out.println("** Returning to menu **\n");
+            return null;
+        }
         
         // what choice selected ?
         // method to parse card into ( Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE ) string. 
@@ -271,7 +275,11 @@ public class ConsoleManager {
             System.out.println("0. Return to menu");
 
             int choice = inputValidator.getValidInt("Your choice: ", 0, standardGems.size());
-            if (choice == 0) return null;
+            if (choice == 0) {
+                System.out.println("");
+                System.out.println("** Returning to main menu **\n");
+                return null;
+            }
             GemType gemSelected = standardGems.get(choice - 1);
 
             // first check: bank supply enough? 
