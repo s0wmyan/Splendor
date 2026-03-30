@@ -43,19 +43,34 @@ public class TurnManager{
 
         this.gameState = gameState;
 
+        // runs a loop that continues
+        // this needs to be under game
+        // and needs to have 
+        // private GameState gameState;
+        // while (!winConditionChecker.hasWinner(gameState.getPlayers())) {
+        //     executeTurn(gameState);
+        // }
+
         // get player
-        Player player = gameState.getPlayers().get(gameState.getCurrentPlayerIndex());
+        // Player player = gameState.getPlayers().get(currentPlayerIndex); // replace
+        Player player = gameState.getCurrentPlayer();
+
 
         // display current board layout
-        view.displayBoard(gameState);
+        view.displayGame(gameState);
 
         // display hand
-        view.displayHand(player);
+        // view.displayHand(player);
+
+        // display player
+        // view.displayPlayerStatus(player); // includes hand too
+
+        // get action from player
+        Action action = promptAction(player); 
 
         // get board
         Board board = gameState.getBoard();
 
-        Action action = promptAction(player);
         // Check if the action is legal
         String message = action.validate(gameState);
         while (message != null) {

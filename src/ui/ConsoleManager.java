@@ -1,11 +1,7 @@
 package ui;
 
 import game.GameState;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import model.DevelopmentCard;
 import model.GemType;
 import model.Noble;
@@ -52,7 +48,7 @@ public class ConsoleManager {
             Noble n = nobles.get(i);
             System.out.println((i + 1) + ". " + n.getName()
                 + " | Points: " + n.getPrestigePoints()
-                + " | Requires: " + formatTokenMap(n.getCost()));
+                + " | Requires: " + GemType.formatGemMap(n.getCost()));
         }
         System.out.println("===========================\n");
 
@@ -122,7 +118,7 @@ public class ConsoleManager {
     public void displayHand(Player player) {
         // System.out.println("\n--- " + player.getName() + "'s Field ---");
         System.out.println("Prestige Points: " + player.getPrestigePoints());
-        System.out.println("Tokens: " + formatTokenMap(player.getTokens()));
+        System.out.println("Tokens: " + GemType.formatGemMap(player.getTokens()));
         // reserved cards, permanent bonuses, cards in hand? 
         System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3");
         System.out.println("Permanent Bonuses: " + GemType.formatGemMap(player.getBonuses()));
