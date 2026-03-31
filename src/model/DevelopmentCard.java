@@ -40,4 +40,10 @@ public class DevelopmentCard {
         return this.cost;
     }
 
+    // Edited this part
+    @Override
+    public String toString() {
+        return "[Card ID: " + id + " | Cost: " + cost + " | Gives: " + bonus + " | Prestige Points: " + prestigePoints + "]";
+    }
+
 }

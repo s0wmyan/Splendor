@@ -14,6 +14,7 @@ public class BuyCardAction implements Action {
         this.isReserved = isReserved;
     }
 
+    // Edited this part
     public String validate(GameState state) {
         // check if card is null
         if (card == null) {
@@ -24,8 +25,15 @@ public class BuyCardAction implements Action {
         Player player = state.getCurrentPlayer();
 
         // check whether the card is present 
-        if (!board.containsCardInDeck(card)) {
-            return "This card does not exist in the deck!"; // which shouldn't happen 
+        // Changed the logic so that you can buy the cards you reserve
+        if (isReserved) {
+            if (!player.getReservedCards().contains(card)) {
+                return "You did not reserve this card before!";
+            }
+        } else {
+            if (!board.containsCardInDeck(card)) {
+                return "This card does not exist in the deck!"; // which shouldn't happen 
+            }
         }
 
         // check if player can afford the card
@@ -36,6 +44,7 @@ public class BuyCardAction implements Action {
         return null;
     }
 
+    // Edited this part
     public void apply(GameState state) {
         Player player = state.getCurrentPlayer();
         Board board = state.getBoard();
@@ -44,25 +53,42 @@ public class BuyCardAction implements Action {
         for (Map.Entry<GemType, Integer> entry : card.getCost().entrySet()) {
             GemType requiredToken = entry.getKey();
             int requiredAmount = entry.getValue();
-
             int bonus = player.getBonus(requiredToken);
             int remainingCost = requiredAmount - bonus;
 
-            if (remainingCost > 0) {
-                int tokensOwned = player.getTokens().get(requiredToken);
+            int tokensOwned = player.getTokens().get(requiredToken);
+            int tokensToSpend = Math.min(remainingCost, tokensOwned);
+
+            if (remainingCost <= 0) continue;
+
+            // if (remainingCost > 0) {
+            //     int tokensOwned = player.getTokens().get(requiredToken);
                 
-                int tokensToSpend = (remainingCost > tokensOwned) ? tokensOwned : remainingCost;
-                player.getTokens().put(requiredToken, tokensOwned - tokensToSpend);
+            //     int tokensToSpend = (remainingCost > tokensOwned) ? tokensOwned : remainingCost;
+            //     player.getTokens().put(requiredToken, tokensOwned - tokensToSpend);
                 
-                board.getBank().addTokenCount(requiredToken, tokensToSpend);
+            //     board.getBank().addTokenCount(requiredToken, tokensToSpend);
                 
-                int goldNeeded = remainingCost - tokensToSpend;
-                if (goldNeeded > 0) {
-                    int goldOwned = player.getTokens().get(GemType.GOLD);
-                    player.getTokens().put(GemType.GOLD, goldOwned - goldNeeded);
+            //     int goldNeeded = remainingCost - tokensToSpend;
+            //     if (goldNeeded > 0) {
+            //         int goldOwned = player.getTokens().get(GemType.GOLD);
+            //         player.getTokens().put(GemType.GOLD, goldOwned - goldNeeded);
                     
-                    board.getBank().addTokenCount(GemType.GOLD, goldNeeded);
-                }
+            //         board.getBank().addTokenCount(GemType.GOLD, goldNeeded);
+            //     }
+            // }
+
+            if (remainingCost > 0) {
+                player.getTokens().put(requiredToken, tokensOwned - tokensToSpend);
+                board.getBank().addTokenCount(requiredToken, tokensToSpend);
+            }
+
+            int goldNeeded = remainingCost - tokensToSpend;
+            if (goldNeeded > 0) {
+                int goldOwned = player.getTokens().get(GemType.GOLD);
+                player.getTokens().put(GemType.GOLD, goldOwned - goldNeeded);
+                
+                board.getBank().addTokenCount(GemType.GOLD, goldNeeded);
             }
             
         }

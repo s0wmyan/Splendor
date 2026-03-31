@@ -2,7 +2,6 @@ package engine;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import model.DevelopmentCard;
 import model.Player;
 
@@ -12,7 +11,7 @@ public class WinConditionChecker {
 
     // default constructor (just in case)
     public WinConditionChecker() {
-        this.winningPrestigeRequirement = 15;
+        this.winningPrestigeRequirement = 5;
     }
 
     // supposed constructor to use
