@@ -11,7 +11,7 @@ public class WinConditionChecker {
 
     // default constructor (just in case)
     public WinConditionChecker() {
-        this.winningPrestigeRequirement = 5;
+        this.winningPrestigeRequirement = 15;
     }
 
     // supposed constructor to use
