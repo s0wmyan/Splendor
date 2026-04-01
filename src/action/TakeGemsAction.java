@@ -64,6 +64,9 @@ public class TakeGemsAction implements Action {
 
             int amountOwned = wallet.get(type);
             wallet.put(type, amountOwned + amountToTake);
+
+            // log for stats
+            player.incrementGemsCollected(amountToTake);
         }
 
 

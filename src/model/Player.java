@@ -24,6 +24,11 @@ public abstract class Player {
     private Map<GemType, Integer> tokens;
     private Map<GemType, Integer> bonuses;
 
+    // Stat trackers
+    private int turnsTaken = 0;
+    private int totalGemsCollected = 0;
+    private int cardsPurchased = 0;
+
     // Constructor
     public Player(String name, Birthday birthday) {
         this.name = name;
@@ -46,6 +51,20 @@ public abstract class Player {
 
     public abstract Action takeTurn(GameState gameState);
 
+    // Incrementers
+    public void incrementTurnsTaken() {
+        this.turnsTaken++;
+    }
+
+    public void incrementGemsCollected(int amount) {
+        this.totalGemsCollected += amount;
+    }
+
+    public void incrementCardsPurchased() {
+        this.cardsPurchased++;
+    }
+
+    // Getters/Adders
     public String getName() {
         return this.name;
     }
@@ -95,6 +114,18 @@ public abstract class Player {
         return total;
     }
 
+    public int getTurnsTaken() {
+        return turnsTaken;
+    }
+
+    public int getTotalGemsCollected() {
+        return totalGemsCollected;
+    }
+
+    public int getCardsPurchased() {
+        return cardsPurchased;
+    }
+
     // Checks if the player has enough tokens and bonuses to afford a card cost.
     public boolean canAfford(Map<GemType, Integer> cost) {
         int goldTokensAvailable = this.tokens.getOrDefault(GemType.GOLD, 0);
@@ -119,6 +150,9 @@ public abstract class Player {
         this.purchasedCards.add(card);
         this.addPrestigePoints(card.getPrestigePoints());
         this.addBonus(card.getBonus(), 1);
+
+        // log it for analytics
+        this.incrementCardsPurchased();
     }
 
     // Add noble
@@ -133,6 +167,9 @@ public abstract class Player {
             GemType gem = entry.getKey();
             int amount = entry.getValue();
             this.tokens.put(gem, this.tokens.getOrDefault(gem, 0) + amount);
+
+            // log it for analytics
+            this.incrementGemsCollected(amount);
         }
     }
 
@@ -149,5 +186,4 @@ public abstract class Player {
     public String toString() {
         return "Name: " + name + ", Birthday: " + birthday.toString();
     }
-    
 }

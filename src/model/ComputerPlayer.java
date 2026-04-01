@@ -34,28 +34,53 @@ public class ComputerPlayer extends Player {
             }
         }
 
-        // Priority 3: If it can't afford any cards, take up to 3 different gems
-        Map<GemType, Integer> gemsToTake = new HashMap<>();
-
-        // Get a list of just the standard gems so we can safely shuffle without breaking the original enum
+        // Priority 3: Try to take 3 different gems
         List<GemType> availableStandardGems = new ArrayList<>(GemType.getStandardGems());
+        Collections.shuffle(availableStandardGems, random); // shuffle it
 
-        // Shuffle so the computer doesn't just pick Red, Blue, White every single time
-        Collections.shuffle(availableStandardGems, random);
+        // First, check how many unique colors the bakn has available
+        int availableColours = 0;
 
-        int gemsTaken = 0; // tracker
-        for (GemType gem : availableStandardGems) { // loop through newly shuffled list
-            // if bank has more than 0, computer takes one
-            if (board.getBank().getTokenCount(gem) > 0) { 
-                gemsToTake.put(gem, 1); // record that we took one
-                gemsTaken++; // increase counter
-            }
-            if (gemsTaken == 3) { // once we hit 3, stop
-                break;
+        for (GemType gem : availableStandardGems) {
+            if (board.getBank().getTokenCount(gem) > 0) {
+                availableColours++;
             }
         }
 
-        // take gems chosen
-        return new TakeGemsAction(gemsToTake);
+        if (availableColours >= 3) {
+            Map<GemType, Integer> gemsToTake = new HashMap<>();
+            int gemsTaken = 0; // tracker
+
+            for (GemType gem : availableStandardGems) { // loop through newly shuffled list
+                // if bank has more than 0, computer takes one
+                if (board.getBank().getTokenCount(gem) > 0) { 
+                    gemsToTake.put(gem, 1); // record that we took one
+                    gemsTaken++; // increase counter
+                }
+                if (gemsTaken == 3) { // once we hit 3, stop
+                    break;
+                }
+            }
+            return new TakeGemsAction(gemsToTake);
+        }
+
+        // Priority 4: Try to take 2 of the SAME gems
+        for (GemType gem : availableStandardGems) {
+            if (board.getBank().getTokenCount(gem) >= 4) {
+                Map<GemType, Integer> gemsToTake = new HashMap<>();
+                gemsToTake.put(gem, 2);
+                return new TakeGemsAction(gemsToTake);
+            }
+        }
+
+        // Priority 5: if cant take gems just reserve (to avoid crash)
+        List<DevelopmentCard> faceUpCards = board.allFaceUpCards();
+
+        if (!faceUpCards.isEmpty()) {
+            DevelopmentCard randomCard = faceUpCards.get(random.nextInt(faceUpCards.size()));
+            return new ReserveCardAction(randomCard);
+        }
+
+        return null; // worst case scenario, should never happen
     }
 }

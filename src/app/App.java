@@ -234,5 +234,10 @@ public class App {
         // prompt for action until someone wins 
         System.out.println("Game is Starting !");
         game.run(); // => needs to be done. 
+
+        Player winner = gameState.getCurrentPlayer();
+
+        // print post match stats
+        cManager.printGameStats(gameState.getPlayers(), winner);
     }
 }
