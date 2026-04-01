@@ -116,11 +116,10 @@ public class TurnManager{
         System.out.println("(1): Take tokens");
         System.out.println("(2): Buy a card");
         System.out.println("(3): Reserve a card");
+        System.out.println("(4): Help / Rules");
         System.out.println("");
-        System.out.print("Key in an action: ");
 
-        // inputValidater calls on getValidInt
-        int choice = inputValidator.getValidInt();
+        int choice = inputValidator.getValidInt("Select an action (1-4): ", 1, 4);
 
         switch (choice) {
             // TakeGemAction
@@ -153,8 +152,12 @@ public class TurnManager{
                 DevelopmentCard reservingCard = view.selectCard(player, gameState.getBoard().allFaceUpCards());
                 if (reservingCard == null) return promptAction(player);
                 return new ReserveCardAction(reservingCard);
-            // user keys in the wrong input
-            default:
+            case 4:
+                view.displayHelp();
+                return promptAction(player);
+            
+            // user keys in the wrong input 
+            default:    
                 System.out.println("Invalid number/input! Please try again.");
                 return promptAction(player);
         }

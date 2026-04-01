@@ -15,6 +15,18 @@ public class ConsoleManager {
         this.inputValidator = inputValidator;
     }
 
+
+    public void displayHelp() {
+        System.out.println("\n=== HELP / QUICK RULES ===");
+        System.out.println("- Goal: reach 15 prestige points first (depending on the config).");
+        System.out.println("- On your turn choose ONE action:");
+        System.out.println("  1) Take tokens: 3 different (e.g. RBK) OR 2 same (bank must have >=4).");
+        System.out.println("  2) Buy a card: pay cost using tokens, permanent bonuses reduce cost.");
+        System.out.println("  3) Reserve a card: put aside (max 3 reserved. Either reserve a face up card, or randomly reserve from the deck).");
+        System.out.println("- Token limit: if you exceed 10 tokens, you must return down to 10.");
+        System.out.println("=========================\n");
+    }
+
     public void displayMessage(String message) {
         System.out.println(message);
     }
@@ -259,29 +271,18 @@ public class ConsoleManager {
                 + ", 1 "
                 + GemType.BLACK.coloredName()
                 + " token");
-        String input = inputValidator.getValidString("Enter your choice : ");
+        System.out.println("Type 0 to cancel.");
+        String input = inputValidator.getValidString("Enter your choice: ");
+        if (input.equals("0")) return null;
 
         while (!validSelectGemsInput(input)) {
-            System.out.println("(Console Manager Line 207): Invalid Input!");
-            System.out.println("\nLegend:");
-            System.out.println("  " + GemType.RED.coloredChar() + " = " + GemType.RED.coloredName());
-            System.out.println("  " + GemType.BLUE.coloredChar() + " = " + GemType.BLUE.coloredName());
-            System.out.println("  " + GemType.WHITE.coloredChar() + " = " + GemType.WHITE.coloredName());
-            System.out.println("  " + GemType.GREEN.coloredChar() + " = " + GemType.GREEN.coloredName());
-            System.out.println("  " + GemType.BLACK.coloredChar() + " = " + GemType.BLACK.coloredName());
-            System.out.println(
-            "Example: Type 'RBK'"
-                + " to take 1 "
-                + GemType.RED.coloredName()
-                + ", 1 "
-                + GemType.BLUE.coloredName()
-                + ", 1 "
-                + GemType.BLACK.coloredName()
-                + " token");
-            input = inputValidator.getValidString("Enter your choice :");
+            displayError("Invalid choice. Use 2 or 3 letters from {R,B,W,G,K} (example: RBK).");
+            input = inputValidator.getValidString("Enter your choice (or 0 to cancel): ");
+            if (input.equals("0")) return null;
         }
 
         Map<GemType, Integer> chosenGems = new HashMap<>();
+        input = input.trim().toUpperCase();
         for (char c : input.toCharArray()) {
             GemType gemSelected = GemType.fromChar(c);
             chosenGems.put(gemSelected, chosenGems.getOrDefault(gemSelected, 0) + 1);
@@ -298,15 +299,9 @@ public class ConsoleManager {
 
 
         Set<Character> validCharacters = new HashSet<>(Arrays.asList('R', 'B', 'W', 'G', 'K'));
-        input = input.toUpperCase(); // case insensitive
-
         for (char c : input.toCharArray()) {
-
-            if (validCharacters.contains(c)) {
-                return true;
-            }
+            if (!validCharacters.contains(c)) return false;
         }
-
         return true;
     }
 
