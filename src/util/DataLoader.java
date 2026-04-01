@@ -4,6 +4,7 @@ import java.util.*;
 import model.*;
 
 public class DataLoader {
+    // Generated with Gemini 3.1 Pro, modified to assign the correct values from the csv to each variable
     public static List<DevelopmentCard> loadCards(String filePath) {
         List<DevelopmentCard> cards = new ArrayList<>();
         

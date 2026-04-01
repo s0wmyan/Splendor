@@ -2,6 +2,7 @@ package util;
 import java.io.*;
 import java.util.*;
 
+// Generated with Gemini 3.1 Pro, modified with a method to get an int property
 public class ConfigLoader {
     private Properties properties;
 
@@ -12,7 +13,6 @@ public class ConfigLoader {
             properties.load(input);
         } catch (IOException e) {
             System.out.println("Unable to load config file! " + e.getMessage());
-            // close app
         }
     }
 
@@ -30,7 +30,7 @@ public class ConfigLoader {
         String value = properties.getProperty(key);
         if (value != null) {
             try {
-                return Integer.parseInt(value.trim()); // .trim() removes accidental spaces!
+                return Integer.parseInt(value.trim()); 
             } catch (NumberFormatException e) {
                 System.out.println("Invalid number format for key: " + key + ". Using default value.");
             }
