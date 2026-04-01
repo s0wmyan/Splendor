@@ -38,7 +38,7 @@ public class ReserveCardAction implements Action {
             }
         } else {
             if (!board.containsFaceUpCard(card)) {
-                return "Card does not exist in the faceup cards";
+                return "Card does not exist in the faceup cards!";
             }
         }
         
