@@ -83,6 +83,9 @@ public class TurnManager{
         // if the action is valid, apply the action to the gameState
         action.apply(gameState);
 
+        // log it for analytics
+        player.incrementTurnsTaken();
+
         // call the checkNobleVisitCondition method to see if got lucky noble visit
         checkNobleVisitCondition(player, board);
         
@@ -317,6 +320,7 @@ public class TurnManager{
         return winConditionChecker.hasWinner(playerList);
     }
 
+    /*
     private void enforceTokenLimit(Player player, Board board) {
         while (player.getTotalTokenCount() > 10) {
             int over = player.getTotalTokenCount() - 10;
@@ -337,6 +341,42 @@ public class TurnManager{
             int pick = inputValidator.getValidInt("Select token to return: ", 1, options.size());
             GemType chosen = options.get(pick - 1);
 
+            player.getTokens().put(chosen, player.getTokens().get(chosen) - 1);
+            board.getBank().addTokenCount(chosen, 1);
+        }
+    }
+    */
+   
+   private void enforceTokenLimit(Player player, Board board) {
+        while (player.getTotalTokenCount() > 10) {
+            int over = player.getTotalTokenCount() - 10;
+            System.out.println(player.getName() + " has more than 10 tokens. Return " + over + " token(s).");
+
+            List<GemType> options = new ArrayList<>();
+            for (GemType type : GemType.values()) {
+                if (player.getTokens().getOrDefault(type, 0) > 0) {
+                    options.add(type);
+                }
+            }
+
+            GemType chosen;
+
+            if (player instanceof ComputerPlayer) {
+                // bot picks a random one to discard
+                chosen = options.get(new Random().nextInt(options.size()));
+                System.out.println(player.getName() + " automatically returned a " + chosen.name() + " token.\n");
+            } else {
+                // Human picks
+                System.out.println("Tokens: " + GemType.formatGemMap(player.getTokens()));
+                for (int i = 0; i < options.size(); i++) {
+                    System.out.println((i + 1) + ". " + options.get(i).name());
+                }
+
+                int pick = inputValidator.getValidInt("Select token to return: ", 1, options.size());
+                chosen = options.get(pick - 1);
+            }
+
+            // Apply discard
             player.getTokens().put(chosen, player.getTokens().get(chosen) - 1);
             board.getBank().addTokenCount(chosen, 1);
         }
