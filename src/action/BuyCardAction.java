@@ -31,34 +31,9 @@ public class BuyCardAction implements Action {
                 return "You did not reserve this card before!";
             }
         } else {
-            int level = card.getLevel();
-            List<DevelopmentCard> faceUp = new ArrayList<>(); 
-            switch (level) {
-                case 1:
-                    faceUp = board.getLevel1FaceUp();
-                    break;
-                case 2: 
-                    faceUp = board.getLevel2FaceUp();
-                    break;
-                case 3:
-                    faceUp = board.getLevel3FaceUp();
-                    break;
-                default:
-                    faceUp = null;
-                    break;
+            if (!board.containsCardInDeck(card)) {
+                return "This card does not exist in the deck!"; // which shouldn't happen because there is a check already happening 
             }
-
-            if (faceUp == null) {
-                return "Invalid card Level";
-            }
-
-            if (!faceUp.contains(card)) {
-                return "This card is not available on the board!";
-            }
-
-            // if (!board.containsCardInDeck(card)) {
-            //     return "This card does not exist in the deck!"; // which shouldn't happen 
-            // }
         }
 
         // check if player can afford the card
