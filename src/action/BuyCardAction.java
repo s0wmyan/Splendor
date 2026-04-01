@@ -32,7 +32,7 @@ public class BuyCardAction implements Action {
             }
         } else {
             if (!board.containsFaceUpCard(card)) {
-                return "This card does not exist in the deck!"; // which shouldn't happen because there is a check already happening 
+                return "Card does not exist in the faceup cards!"; // which shouldn't happen because there is a check already happening 
             }
         }
 
@@ -56,9 +56,6 @@ public class BuyCardAction implements Action {
             int bonus = player.getBonus(requiredToken);
             int remainingCost = requiredAmount - bonus;
 
-            int tokensOwned = player.getTokens().get(requiredToken);
-            int tokensToSpend = Math.min(remainingCost, tokensOwned);
-
             if (remainingCost <= 0) continue;
 
             // if (remainingCost > 0) {
@@ -78,10 +75,11 @@ public class BuyCardAction implements Action {
             //     }
             // }
 
-            if (remainingCost > 0) {
-                player.getTokens().put(requiredToken, tokensOwned - tokensToSpend);
-                board.getBank().addTokenCount(requiredToken, tokensToSpend);
-            }
+            int tokensOwned = player.getTokens().get(requiredToken);
+            int tokensToSpend = Math.min(remainingCost, tokensOwned);
+
+            player.getTokens().put(requiredToken, tokensOwned - tokensToSpend);
+            board.getBank().addTokenCount(requiredToken, tokensToSpend);
 
             int goldNeeded = remainingCost - tokensToSpend;
             if (goldNeeded > 0) {
