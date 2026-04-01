@@ -158,8 +158,8 @@ public class ConsoleManager {
     
 
     private String formatCardDetails(DevelopmentCard card) {
-        return "[Card ID: " + card.getID() + " | Cost: " + GemType.formatGemMap(card.getCost()) + 
-            " | Gives: " + card.getBonus().name() + " | Prestige Points: " + card.getPrestigePoints() + "]";
+        return "[Card ID: " + card.getID() + " | Cost: " + GemType.formatGemMap(card.getCost()) +
+            " | Gives: " + card.getBonus().coloredName() + " | Prestige Points: " + card.getPrestigePoints() + "]";
     }
 
     // Displays a list of cards and forces the user to pick a valid one
@@ -242,14 +242,42 @@ public class ConsoleManager {
         // show user what the bank has in stock
         System.out.println("\n--- Select Gems ---");
         System.out.println("Available in Bank: " + GemType.formatGemMap(bankSupply));
-        System.out.println("Note: You can take 3 different tokens, or 2 of the same (if the bank has at least 4).");
+        System.out.println("\nNote: You can take 3 different tokens, or 2 of the same token (if the bank has at least 4 of that token.).");
         
-        System.out.println("\nLegend: [R : Red, B - Blue, W - White, G - Green, K - Black] (e.g. Type 'RBK' to take 1 Red, 1 Blue, 1 Black token)");
+        System.out.println("\nLegend:");
+        System.out.println("  " + GemType.RED.coloredChar() + " = " + GemType.RED.coloredName());
+        System.out.println("  " + GemType.BLUE.coloredChar() + " = " + GemType.BLUE.coloredName());
+        System.out.println("  " + GemType.WHITE.coloredChar() + " = " + GemType.WHITE.coloredName());
+        System.out.println("  " + GemType.GREEN.coloredChar() + " = " + GemType.GREEN.coloredName());
+        System.out.println("  " + GemType.BLACK.coloredChar() + " = " + GemType.BLACK.coloredName());
+        System.out.println(
+            "Example: Type 'RBK'"
+                + " to take 1 "
+                + GemType.RED.coloredName()
+                + ", 1 "
+                + GemType.BLUE.coloredName()
+                + ", 1 "
+                + GemType.BLACK.coloredName()
+                + " token");
         String input = inputValidator.getValidString("Enter your choice : ");
 
         while (!validSelectGemsInput(input)) {
             System.out.println("(Console Manager Line 207): Invalid Input!");
-            System.out.println("\nLegend: [R : Red, B - Blue, W - White, G - Green, K - Black] (e.g. Type 'RBK' to take 1 Red, 1 Blue, 1 Black token)");
+            System.out.println("\nLegend:");
+            System.out.println("  " + GemType.RED.coloredChar() + " = " + GemType.RED.coloredName());
+            System.out.println("  " + GemType.BLUE.coloredChar() + " = " + GemType.BLUE.coloredName());
+            System.out.println("  " + GemType.WHITE.coloredChar() + " = " + GemType.WHITE.coloredName());
+            System.out.println("  " + GemType.GREEN.coloredChar() + " = " + GemType.GREEN.coloredName());
+            System.out.println("  " + GemType.BLACK.coloredChar() + " = " + GemType.BLACK.coloredName());
+            System.out.println(
+            "Example: Type 'RBK'"
+                + " to take 1 "
+                + GemType.RED.coloredName()
+                + ", 1 "
+                + GemType.BLUE.coloredName()
+                + ", 1 "
+                + GemType.BLACK.coloredName()
+                + " token");
             input = inputValidator.getValidString("Enter your choice :");
         }
 

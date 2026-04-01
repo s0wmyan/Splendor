@@ -15,7 +15,11 @@ public class Bank {
     
     public Bank(Map<GemType, Integer> tokens) {
         this();
-        if (tokens != null) this.tokens = tokens;
+        if (tokens != null) {
+            for (GemType type : GemType.values()) {
+                this.tokens.put(type, tokens.getOrDefault(type, 0));
+            }
+        }
     }
 
     public Map<GemType, Integer> getTokens() {
@@ -39,6 +43,10 @@ public class Bank {
     }
 
     public void removeTokenCount(GemType type, int count) {
-        setTokenCount(type, getTokenCount(type) - count);
+        int current = getTokenCount(type);
+        if (current < count) {
+            throw new IllegalStateException("Bank has insufficient tokens: " + type);
+        }
+        setTokenCount(type, current - count);
     }
 }

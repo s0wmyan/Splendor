@@ -11,6 +11,35 @@ public enum GemType {
     BLACK, 
     GOLD; // gold
 
+    public static final String RESET_CODE = "\u001B[0m"; // to tell the terminal to resest back to the default settings 
+
+    public String colorCode() {
+        return switch (this) {
+            case RED -> "\u001B[31m";
+            case BLUE -> "\u001B[34m";
+            case GREEN -> "\u001B[32m";
+            case WHITE -> "\u001B[97m";
+            case BLACK -> "\u001B[90m";
+            case GOLD -> "\u001B[33m";
+        };
+    }
+
+    public String coloredName() {
+        return colorCode() + name() + RESET_CODE;
+    }
+
+    public String coloredChar() {
+        char c = switch (this) {
+            case RED -> 'R';
+            case BLUE -> 'B';
+            case WHITE -> 'W';
+            case GREEN -> 'G';
+            case BLACK -> 'K';
+            case GOLD -> 'O';
+        };
+        return colorCode() + c + RESET_CODE; 
+    }
+
     public boolean isStandard() {
         return this != GOLD;
     }
@@ -36,7 +65,7 @@ public enum GemType {
         StringBuilder sb = new StringBuilder(); // Sb is faster than + and more memory efficient
         for (Map.Entry<GemType, Integer> entry : map.entrySet()) { // loop through gems and their counts
             if (entry.getValue() > 0) { // if count > 0, print gem
-                sb.append(entry.getKey().name()).append(": ").append(entry.getValue()).append(", ");
+                sb.append(entry.getKey().coloredName()).append(": ").append(entry.getValue()).append(", ");
             }
         }
         if (sb.length() > 0) sb.setLength(sb.length() - 2); // chop off ", " at the end if added entries

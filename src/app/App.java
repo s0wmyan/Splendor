@@ -77,7 +77,7 @@ public class App {
 
         int removeCount = nobles.size() - playerCount - 1;
         for (int i = 0; i < removeCount; i++) {
-            nobles.removeLast();
+            nobles.remove(nobles.size() - 1);
         }
 
         return nobles;
