@@ -279,7 +279,7 @@ public class ConsoleManager {
             }
         }
 
-        return false;
+        return true;
     }
 
     // Prompts the user to select up to 3 gems from the bank

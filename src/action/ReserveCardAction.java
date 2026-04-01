@@ -55,6 +55,7 @@ public class ReserveCardAction implements Action {
 
         if (luckyReserve) { // reserve from deck
             DevelopmentCard cardTaken = board.drawFromDeck(cardLevel);
+            this.card = cardTaken;
             player.getReservedCards().add(cardTaken);
         } else { // reserve from board
             board.removeFaceUpCard(cardLevel, card);
@@ -79,6 +80,6 @@ public class ReserveCardAction implements Action {
 
     public String getSuccessMessage(GameState state) {
         Player player = state.getCurrentPlayer();
-        return "Player " + player.getName() + " has reserved the card " + card;
+        return "Player " + player.getName() + " has reserved the card: " + card;
     }
 }

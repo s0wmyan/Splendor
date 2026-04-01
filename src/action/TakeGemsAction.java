@@ -70,6 +70,6 @@ public class TakeGemsAction implements Action {
     }
     public String getSuccessMessage(GameState state) {
         Player player = state.getCurrentPlayer();
-        return "Player " + player.getName() + " has bought the tokens (TODO: add tokens)";
+        return "Player " + player.getName() + " has taken tokens: " + GemType.formatGemMap(selections);
     }
 }

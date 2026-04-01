@@ -82,13 +82,15 @@ public class TurnManager{
 
         // if the action is valid, apply the action to the gameState
         action.apply(gameState);
-        
-        // return message result
-        view.displayMessage(action.getSuccessMessage(gameState));
 
         // call the checkNobleVisitCondition method to see if got lucky noble visit
         checkNobleVisitCondition(player, board);
         
+        enforceTokenLimit(player, board);
+
+        // return message result
+        view.displayMessage(action.getSuccessMessage(gameState));
+
         // Now that the player has taken action, you need to fill up the board (provided the player has a taken a card from the board)
         refillBoard(board);
 
@@ -150,7 +152,6 @@ public class TurnManager{
             case 3:
                 DevelopmentCard reservingCard = view.selectCard(player, gameState.getBoard().allFaceUpCards());
                 if (reservingCard == null) return promptAction(player);
-                
                 return new ReserveCardAction(reservingCard);
             // user keys in the wrong input
             default:
@@ -191,26 +192,7 @@ public class TurnManager{
 
     // Checks whether you are eligible to buy the card
     private boolean canBuy(Player player, DevelopmentCard card) {
-        Map<GemType, Integer> trueCost = getTrueCost(player, card);
-        Map<GemType, Integer> gems = player.getTokens();
-
-        for (Map.Entry<GemType, Integer> entry : trueCost.entrySet()) {
-            int required = entry.getValue();
-
-            // Look up the enum of the players gems. 
-            // If the player doesn't have any gems, then it will be defaulted to 0
-            int currentlyOwned = gems.getOrDefault(entry.getKey(), 0); 
-
-            int moreRequired = required - currentlyOwned;
-            if (moreRequired > 0) {
-
-                if (gems.getOrDefault(GemType.GOLD, 0) < moreRequired) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        return player.canAfford(card.getCost());
     }
 
     // Returns a map that maps the gems to the real cost, of a single card
@@ -310,6 +292,10 @@ public class TurnManager{
         return playerCount;
     }
 
+    public WinConditionChecker getWinConditionChecker() {
+        return winConditionChecker;
+    }
+
     public int getFirstPlayerIndex() {
         return firstPlayerIndex;
     }
@@ -326,5 +312,30 @@ public class TurnManager{
 
     public boolean hasWinner(List<Player> playerList) {
         return winConditionChecker.hasWinner(playerList);
+    }
+
+    private void enforceTokenLimit(Player player, Board board) {
+        while (player.getTotalTokenCount() > 10) {
+            int over = player.getTotalTokenCount() - 10;
+            System.out.println(player.getName() + " has more than 10 tokens. Return " + over + " token(s).");
+            System.out.println("Tokens: " + GemType.formatGemMap(player.getTokens()));
+
+            List<GemType> options = new ArrayList<>();
+            for (GemType type : GemType.values()) {
+                if (player.getTokens().getOrDefault(type, 0) > 0) {
+                    options.add(type);
+                }
+            }
+
+            for (int i = 0; i < options.size(); i++) {
+                System.out.println((i + 1) + ". " + options.get(i).name());
+            }
+
+            int pick = inputValidator.getValidInt("Select token to return: ", 1, options.size());
+            GemType chosen = options.get(pick - 1);
+
+            player.getTokens().put(chosen, player.getTokens().get(chosen) - 1);
+            board.getBank().addTokenCount(chosen, 1);
+        }
     }
 }

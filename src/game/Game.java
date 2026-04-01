@@ -57,7 +57,9 @@ public class Game {
 
     // main entry method
     public void run() {
-        WinConditionChecker checker = new WinConditionChecker();
+        // WinConditionChecker checker = new WinConditionChecker(); // old method, doesn't load from config
+        WinConditionChecker checker = turnManager.getWinConditionChecker();
+
         int playerCount = turnManager.getPlayerCount();
 
         boolean finalRound = false;
