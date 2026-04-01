@@ -37,7 +37,7 @@ public class ReserveCardAction implements Action {
                 return "No more cards left in deck to perform a lucky reserve!";
             }
         } else {
-            if (!board.containsCardInDeck(card)) {
+            if (!board.containsFaceUpCard(card)) {
                 return "Card does not exist in the faceup cards";
             }
         }

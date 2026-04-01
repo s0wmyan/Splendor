@@ -31,7 +31,7 @@ public class BuyCardAction implements Action {
                 return "You did not reserve this card before!";
             }
         } else {
-            if (!board.containsCardInDeck(card)) {
+            if (!board.containsFaceUpCard(card)) {
                 return "This card does not exist in the deck!"; // which shouldn't happen because there is a check already happening 
             }
         }

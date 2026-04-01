@@ -75,7 +75,7 @@ public class Board {
         }
     }
 
-    public boolean containsCardInDeck(DevelopmentCard card) {
+    public boolean containsFaceUpCard(DevelopmentCard card) {
         int level = card.getLevel();
         List<DevelopmentCard> list = switch (level) {
             case 1 -> level1FaceUp;
