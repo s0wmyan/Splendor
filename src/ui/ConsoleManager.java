@@ -97,14 +97,6 @@ public class ConsoleManager {
         displayAllPlayersState(state); // Player details 
     }
 
-    private void sleep(int seconds) {
-        try {
-            Thread.sleep(seconds * 1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); 
-        }
-    }
-
     public void displayAllPlayersState(GameState state) {
         // displays all players state
         System.out.println("=== CURRENT PLAYERS STATE ===");
@@ -165,6 +157,15 @@ public class ConsoleManager {
         }
 
         return playerDetails;
+    }
+
+        // prompt for the game mode, vs computers or humans?
+    public int promptForGameMode() {
+        System.out.println("\n=== Select game mode ===");
+        System.out.println("1. Party (vs Humans)");
+        System.out.println("2. Solo (vs Computers)");
+
+        return inputValidator.getValidInt("Select mode (1-2): ", 1, 2);
     }
 
 
@@ -306,15 +307,6 @@ public class ConsoleManager {
         return inputValidator.isValidBirthdayDDMMYYYY(input);
     }
 
-    // prompt for the game mode, vs computers or humans?
-    public int promptForGameMode() {
-        System.out.println("\n=== Select game mode ===");
-        System.out.println("1. Party (vs Humans)");
-        System.out.println("2. Solo (vs Computers)");
-
-        return inputValidator.getValidInt("Select mode (1-2): ", 1, 2);
-    }
-
     // Print post match analytics
     public void printGameStats(List<Player> players, Player winner) {
         System.out.println("\n=======================================================================");
@@ -338,6 +330,14 @@ public class ConsoleManager {
                             p.getTotalGemsCollected(), p.getTurnsTaken());
         }
         System.out.println("=======================================================================\n");
+    }
+
+    private void sleep(int seconds) {
+        try {
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); 
+        }
     }
     
 }
