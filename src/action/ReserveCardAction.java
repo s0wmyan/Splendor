@@ -1,6 +1,7 @@
 package action;
 
 import model.*;
+import util.CardUtil;
 import game.*;
 import java.util.*;
 
@@ -74,6 +75,6 @@ public class ReserveCardAction implements Action {
 
     public String getSuccessMessage(GameState state) {
         Player player = state.getCurrentPlayer();
-        return "Player " + player.getName() + " has reserved the card: " + card;
+        return "Player " + player.getName() + " has reserved the card: " + CardUtil.formatCardDetails(card);
     }
 }

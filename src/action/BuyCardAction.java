@@ -3,6 +3,7 @@ package action;
 import game.*;
 import java.util.*;
 import model.*;
+import util.CardUtil;
 
 
 public class BuyCardAction implements Action {
@@ -58,23 +59,6 @@ public class BuyCardAction implements Action {
 
             if (remainingCost <= 0) continue;
 
-            // if (remainingCost > 0) {
-            //     int tokensOwned = player.getTokens().get(requiredToken);
-                
-            //     int tokensToSpend = (remainingCost > tokensOwned) ? tokensOwned : remainingCost;
-            //     player.getTokens().put(requiredToken, tokensOwned - tokensToSpend);
-                
-            //     board.getBank().addTokenCount(requiredToken, tokensToSpend);
-                
-            //     int goldNeeded = remainingCost - tokensToSpend;
-            //     if (goldNeeded > 0) {
-            //         int goldOwned = player.getTokens().get(GemType.GOLD);
-            //         player.getTokens().put(GemType.GOLD, goldOwned - goldNeeded);
-                    
-            //         board.getBank().addTokenCount(GemType.GOLD, goldNeeded);
-            //     }
-            // }
-
             int tokensOwned = player.getTokens().get(requiredToken);
             int tokensToSpend = Math.min(remainingCost, tokensOwned);
 
@@ -105,31 +89,6 @@ public class BuyCardAction implements Action {
 
     public String getSuccessMessage(GameState state) {
         Player player = state.getCurrentPlayer();
-        return "Player " + player.getName() + " has bought the card: " + card;
+        return "Player " + player.getName() + " has bought the card: " + CardUtil.formatCardDetails(card);
     }
-
-    // supposed canAfford method (transfered to Player class)
-    // private boolean canAfford(Player player) {
-        
-    //     int goldNeeded = 0;
-    //     Map<GemType, Integer> cardCost = card.getCost();
-
-    //     for (Map.Entry<GemType, Integer> entry : cardCost.entrySet()) {
-    //         GemType requiredToken = entry.getKey();
-    //         int requiredAmount = entry.getValue();
-
-    //         int bonus = player.getBonus(requiredToken); 
-    //         int remainingCost = requiredAmount - bonus;
-    //         if (remainingCost <= 0) {
-    //             continue; 
-    //         }
-
-    //         int tokensOwned = player.getTokens().get(requiredToken);
-    //         if (tokensOwned < remainingCost) {
-    //             goldNeeded += (remainingCost - tokensOwned);
-    //         }
-    //     }
-
-    //     return player.getTokens().get(GemType.GOLD) >= goldNeeded;
-    // }
 }

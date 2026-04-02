@@ -121,7 +121,7 @@ public class TurnManager{
                 }
 
                 // player now selects the card
-                DevelopmentCard buyingCard = view.selectCard(player, boardCards, reservedCards);
+                DevelopmentCard buyingCard = view.selectCard(player, boardCards, reservedCards, false);
                 if (buyingCard == null) return promptAction(player);
                 
                 // // does the player select a currently reserved card?
@@ -131,9 +131,15 @@ public class TurnManager{
                 return new BuyCardAction(buyingCard, isReserved);
             // ReserveCardAction
             case 3:
-                DevelopmentCard reservingCard = view.selectCard(player, gameState.getBoard().allFaceUpCards());
-                if (reservingCard == null) return promptAction(player);
-                return new ReserveCardAction(reservingCard);
+                int reserveChoice = view.promptReserveType();
+                if (reserveChoice == 1) {
+                    DevelopmentCard reservingCard = view.selectCard(player, gameState.getBoard().allFaceUpCards());
+                    if (reservingCard == null) return promptAction(player);
+                    return new ReserveCardAction(reservingCard);
+                }
+
+                int tier = view.promptBlindReserveTier();
+                return new ReserveCardAction(tier);
             case 4:
                 view.displayHelp();
                 return promptAction(player);

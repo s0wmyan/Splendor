@@ -6,6 +6,7 @@ import model.DevelopmentCard;
 import model.GemType;
 import model.Noble;
 import model.Player;
+import util.CardUtil;
 
 public class ConsoleManager {
     private InputValidator inputValidator;
@@ -84,7 +85,7 @@ public class ConsoleManager {
     // "1. Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE"
     public void displayCard(List<DevelopmentCard> deck) {
         for (DevelopmentCard card : deck) {
-            System.out.println(formatCardDetails(card));
+            System.out.println(CardUtil.formatCardDetails(card));
         }
     }
 
@@ -130,6 +131,17 @@ public class ConsoleManager {
         return inputValidator.getValidInt("Enter Player Count (2/4) : ", 2, 4);
     }
 
+    public int promptReserveType() {
+        System.out.println("(1): Reserve a face-up card");
+        System.out.println("(2): Blind reserve from a deck (Tier 1-3)");
+        System.out.println("");
+        return inputValidator.getValidInt("Select reserve type (1-2): ", 1, 2);
+    }
+
+    public int promptBlindReserveTier() {
+        return inputValidator.getValidInt("Select tier to blind reserve (1-3): ", 1, 3);
+    }
+
     // "name": "dd/mm/yyyy" format 
     // Can't have the same name, else it will override. 
     
@@ -155,30 +167,27 @@ public class ConsoleManager {
         return playerDetails;
     }
 
-    
 
-    private String formatCardDetails(DevelopmentCard card) {
-        return "[Card ID: " + card.getID() + " | Cost: " + GemType.formatGemMap(card.getCost()) +
-            " | Gives: " + card.getBonus().coloredName() + " | Prestige Points: " + card.getPrestigePoints() + "]";
-    }
-
-    // Displays a list of cards and forces the user to pick a valid one
-    public DevelopmentCard selectCard(Player player, List<DevelopmentCard> boardCards, List<DevelopmentCard> reservedCards) {
+    // Displays a list of cards 
+    public DevelopmentCard selectCard(Player player, List<DevelopmentCard> boardCards, List<DevelopmentCard> reservedCards, boolean selectReserved) {
         // if no cards, let the fella know and just exit 
         if (boardCards.isEmpty() && reservedCards.isEmpty()) {
             displayMessage("No cards available to select.");
             return null;
         }
+        if (selectReserved) {
+            System.out.println("\n--- Reserve a Card ---");
+        } else {
+            System.out.println("\n--- Select a Card ---");
+        }
 
-        System.out.println("\n--- Select a Card ---");
         // Print the cards with numbers next to them (1, 2, 3...)
-
         List<DevelopmentCard> allCardsList = new ArrayList<>();
 
         for (int i = 0; i < boardCards.size(); i++) {
             DevelopmentCard card = boardCards.get(i);
             // Print format: "1. Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE"
-            System.out.println((i + 1) + ". " + formatCardDetails(card)); // added card id
+            System.out.println((i + 1) + ". " + CardUtil.formatCardDetails(card)); // added card id
             allCardsList.add(boardCards.get(i));
         }
         System.out.println();
@@ -186,7 +195,7 @@ public class ConsoleManager {
         if (!reservedCards.isEmpty()) {
             System.out.println("\n--- Your reserved cards ---");
             for (int i = 0; i < reservedCards.size(); i++) {
-                System.out.println((boardCards.size() + i + 1) + ". " + formatCardDetails(reservedCards.get(i)));
+                System.out.println((boardCards.size() + i + 1) + ". " + CardUtil.formatCardDetails(reservedCards.get(i)));
                 allCardsList.add(reservedCards.get(i));
             }
         }
@@ -206,7 +215,7 @@ public class ConsoleManager {
         // method to parse card into ( Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE ) string. 
         DevelopmentCard cardSelected = allCardsList.get(choice - 1);
         System.out.println("Choice " + choice + " selected!");
-        System.out.println("Player " + player.getName() + "has reserved the card: " + formatCardDetails(cardSelected));
+        // System.out.println("Player " + player.getName() + " has reserved the card: " + CardUtil.formatCardDetails(cardSelected)); => shift to reservecardaction 
         
         // 0-index array, subtract 1 from choice from allCardsList
         return cardSelected;
@@ -234,7 +243,7 @@ public class ConsoleManager {
     }
 
     public DevelopmentCard selectCard(Player player, List<DevelopmentCard> boardCards) {
-        return selectCard(player, boardCards, new ArrayList<>());
+        return selectCard(player, boardCards, new ArrayList<>(), true);
     }
 
     // alternative to selectgems
