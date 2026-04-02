@@ -149,12 +149,11 @@ public class TurnManager{
     // Produces an List<DevelopmentCard> to show what cards you can afford
     private List<DevelopmentCard> canBuyFromBoard(Player player) {
         List<DevelopmentCard> canBuyList = new ArrayList<>();
-
         List<DevelopmentCard> allFaceUpCards = gameState.getBoard().allFaceUpCards();
 
         // Loop through all the cards that are faceup right now on the board
         for (DevelopmentCard card: allFaceUpCards) {
-            if (canBuy(player, card)) {
+            if (player.canAfford(card.getCost())) {
                 canBuyList.add(card);
             }
         }
@@ -164,21 +163,15 @@ public class TurnManager{
     // Returns a List<DevelopmentCard> to show what cards can be bought from your reservedCards
     private List<DevelopmentCard> canBuyFromReserved(Player player) {
         List<DevelopmentCard> canBuyList = new ArrayList<>();
-
         List<DevelopmentCard> reservedCards = player.getReservedCards();
 
         // Loop through the reservedCards that the player currently has 
         for (DevelopmentCard card: reservedCards) {
-            if (canBuy(player, card)) {
+            if (player.canAfford(card.getCost())) {
                 canBuyList.add(card);
             }
         }
         return canBuyList;
-    }
-
-    // Checks whether you are eligible to buy the card
-    private boolean canBuy(Player player, DevelopmentCard card) {
-        return player.canAfford(card.getCost());
     }
 
     // Has a list of eligibleNobles that the player can get
@@ -207,17 +200,14 @@ public class TurnManager{
         Map<GemType, Integer> bonuses = player.getBonuses();
 
         for (Noble noble : nobles) {
-
             boolean canVisit = true;
-
             Map<GemType, Integer> requirements = noble.getCost();
             
             for (Map.Entry<GemType, Integer> entry : requirements.entrySet()) {
-
                 GemType gemType = entry.getKey();
                 int requiredValue = entry.getValue();
                 int currentValue = bonuses.getOrDefault(gemType, 0);
-
+                
                 if (currentValue < requiredValue) {
                     canVisit = false;
                     break;
@@ -241,7 +231,6 @@ public class TurnManager{
     }
 
     private void advanceToNextPlayer() {
-        // currentPlayerIndex = (currentPlayerIndex + 1) % playerCount;
         gameState.setPlayerIndex((gameState.getCurrentPlayerIndex() + 1) % playerCount);
     }
    

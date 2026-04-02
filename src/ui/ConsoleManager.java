@@ -117,9 +117,9 @@ public class ConsoleManager {
         System.out.println("\n--- " + player.getName() + " ---");
         System.out.println("Prestige Points: " + player.getPrestigePoints());
         System.out.println("Tokens: " + GemType.formatGemMap(player.getTokens()));
-        // reserved cards, permanent bonuses, cards in hand? 
-        System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3"); // only the size?? 
         System.out.println("Permanent Bonuses: " + GemType.formatGemMap(player.getBonuses())); // is this even working?
+        System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3"); // only the size?? 
+        displayCard(player.getReservedCards());
         System.out.println("Purchased Cards: "); 
         displayCard(player.getPurchasedCards());
 

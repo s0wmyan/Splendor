@@ -69,6 +69,9 @@ public enum GemType {
             }
         }
         if (sb.length() > 0) sb.setLength(sb.length() - 2); // chop off ", " at the end if added entries
+        if (sb.length() == 0) {
+            return "None";
+        }
         return sb.toString();
     }
 }

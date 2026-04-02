@@ -61,15 +61,6 @@ public class App {
         return deck;
     }
 
-    // // helper method to create card objects 
-    // private static DevelopmentCard card(int level, GemType bonus, int points, Object... costs) {
-    //     Map<GemType, Integer> cost = new EnumMap<>(GemType.class);
-    //     for (int i = 0; i < costs.length; i += 2) {
-    //         cost.put((GemType) costs[i], (Integer) costs[i + 1]);
-    //     }
-    //     return new DevelopmentCard(level, bonus, cost, points);
-    // }
-
     private static List<Noble> buildNobles(int playerCount, ConfigLoader config) {
         String filePath = config.getFilePath("nobles");
         List<Noble> nobles = DataLoader.loadNobles(filePath);  
@@ -82,15 +73,6 @@ public class App {
 
         return nobles;
     }
-
-    // // helper method to create noble objects 
-    // private static Noble noble(String name, Object... costs) {
-    //     Map<GemType, Integer> cost = new EnumMap<>(GemType.class);
-    //     for (int i = 0; i < costs.length; i += 2) {
-    //         cost.put((GemType) costs[i], (Integer) costs[i + 1]);
-    //     }
-    //     return new Noble(name, cost, 3);
-    // }
 
     public static void main(String[] args) {
         // initialization
@@ -165,56 +147,6 @@ public class App {
                 System.out.println("Player " + (i + 1) + " - " + players.get(i).getName()); // dont use toString here as it will print out the bogus birthday as well
             }
         }
-
-        // old version
-        /*
-        // Initialize game state
-            // initialize players -> initialize board -> initialize game state 
-
-        int playerCount = cManager.promptForPlayerCount();
-
-        System.out.println("No. of Players: " + playerCount);
-        Map<String, String> playerDetails = cManager.promptForPlayerDetails(playerCount);
-
-        List<Player> players = new ArrayList<>();
-        int index = 1;
-
-        for (Map.Entry<String, String> entry : playerDetails.entrySet()) {
-            String playerName = entry.getKey();
-            String playerBirthdayString = entry.getValue(); // parse birthday  (DD/MM/YYYY)
-            int day = Integer.parseInt(playerBirthdayString.substring(0, 2));
-            int month = Integer.parseInt(playerBirthdayString.substring(3, 5));
-            int year = Integer.parseInt(playerBirthdayString.substring(6, 10));
-
-            Birthday playerBirthday = new Birthday(day, month, year);
-
-            // ask what type of Player it is: computer or human
-            boolean isComputer = cManager.promptForComputerPlayer(playerName);
-            Player player;
-
-            // initialize player
-            if (isComputer) {
-                player = new ComputerPlayer(playerName, playerBirthday);
-            } else {
-                player = new HumanPlayer(playerName, playerBirthday);
-            }
-
-            // add the player and print
-            players.add(player);
-
-            // sort the list of players, youngest first
-            players.sort(
-                Comparator.comparing(Player::getBirthday)
-                .reversed()                              // youngest (latest date) first
-                .thenComparing(Player::getName));        
-
-            // print turn order
-            System.out.println("\nOffical turn order");
-            for (int i = 0; i < players.size(); i++) {
-                System.out.println("Player " + (i + 1) + " - " + players.get(i).toString());
-            }
-        }
-        */
 
         // build board 
         Board board = new Board(buildDeck(1, config), buildDeck(2, config), buildDeck(3, config), buildNobles(playerCount, config));
