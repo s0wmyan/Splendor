@@ -53,6 +53,7 @@ public class TurnManager{
         String message = action.validate(gameState);
         while (message != null) {
             view.displayError(message);
+            view.displayGame(gameState); // reset display
             action = promptAction(player); // continue prompting until it is valid 
             message = action.validate(gameState); // try again
         }    
