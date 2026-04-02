@@ -119,6 +119,19 @@ public class ConsoleManager {
         // cards in hand? 
     }
 
+    public int promptActionChoice(Player player) {
+        
+        System.out.println("Your turn, " + player.getName());
+        System.out.println("(1): Take tokens");
+        System.out.println("(2): Buy a card");
+        System.out.println("(3): Reserve a card");
+        System.out.println("(4): Help / Rules");
+        System.out.println("");
+
+        return inputValidator.getValidInt("Select an action (1-4): ", 1, 4);
+    }
+
+
     public int promptForPlayerCount() {
         return inputValidator.getValidInt("Enter Player Count (2/4) : ", 2, 4);
     }

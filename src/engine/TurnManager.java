@@ -92,16 +92,7 @@ public class TurnManager{
     }
 
     public Action promptHumanAction(Player player) {
-
-        // prompts the user for an action input
-        System.out.println("Your turn, " + player.getName());
-        System.out.println("(1): Take tokens");
-        System.out.println("(2): Buy a card");
-        System.out.println("(3): Reserve a card");
-        System.out.println("(4): Help / Rules");
-        System.out.println("");
-
-        int choice = inputValidator.getValidInt("Select an action (1-4): ", 1, 4);
+        int choice = view.promptActionChoice(player);
 
         switch (choice) {
             // TakeGemAction
