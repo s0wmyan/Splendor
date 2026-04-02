@@ -157,7 +157,7 @@ public class App {
         int winningPrestigeRequirement = config.getIntProperty("winningConditionPoints", 15);
         WinConditionChecker winConditionChecker = new WinConditionChecker(winningPrestigeRequirement);
 
-        TurnManager turnManager = new TurnManager(inputValidator, cManager, winConditionChecker, playerCount, firstPlayerIndex); 
+        TurnManager turnManager = new TurnManager(inputValidator, cManager, winConditionChecker, playerCount); 
 
         GameState gameState = new GameState(board, players);
         Game game = new Game(gameState, turnManager);

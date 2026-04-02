@@ -28,7 +28,7 @@ package model;
     }
 
     public String toString() {
-        return "" + String.format("%02d", day) + "/" + String.format("%02d", month) + "/" + String.format("%02d", year);
+        return String.format("%02d/%02d/%04d", day, month, year);
     }
     
     @Override

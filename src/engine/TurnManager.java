@@ -15,18 +15,18 @@ import ui.*;
 
 public class TurnManager{
 
+    private static final int MAX_TOKENS = 10;
+
     private InputValidator inputValidator;
     private ConsoleManager view;
     private GameState gameState;
     private WinConditionChecker winConditionChecker;
 
     private final int playerCount;
-    private final int firstPlayerIndex;
 
-    // missing a constructor 
     public TurnManager(InputValidator inputValidator, ConsoleManager view, 
                    WinConditionChecker winConditionChecker,
-                   int playerCount, int firstPlayerIndex) {
+                   int playerCount) {
         if (playerCount < 2) {
             throw new IllegalArgumentException("At least 2 players required");
         }
@@ -34,7 +34,6 @@ public class TurnManager{
         this.view = view;
         this.winConditionChecker = winConditionChecker;
         this.playerCount = playerCount;
-        this.firstPlayerIndex = firstPlayerIndex;
     }
 
     public void executeTurn(GameState gameState) {
@@ -240,9 +239,10 @@ public class TurnManager{
     }
    
    private void enforceTokenLimit(Player player, Board board) {
-        while (player.getTotalTokenCount() > 10) {
-            int over = player.getTotalTokenCount() - 10;
-            System.out.println(player.getName() + " has more than 10 tokens. Return " + over + " token(s).");
+        Random random = new Random();
+        while (player.getTotalTokenCount() > MAX_TOKENS) {
+            int over = player.getTotalTokenCount() - MAX_TOKENS;
+            System.out.println(player.getName() + " has more than " + MAX_TOKENS + " tokens. Return " + over + " token(s).");
 
             List<GemType> options = new ArrayList<>();
             for (GemType type : GemType.values()) {
@@ -254,11 +254,9 @@ public class TurnManager{
             GemType chosen;
 
             if (player instanceof ComputerPlayer) {
-                // bot picks a random one to discard
-                chosen = options.get(new Random().nextInt(options.size()));
+                chosen = options.get(random.nextInt(options.size()));
                 System.out.println(player.getName() + " automatically returned a " + chosen.name() + " token.\n");
             } else {
-                // Human picks
                 System.out.println("Tokens: " + GemType.formatGemMap(player.getTokens()));
                 for (int i = 0; i < options.size(); i++) {
                     System.out.println((i + 1) + ". " + options.get(i).name());
@@ -268,8 +266,7 @@ public class TurnManager{
                 chosen = options.get(pick - 1);
             }
 
-            // Apply discard
-            player.getTokens().put(chosen, player.getTokens().get(chosen) - 1);
+            player.removeTokens(Map.of(chosen, 1));
             board.getBank().addTokenCount(chosen, 1);
         }
     }

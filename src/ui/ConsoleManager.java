@@ -269,12 +269,12 @@ public class ConsoleManager {
                 + GemType.BLACK.coloredName()
                 + " token");
         System.out.println("Type 0 to cancel.");
-        String input = inputValidator.getValidString("Enter your choice: ");
+        String input = inputValidator.getValidString("Enter your choice: ").toUpperCase();
         if (input.equals("0")) return null;
 
         while (!validSelectGemsInput(input)) {
             displayError("Invalid choice. Use 2 or 3 letters from {R,B,W,G,K} (example: RBK).");
-            input = inputValidator.getValidString("Enter your choice (or 0 to cancel): ");
+            input = inputValidator.getValidString("Enter your choice (or 0 to cancel): ").toUpperCase();
             if (input.equals("0")) return null;
         }
 
