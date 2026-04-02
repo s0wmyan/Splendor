@@ -98,12 +98,6 @@ public class BuyCardAction implements Action {
         } else {
             int level = card.getLevel();
             board.removeFaceUpCard(level, card);
-
-            // refill board if deck still has cards
-            if (board.hasCardsInDeck(level)) {
-                board.refillLevel(level);
-
-            }
         }
         player.addPurchasedCard(card);
 

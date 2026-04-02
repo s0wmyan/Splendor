@@ -110,7 +110,6 @@ public class Board {
         };
 
         list.remove(card);
-        System.out.println("(Board.java, Line 100) : Removed card from deck");
     }
 
     public DevelopmentCard drawFromDeck(int level) {

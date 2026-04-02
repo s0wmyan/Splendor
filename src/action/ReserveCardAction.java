@@ -60,12 +60,6 @@ public class ReserveCardAction implements Action {
         } else { // reserve from board
             board.removeFaceUpCard(cardLevel, card);
             player.getReservedCards().add(card);
-
-            // refill board if deck still has cards
-            if (board.hasCardsInDeck(cardLevel)) {
-                board.refillLevel(cardLevel);
-            }
-
         }
 
         // give player a gold token if bank still has it

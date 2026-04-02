@@ -93,7 +93,7 @@ public class App {
     // }
 
     public static void main(String[] args) {
-        // get input for the number of players etc
+        // initialization
         Scanner sc = new Scanner(System.in);
         InputValidator inputValidator = new InputValidator(sc);
         ConsoleManager cManager = new ConsoleManager(inputValidator);
@@ -216,11 +216,12 @@ public class App {
         }
         */
 
+        // build board 
         Board board = new Board(buildDeck(1, config), buildDeck(2, config), buildDeck(3, config), buildNobles(playerCount, config));
         seedBank(board.getBank(), playerCount, config);
         board.refillAll();
 
-        // setup win condition
+        // setup win condition from config 
         int winningPrestigeRequirement = config.getIntProperty("winningConditionPoints", 15);
         WinConditionChecker winConditionChecker = new WinConditionChecker(winningPrestigeRequirement);
 
@@ -231,9 +232,9 @@ public class App {
 
         gameState.setPlayerIndex(firstPlayerIndex);
 
-        // prompt for action until someone wins 
+        // run the game 
         System.out.println("Game is Starting !");
-        game.run(); // => needs to be done. 
+        game.run(); 
 
         Player winner = gameState.getCurrentPlayer();
 

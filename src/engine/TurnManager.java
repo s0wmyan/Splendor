@@ -22,7 +22,6 @@ public class TurnManager{
 
     private final int playerCount;
     private final int firstPlayerIndex;
-    private int currentPlayerIndex;
 
     // missing a constructor 
     public TurnManager(InputValidator inputValidator, ConsoleManager view, 
@@ -36,34 +35,15 @@ public class TurnManager{
         this.winConditionChecker = winConditionChecker;
         this.playerCount = playerCount;
         this.firstPlayerIndex = firstPlayerIndex;
-        this.currentPlayerIndex = firstPlayerIndex;
     }
 
     public void executeTurn(GameState gameState) {
-
         this.gameState = gameState;
-
-        // runs a loop that continues
-        // this needs to be under game
-        // and needs to have 
-        // private GameState gameState;
-        // while (!winConditionChecker.hasWinner(gameState.getPlayers())) {
-        //     executeTurn(gameState);
-        // }
-
-        // get player
-        // Player player = gameState.getPlayers().get(currentPlayerIndex); // replace
         Player player = gameState.getCurrentPlayer();
 
 
         // display current board layout
         view.displayGame(gameState);
-
-        // display hand
-        // view.displayHand(player);
-
-        // display player
-        // view.displayPlayerStatus(player); // includes hand too
 
         // get action from player
         Action action = promptAction(player); 
@@ -75,7 +55,6 @@ public class TurnManager{
         String message = action.validate(gameState);
         while (message != null) {
             view.displayError(message);
-            // System.out.println("Invalid action! Try another action.\n"); 
             action = promptAction(player); // continue prompting until it is valid 
             message = action.validate(gameState); // try again
         }    
@@ -89,13 +68,14 @@ public class TurnManager{
         // call the checkNobleVisitCondition method to see if got lucky noble visit
         checkNobleVisitCondition(player, board);
         
+        // ensure player cannot have >10 tokens 
         enforceTokenLimit(player, board);
 
         // return message result
         view.displayMessage(action.getSuccessMessage(gameState));
 
-        // Now that the player has taken action, you need to fill up the board (provided the player has a taken a card from the board)
-        refillBoard(board);
+        // Now that the player has taken action, you need to fill up the board. If no card taken, no cards will be refilled based on the method
+        board.refillAll();
 
         // get the next player 
         advanceToNextPlayer();
@@ -167,7 +147,7 @@ public class TurnManager{
     }
 
     // Produces an List<DevelopmentCard> to show what cards you can afford
-    public List<DevelopmentCard> canBuyFromBoard(Player player) {
+    private List<DevelopmentCard> canBuyFromBoard(Player player) {
         List<DevelopmentCard> canBuyList = new ArrayList<>();
 
         List<DevelopmentCard> allFaceUpCards = gameState.getBoard().allFaceUpCards();
@@ -182,7 +162,7 @@ public class TurnManager{
     }
 
     // Returns a List<DevelopmentCard> to show what cards can be bought from your reservedCards
-    public List<DevelopmentCard> canBuyFromReserved(Player player) {
+    private List<DevelopmentCard> canBuyFromReserved(Player player) {
         List<DevelopmentCard> canBuyList = new ArrayList<>();
 
         List<DevelopmentCard> reservedCards = player.getReservedCards();
@@ -201,39 +181,16 @@ public class TurnManager{
         return player.canAfford(card.getCost());
     }
 
-    // Returns a map that maps the gems to the real cost, of a single card
-    public Map<GemType, Integer> getTrueCost(Player player, DevelopmentCard card) { // change name to something else
-        Map<GemType, Integer> trueCost = new HashMap<>();
-        Map<GemType, Integer> bonuses = player.getBonuses();
-
-        for (Map.Entry<GemType, Integer> entry : card.getCost().entrySet()) { 
-            GemType gemType = entry.getKey();
-            int cost = entry.getValue();
-            int bonus = bonuses.getOrDefault(gemType, 0);
-
-            // The trueCost cannot go below 0
-            int remaining = cost - bonus > 0 ? cost - bonus : 0;
-
-            if (remaining > 0) {
-                trueCost.put(gemType, remaining);
-            }
-        }
-
-        return trueCost;
-    }
-
     // Has a list of eligibleNobles that the player can get
     // Adds nobles to their stash and removes from the board
-    public void checkNobleVisitCondition(Player player, Board board) {
+    private void checkNobleVisitCondition(Player player, Board board) {
         List<Noble> eligibleList = getEligibleNobles(player, board.getNobles());
 
         if (eligibleList.size() == 1) {
-
             Noble noble = eligibleList.get(0);
             player.addNoble(noble); 
             board.removeNoble(noble);
         } else if (eligibleList.size() > 1) {
-
             // since the player has satisfied the conditions of multiple nobles,
             // he needs to select one of the nobles that he satisfied to add to his own
             Noble noble = view.selectNoble(eligibleList);
@@ -275,25 +232,6 @@ public class TurnManager{
         return eligible;
     }
 
-    // Refill the board once a card(s) has been taken off the board
-    public void refillBoard(Board board) {
-        List<DevelopmentCard> level1FaceUp = board.getLevel1FaceUp();
-        List<DevelopmentCard> level2FaceUp = board.getLevel2FaceUp();
-        List<DevelopmentCard> level3FaceUp = board.getLevel3FaceUp();
-        
-        while (level1FaceUp.size() < 4 && !board.getDeck(1).isEmpty()) {
-            board.refillLevel(1);
-        }
-
-        while (level2FaceUp.size() < 4 && !board.getDeck(2).isEmpty()) {
-            board.refillLevel(2);
-        }
-
-        while (level3FaceUp.size() < 4 && !board.getDeck(3).isEmpty()) {
-            board.refillLevel(3);
-        }
-    }
-
     public int getPlayerCount() {
         return playerCount;
     }
@@ -302,50 +240,10 @@ public class TurnManager{
         return winConditionChecker;
     }
 
-    public int getFirstPlayerIndex() {
-        return firstPlayerIndex;
-    }
-
-    public int getCurrentPlayerIndex() {
-        return gameState.getCurrentPlayerIndex();
-        // return currentPlayerIndex;
-    }
-
-    public void advanceToNextPlayer() {
+    private void advanceToNextPlayer() {
         // currentPlayerIndex = (currentPlayerIndex + 1) % playerCount;
         gameState.setPlayerIndex((gameState.getCurrentPlayerIndex() + 1) % playerCount);
     }
-
-    public boolean hasWinner(List<Player> playerList) {
-        return winConditionChecker.hasWinner(playerList);
-    }
-
-    /*
-    private void enforceTokenLimit(Player player, Board board) {
-        while (player.getTotalTokenCount() > 10) {
-            int over = player.getTotalTokenCount() - 10;
-            System.out.println(player.getName() + " has more than 10 tokens. Return " + over + " token(s).");
-            System.out.println("Tokens: " + GemType.formatGemMap(player.getTokens()));
-
-            List<GemType> options = new ArrayList<>();
-            for (GemType type : GemType.values()) {
-                if (player.getTokens().getOrDefault(type, 0) > 0) {
-                    options.add(type);
-                }
-            }
-
-            for (int i = 0; i < options.size(); i++) {
-                System.out.println((i + 1) + ". " + options.get(i).name());
-            }
-
-            int pick = inputValidator.getValidInt("Select token to return: ", 1, options.size());
-            GemType chosen = options.get(pick - 1);
-
-            player.getTokens().put(chosen, player.getTokens().get(chosen) - 1);
-            board.getBank().addTokenCount(chosen, 1);
-        }
-    }
-    */
    
    private void enforceTokenLimit(Player player, Board board) {
         while (player.getTotalTokenCount() > 10) {
