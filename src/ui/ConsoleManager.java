@@ -321,7 +321,7 @@ public class ConsoleManager {
     // Print post match analytics
     public void printGameStats(List<Player> players, Player winner) {
         System.out.println("\n=======================================================================");
-        System.out.println("             POST MATCH ANALYTICS             ");
+        System.out.println("                         POST-MATCH ANALYTICS                          ");
         System.out.println("=======================================================================");
 
         System.out.println("🏅 Winner: " + winner.getName() + " 🏅\n");
