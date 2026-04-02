@@ -40,8 +40,7 @@ public class TurnManager{
     public void executeTurn(GameState gameState) {
         this.gameState = gameState;
         Player player = gameState.getCurrentPlayer();
-
-
+        
         // display current board layout
         view.displayGame(gameState);
 

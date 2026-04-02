@@ -90,21 +90,21 @@ public class ConsoleManager {
 
     // main method
     public void displayGame(GameState state) {
+        sleep(2); // delay so the user can see the confirmation message 
         System.out.print("\033[H\033[2J"); // clear screen 
-
         displayBoard(state); 
-        displayGameState(state); // Player details 
+        displayAllPlayersState(state); // Player details 
     }
 
-    public void displayPlayerStatus(Player player) {
-        System.out.println("\n--- " + player.getName() + "'s Turn ---");
-        System.out.println("Prestige Points: " + player.getPrestigePoints());
-        System.out.println("Tokens: " + GemType.formatGemMap(player.getTokens()));
-        displayHand(player);
+    private void sleep(int seconds) {
+        try {
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); 
+        }
     }
 
-
-    public void displayGameState(GameState state) {
+    public void displayAllPlayersState(GameState state) {
         // displays all players state
         System.out.println("=== CURRENT PLAYERS STATE ===");
         for (Player player : state.getPlayers()) {
@@ -117,26 +117,14 @@ public class ConsoleManager {
         System.out.println("\n--- " + player.getName() + " ---");
         System.out.println("Prestige Points: " + player.getPrestigePoints());
         System.out.println("Tokens: " + GemType.formatGemMap(player.getTokens()));
-        System.out.println("Permanent Bonuses: " + GemType.formatGemMap(player.getBonuses())); // is this even working?
-        System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3"); // only the size?? 
+        System.out.println("Permanent Bonuses: " + GemType.formatGemMap(player.getBonuses())); 
+        System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3"); 
         displayCard(player.getReservedCards());
         System.out.println("Purchased Cards: "); 
         displayCard(player.getPurchasedCards());
 
         // cards in hand? 
     }
-
-
-    public void displayHand(Player player) {
-        // System.out.println("\n--- " + player.getName() + "'s Field ---");
-        System.out.println("Prestige Points: " + player.getPrestigePoints());
-        System.out.println("Tokens: " + GemType.formatGemMap(player.getTokens()));
-        // reserved cards, permanent bonuses, cards in hand? 
-        System.out.println("Reserved Cards: " + player.getReservedCards().size() + "/3");
-        System.out.println("Permanent Bonuses: " + GemType.formatGemMap(player.getBonuses()));
-        System.out.println("-----------------------------------");
-    }
-
 
     public int promptForPlayerCount() {
         return inputValidator.getValidInt("Enter Player Count (2/4) : ", 2, 4);
@@ -218,7 +206,7 @@ public class ConsoleManager {
         // method to parse card into ( Card ID: 5 | Cost: RED: 2, BLUE: 1 | Gives: WHITE ) string. 
         DevelopmentCard cardSelected = allCardsList.get(choice - 1);
         System.out.println("Choice " + choice + " selected!");
-        System.out.println(player.getName() + " selected card: " + formatCardDetails(cardSelected));
+        System.out.println("Player " + player.getName() + "has reserved the card: " + formatCardDetails(cardSelected));
         
         // 0-index array, subtract 1 from choice from allCardsList
         return cardSelected;
